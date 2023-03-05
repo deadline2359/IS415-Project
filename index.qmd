@@ -1,5 +1,5 @@
 ---
-title: "IS415-Project"
+title: "Group 9"
 listing:
   contents: posts
   sort: "date desc"

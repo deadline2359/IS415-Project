@@ -1,0 +1,39 @@
+---
+title: "Proposal"
+author: "Group 9"
+date: "2023-03-04"
+date-modified: "`r Sys.Date()`"
+categories: [news]
+---
+
+::: callout-warning
+## More details will be added..
+
+At the moment, we are still exploring available datasets. We update this page as time goes on.
+:::
+
+# Problem
+
+The number of heathcare facilities, ranging from private clinics to polyclinics to general hospitals, has been [increasing over the years](https://www.moh.gov.sg/upcoming-and-completed-healthcare-facilities). No doubt, it will increase the availability and accessibility of hospitals for the public, or does it?
+
+# Motivation
+
+As Singapore's population ages and overall population expands, we can foresee the increasing need of healthcare facilities in the future. Importantly, the aging population will face difficulties in travelling to the facilities.
+
+We want to explore the relation between transportation and these facilities.
+
+# Relevant Works
+
+-   [Access to Healthcare in Singapore](https://storymaps.arcgis.com/stories/4a5cc89fbd214055936e4f51836cad03) *(by Lim Ee Jean)* - She crucially analysed the population in Singapore that can reach a hospital within certain time limits. This is similar to our project, however it lacks the interactivity and additional details that are required to further understand the relationships between transportation and medical institutions.
+
+# System Architecture
+
+![](img/architecture.png){fig-align="center"}
+
+# Prototypes
+
+![Proposal Page](img/UI_1.jpg){fig-align="center"}
+
+![EDA](img/UI_2.jpg){fig-align="center"}
+
+![Analysis](img/UI_3.jpg){fig-align="center"}

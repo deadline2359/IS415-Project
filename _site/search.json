@@ -9,22 +9,15 @@
   {
     "objectID": "index.html",
     "href": "index.html",
-    "title": "IS415-Project",
+    "title": "Group 9",
     "section": "",
-    "text": "Post With Code\n\n\n\n\n\n\n\nnews\n\n\ncode\n\n\nanalysis\n\n\n\n\n\n\n\n\n\n\n\nMar 4, 2023\n\n\nHarlow Malloc\n\n\n\n\n\n\n  \n\n\n\n\nWelcome To My Blog\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMar 1, 2023\n\n\nTristan O’Malley\n\n\n\n\n\n\nNo matching items"
+    "text": "Proposal\n\n\n\n\n\n\n\nnews\n\n\n\n\n\n\n\n\n\n\n\nMar 4, 2023\n\n\nGroup 9\n\n\n\n\n\n\nNo matching items"
   },
   {
-    "objectID": "posts/post-with-code/index.html",
-    "href": "posts/post-with-code/index.html",
-    "title": "Post With Code",
+    "objectID": "posts/proposal/index.html",
+    "href": "posts/proposal/index.html",
+    "title": "Proposal",
     "section": "",
-    "text": "This is a post with executable code.\n\n1 + 1\n\n[1] 2"
-  },
-  {
-    "objectID": "posts/welcome/index.html",
-    "href": "posts/welcome/index.html",
-    "title": "Welcome To My Blog",
-    "section": "",
-    "text": "This is the first post in a Quarto blog. Welcome!\n\nSince this post doesn’t specify an explicit image, the first image in the post will be used in the listing page of posts."
+    "text": "More details will be added..\n\n\n\nAt the moment, we are still exploring available datasets. We update this page as time goes on.\n\n\n\nProblem\nThe number of heathcare facilities, ranging from private clinics to polyclinics to general hospitals, has been increasing over the years. No doubt, it will increase the availability and accessibility of hospitals for the public, or does it?\n\n\nMotivation\nAs Singapore’s population ages and overall population expands, we can foresee the increasing need of healthcare facilities in the future. Importantly, the aging population will face difficulties in travelling to the facilities.\nWe want to explore the relation between transportation and these facilities.\n\n\nRelevant Works\n\nAccess to Healthcare in Singapore (by Lim Ee Jean) - She crucially analysed the population in Singapore that can reach a hospital within certain time limits. This is similar to our project, however it lacks the interactivity and additional details that are required to further understand the relationships between transportation and medical institutions.\n\n\n\nSystem Architecture\n\n\n\n\n\n\n\nPrototypes\n\n\n\nProposal Page\n\n\n\n\n\nEDA\n\n\n\n\n\nAnalysis"
   }
 ]
