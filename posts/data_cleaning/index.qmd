@@ -9,7 +9,7 @@ categories: [news]
 # R Packages
 
 ```{r}
-pacman::p_load(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools)
+pacman::p_load(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools, raster)
 ```
 
 # Import Data
@@ -600,48 +600,248 @@ busstop_ppp.km <- rescale(busstop_ppp, 1000, "km")
 
 ### General Practitioner Clinics
 ```{r}
-gp_bw <- plot(density(gp_ppp.km,
+gp_bw <- density(gp_ppp.km,
              sigma = bw.diggle,
              edge = TRUE,
-             kernel = "gaussian"),
-     main = "General Practitioner Clinics")
+             kernel = "gaussian")
+
+plot(gp_bw, main = "General Practitioner Clinics")
 ```
 
 ### Hospitals
 ```{r}
-hospital_bw <- plot(density(hospital_ppp.km,
+hospital_bw <- density(hospital_ppp.km,
              sigma = bw.diggle,
              edge = TRUE,
-             kernel = "gaussian"),
-     main = "Hospitals")
+             kernel = "gaussian")
+
+plot(hospital_bw, main = "Hospitals")
 ```
 
 
 ### Polyclinics
 ```{r}
-poly_bw <- plot(density(poly_ppp.km,
+poly_bw <- density(poly_ppp.km,
              sigma = bw.diggle,
              edge = TRUE,
-             kernel = "gaussian"),
-     main = "Polyclinics")
+             kernel = "gaussian")
+
+plot(poly_bw, main = "Polyclinics")
 ```
 
 ### Nursing Homes
 ```{r}
-nursing_bw <- plot(density(nursing_ppp.km,
+nursing_bw <- density(nursing_ppp.km,
              sigma = bw.diggle,
              edge = TRUE,
-             kernel = "gaussian"),
-     main = "Nursing Homes")
+             kernel = "gaussian")
+
+plot(nursing_bw, main = "Nursing Homes")
 ```
 
 ### Bus Stops
 ```{r}
-busstop_bw <- plot(density(busstop_ppp.km,
+busstop_bw <- density(busstop_ppp.km,
              sigma = bw.diggle,
              edge = TRUE,
-             kernel = "gaussian"),
-     main = "Bus Stops")
+             kernel = "gaussian")
+
+plot(busstop_bw, main = "Bus Stops")
 ```
+
+
+## Converting KDE Output into Grid Object
+### General Practitioner Clinics
+```{r}
+gridded_gp_bw <- as.SpatialGridDataFrame.im(gp_bw)
+spplot(gridded_gp_bw)
+```
+
+
+### Hospitals
+```{r}
+gridded_hospital_bw <- as.SpatialGridDataFrame.im(hospital_bw)
+spplot(gridded_hospital_bw)
+```
+
+
+### Polyclinics
+```{r}
+gridded_poly_bw <- as.SpatialGridDataFrame.im(poly_bw)
+spplot(gridded_poly_bw)
+```
+
+### Nursing Homes
+```{r}
+gridded_nursing_bw <- as.SpatialGridDataFrame.im(nursing_bw)
+spplot(gridded_nursing_bw)
+```
+
+### Bus Stops
+```{r}
+gridded_busstop_bw <- as.SpatialGridDataFrame.im(busstop_bw)
+spplot(gridded_busstop_bw)
+```
+
+## Converting Gridded Output into Raster
+
+### General Practitioner Clinics
+
+```{r}
+kde_gp_bw_raster <- raster(gridded_gp_bw)
+projection(kde_gp_bw_raster) <- CRS("+init=EPSG:3414")
+kde_gp_bw_raster
+```
+
+
+### Hospitals
+
+```{r}
+kde_hospital_bw_raster <- raster(gridded_hospital_bw)
+projection(kde_hospital_bw_raster) <- CRS("+init=EPSG:3414")
+kde_hospital_bw_raster
+```
+
+### Polyclinics
+
+```{r}
+kde_poly_bw_raster <- raster(gridded_poly_bw)
+projection(kde_poly_bw_raster) <- CRS("+init=EPSG:3414")
+kde_poly_bw_raster
+```
+
+### Nursing Homes
+
+```{r}
+kde_nursing_bw_raster <- raster(gridded_nursing_bw)
+projection(kde_nursing_bw_raster) <- CRS("+init=EPSG:3414")
+kde_nursing_bw_raster
+```
+
+### Bus Stops
+
+```{r}
+kde_busstop_bw_raster <- raster(gridded_busstop_bw)
+projection(kde_busstop_bw_raster) <- CRS("+init=EPSG:3414")
+kde_busstop_bw_raster
+```
+
+### Visualisation
+
+#### General Practitioner Clinics
+
+```{r}
+tm_shape(kde_gp_bw_raster) +
+  tm_raster("v") +
+  tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
+```
+
+
+#### Hospitals
+
+```{r}
+tm_shape(kde_hospital_bw_raster) +
+  tm_raster("v") +
+  tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
+```
+
+#### Polyclinics
+
+```{r}
+tm_shape(kde_poly_bw_raster) +
+  tm_raster("v") +
+  tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
+```
+
+#### Nursing Homes
+
+```{r}
+tm_shape(kde_nursing_bw_raster) +
+  tm_raster("v") +
+  tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
+```
+
+#### Bus Stops
+
+```{r}
+tm_shape(kde_busstop_bw_raster) +
+  tm_raster("v") +
+  tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
+```
+
+
+## Nearest Neighbour Analysis
+
+### General Practitioner Clinics
+
+- Ho = The distribution of general practitioner clinics are randomly distributed.
+
+- H1 = The distribution of general practitioner clinics are not randomly distributed.
+
+With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that general practitioner clinics are not randomly distributed.
+
+```{r}
+clarkevans.test(gp_ppp.km,
+                correction = "none", 
+                clipregion = "mpsz_owin", 
+                alternative = c("clustered"), 
+                nsim = 99)
+```
+
+### Hospitals
+
+- Ho = The distribution of hospitals are randomly distributed.
+
+- H1 = The distribution of hospitals are not randomly distributed.
+
+With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that hospitals are not randomly distributed.
+
+```{r}
+clarkevans.test(hospital_ppp.km,
+                correction = "none", 
+                clipregion = "mpsz_owin", 
+                alternative = c("clustered"), 
+                nsim = 99)
+```
+
+
+### Polyclinics
+
+- Ho = The distribution of polyclinics are randomly distributed.
+
+- H1 = The distribution of polyclinics are not randomly distributed.
+
+With the p-value above than the alpha value of 0.05, we accept the null hypothesis and accept that polyclinics are randomly distributed.
+
+```{r}
+clarkevans.test(poly_ppp.km,
+                correction = "none", 
+                clipregion = "mpsz_owin", 
+                alternative = c("clustered"), 
+                nsim = 99)
+```
+
+### Nursing Homes
+
+- Ho = The distribution of nursing homes are randomly distributed.
+
+- H1 = The distribution of nursing homes are not randomly distributed.
+
+With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that nursing homes are not randomly distributed.
+
+```{r}
+clarkevans.test(nursing_ppp.km,
+                correction = "none", 
+                clipregion = "mpsz_owin", 
+                alternative = c("clustered"), 
+                nsim = 99)
+```
+
+
+
+
+
+
+
 
 

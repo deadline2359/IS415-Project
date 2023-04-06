@@ -194,7 +194,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div>
       <div class="quarto-title-meta-heading">Modified</div>
       <div class="quarto-title-meta-contents">
-        <p class="date-modified">April 6, 2023</p>
+        <p class="date-modified">April 7, 2023</p>
       </div>
     </div>
       
@@ -214,7 +214,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="r-packages" class="level1">
 <h1>R Packages</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools, raster)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="import-data" class="level1">
@@ -1066,8 +1066,8 @@ tm_shape prior to each of them).</code></pre>
 <h1>First-order Spatial Point Patterns Analysis</h1>
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-f8b3b72a87c6069cb0cd" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-f8b3b72a87c6069cb0cd">{"x":{"diagram":"digraph flowchart {\n  graph [layout = dot, rankdir = LR]\n  node [fontname = arial, shape = oval]\n  tab1 [label = \"simple feature\"]\n  tab2 [label = \"spatial*\"]\n  tab3 [label = \"generic spatial\"]\n  tab4 [label = \"ppp\"]\n  \n  tab1 -> tab2 -> tab3 -> tab4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-97fd52a25d1e54a7f84b" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-97fd52a25d1e54a7f84b">{"x":{"diagram":"digraph flowchart {\n  graph [layout = dot, rankdir = LR]\n  node [fontname = arial, shape = oval]\n  tab1 [label = \"simple feature\"]\n  tab2 [label = \"spatial*\"]\n  tab3 [label = \"generic spatial\"]\n  tab4 [label = \"ppp\"]\n  \n  tab1 -> tab2 -> tab3 -> tab4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 <section id="conversion-of-datatypes" class="level2">
@@ -1284,11 +1284,12 @@ enclosing rectangle: [2667.54, 56396.44] x [15748.72, 50256.33] units</code></pr
 <section id="general-practitioner-clinics-4" class="level3">
 <h3 class="anchored" data-anchor-id="general-practitioner-clinics-4">General Practitioner Clinics</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>gp_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(gp_ppp.km,</span>
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>gp_bw <span class="ot">&lt;-</span> <span class="fu">density</span>(gp_ppp.km,</span>
 <span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
 <span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
-<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"General Practitioner Clinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>)</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb119-6"><a href="#cb119-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gp_bw, <span class="at">main =</span> <span class="st">"General Practitioner Clinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1297,11 +1298,12 @@ enclosing rectangle: [2667.54, 56396.44] x [15748.72, 50256.33] units</code></pr
 <section id="hospitals-4" class="level3">
 <h3 class="anchored" data-anchor-id="hospitals-4">Hospitals</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>hospital_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(hospital_ppp.km,</span>
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>hospital_bw <span class="ot">&lt;-</span> <span class="fu">density</span>(hospital_ppp.km,</span>
 <span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
 <span id="cb120-3"><a href="#cb120-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
-<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Hospitals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb120-4"><a href="#cb120-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>)</span>
+<span id="cb120-5"><a href="#cb120-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb120-6"><a href="#cb120-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hospital_bw, <span class="at">main =</span> <span class="st">"Hospitals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1310,11 +1312,12 @@ enclosing rectangle: [2667.54, 56396.44] x [15748.72, 50256.33] units</code></pr
 <section id="polyclinics-4" class="level3">
 <h3 class="anchored" data-anchor-id="polyclinics-4">Polyclinics</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>poly_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(poly_ppp.km,</span>
+<div class="sourceCode cell-code" id="cb121"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb121-1"><a href="#cb121-1" aria-hidden="true" tabindex="-1"></a>poly_bw <span class="ot">&lt;-</span> <span class="fu">density</span>(poly_ppp.km,</span>
 <span id="cb121-2"><a href="#cb121-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
 <span id="cb121-3"><a href="#cb121-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
-<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Polyclinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb121-4"><a href="#cb121-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>)</span>
+<span id="cb121-5"><a href="#cb121-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb121-6"><a href="#cb121-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(poly_bw, <span class="at">main =</span> <span class="st">"Polyclinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1323,11 +1326,12 @@ enclosing rectangle: [2667.54, 56396.44] x [15748.72, 50256.33] units</code></pr
 <section id="nursing-homes-4" class="level3">
 <h3 class="anchored" data-anchor-id="nursing-homes-4">Nursing Homes</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>nursing_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(nursing_ppp.km,</span>
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>nursing_bw <span class="ot">&lt;-</span> <span class="fu">density</span>(nursing_ppp.km,</span>
 <span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
 <span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
-<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Nursing Homes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>)</span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb122-6"><a href="#cb122-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nursing_bw, <span class="at">main =</span> <span class="st">"Nursing Homes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid" width="672"></p>
 </div>
@@ -1336,13 +1340,333 @@ enclosing rectangle: [2667.54, 56396.44] x [15748.72, 50256.33] units</code></pr
 <section id="bus-stops-2" class="level3">
 <h3 class="anchored" data-anchor-id="bus-stops-2">Bus Stops</h3>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>busstop_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(busstop_ppp.km,</span>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>busstop_bw <span class="ot">&lt;-</span> <span class="fu">density</span>(busstop_ppp.km,</span>
 <span id="cb123-2"><a href="#cb123-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
 <span id="cb123-3"><a href="#cb123-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
-<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Bus Stops"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb123-4"><a href="#cb123-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>)</span>
+<span id="cb123-5"><a href="#cb123-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb123-6"><a href="#cb123-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(busstop_bw, <span class="at">main =</span> <span class="st">"Bus Stops"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
 <p><img src="index_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="converting-kde-output-into-grid-object" class="level2">
+<h2 class="anchored" data-anchor-id="converting-kde-output-into-grid-object">Converting KDE Output into Grid Object</h2>
+<section id="general-practitioner-clinics-5" class="level3">
+<h3 class="anchored" data-anchor-id="general-practitioner-clinics-5">General Practitioner Clinics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb124"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a>gridded_gp_bw <span class="ot">&lt;-</span> <span class="fu">as.SpatialGridDataFrame.im</span>(gp_bw)</span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spplot</span>(gridded_gp_bw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-66-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="hospitals-5" class="level3">
+<h3 class="anchored" data-anchor-id="hospitals-5">Hospitals</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>gridded_hospital_bw <span class="ot">&lt;-</span> <span class="fu">as.SpatialGridDataFrame.im</span>(hospital_bw)</span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spplot</span>(gridded_hospital_bw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-67-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="polyclinics-5" class="level3">
+<h3 class="anchored" data-anchor-id="polyclinics-5">Polyclinics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>gridded_poly_bw <span class="ot">&lt;-</span> <span class="fu">as.SpatialGridDataFrame.im</span>(poly_bw)</span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spplot</span>(gridded_poly_bw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-68-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nursing-homes-5" class="level3">
+<h3 class="anchored" data-anchor-id="nursing-homes-5">Nursing Homes</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb127"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb127-1"><a href="#cb127-1" aria-hidden="true" tabindex="-1"></a>gridded_nursing_bw <span class="ot">&lt;-</span> <span class="fu">as.SpatialGridDataFrame.im</span>(nursing_bw)</span>
+<span id="cb127-2"><a href="#cb127-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spplot</span>(gridded_nursing_bw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-69-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="bus-stops-3" class="level3">
+<h3 class="anchored" data-anchor-id="bus-stops-3">Bus Stops</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>gridded_busstop_bw <span class="ot">&lt;-</span> <span class="fu">as.SpatialGridDataFrame.im</span>(busstop_bw)</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a><span class="fu">spplot</span>(gridded_busstop_bw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-70-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+<section id="converting-gridded-output-into-raster" class="level2">
+<h2 class="anchored" data-anchor-id="converting-gridded-output-into-raster">Converting Gridded Output into Raster</h2>
+<section id="general-practitioner-clinics-6" class="level3">
+<h3 class="anchored" data-anchor-id="general-practitioner-clinics-6">General Practitioner Clinics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a>kde_gp_bw_raster <span class="ot">&lt;-</span> <span class="fu">raster</span>(gridded_gp_bw)</span>
+<span id="cb129-2"><a href="#cb129-2" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(kde_gp_bw_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:3414"</span>)</span>
+<span id="cb129-3"><a href="#cb129-3" aria-hidden="true" tabindex="-1"></a>kde_gp_bw_raster</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 128, 128, 16384  (nrow, ncol, ncell)
+resolution : 0.419757, 0.2695907  (x, y)
+extent     : 2.667538, 56.39644, 15.74872, 50.25633  (xmin, xmax, ymin, ymax)
+crs        : +init=EPSG:3414 
+source     : memory
+names      : v 
+values     : -1.967462e-14, 106.0357  (min, max)</code></pre>
+</div>
+</div>
+</section>
+<section id="hospitals-6" class="level3">
+<h3 class="anchored" data-anchor-id="hospitals-6">Hospitals</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>kde_hospital_bw_raster <span class="ot">&lt;-</span> <span class="fu">raster</span>(gridded_hospital_bw)</span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(kde_hospital_bw_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:3414"</span>)</span>
+<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a>kde_hospital_bw_raster</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 128, 128, 16384  (nrow, ncol, ncell)
+resolution : 0.419757, 0.2695907  (x, y)
+extent     : 2.667538, 56.39644, 15.74872, 50.25633  (xmin, xmax, ymin, ymax)
+crs        : +init=EPSG:3414 
+source     : memory
+names      : v 
+values     : -6.617214e-17, 0.6530283  (min, max)</code></pre>
+</div>
+</div>
+</section>
+<section id="polyclinics-6" class="level3">
+<h3 class="anchored" data-anchor-id="polyclinics-6">Polyclinics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb133"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb133-1"><a href="#cb133-1" aria-hidden="true" tabindex="-1"></a>kde_poly_bw_raster <span class="ot">&lt;-</span> <span class="fu">raster</span>(gridded_poly_bw)</span>
+<span id="cb133-2"><a href="#cb133-2" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(kde_poly_bw_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:3414"</span>)</span>
+<span id="cb133-3"><a href="#cb133-3" aria-hidden="true" tabindex="-1"></a>kde_poly_bw_raster</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 128, 128, 16384  (nrow, ncol, ncell)
+resolution : 0.419757, 0.2695907  (x, y)
+extent     : 2.667538, 56.39644, 15.74872, 50.25633  (xmin, xmax, ymin, ymax)
+crs        : +init=EPSG:3414 
+source     : memory
+names      : v 
+values     : 1.253552e-17, 0.1114663  (min, max)</code></pre>
+</div>
+</div>
+</section>
+<section id="nursing-homes-6" class="level3">
+<h3 class="anchored" data-anchor-id="nursing-homes-6">Nursing Homes</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb135"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb135-1"><a href="#cb135-1" aria-hidden="true" tabindex="-1"></a>kde_nursing_bw_raster <span class="ot">&lt;-</span> <span class="fu">raster</span>(gridded_nursing_bw)</span>
+<span id="cb135-2"><a href="#cb135-2" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(kde_nursing_bw_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:3414"</span>)</span>
+<span id="cb135-3"><a href="#cb135-3" aria-hidden="true" tabindex="-1"></a>kde_nursing_bw_raster</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 128, 128, 16384  (nrow, ncol, ncell)
+resolution : 0.419757, 0.2695907  (x, y)
+extent     : 2.667538, 56.39644, 15.74872, 50.25633  (xmin, xmax, ymin, ymax)
+crs        : +init=EPSG:3414 
+source     : memory
+names      : v 
+values     : -1.746062e-16, 0.8532225  (min, max)</code></pre>
+</div>
+</div>
+</section>
+<section id="bus-stops-4" class="level3">
+<h3 class="anchored" data-anchor-id="bus-stops-4">Bus Stops</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb137"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb137-1"><a href="#cb137-1" aria-hidden="true" tabindex="-1"></a>kde_busstop_bw_raster <span class="ot">&lt;-</span> <span class="fu">raster</span>(gridded_busstop_bw)</span>
+<span id="cb137-2"><a href="#cb137-2" aria-hidden="true" tabindex="-1"></a><span class="fu">projection</span>(kde_busstop_bw_raster) <span class="ot">&lt;-</span> <span class="fu">CRS</span>(<span class="st">"+init=EPSG:3414"</span>)</span>
+<span id="cb137-3"><a href="#cb137-3" aria-hidden="true" tabindex="-1"></a>kde_busstop_bw_raster</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class      : RasterLayer 
+dimensions : 128, 128, 16384  (nrow, ncol, ncell)
+resolution : 0.419757, 0.2695907  (x, y)
+extent     : 2.667538, 56.39644, 15.74872, 50.25633  (xmin, xmax, ymin, ymax)
+crs        : +init=EPSG:3414 
+source     : memory
+names      : v 
+values     : -1.085599e-14, 46.77302  (min, max)</code></pre>
+</div>
+</div>
+</section>
+<section id="visualisation" class="level3">
+<h3 class="anchored" data-anchor-id="visualisation">Visualisation</h3>
+<section id="general-practitioner-clinics-7" class="level4">
+<h4 class="anchored" data-anchor-id="general-practitioner-clinics-7">General Practitioner Clinics</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb139"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb139-1"><a href="#cb139-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kde_gp_bw_raster) <span class="sc">+</span></span>
+<span id="cb139-2"><a href="#cb139-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="st">"v"</span>) <span class="sc">+</span></span>
+<span id="cb139-3"><a href="#cb139-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>), <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Variable(s) "v" contains positive and negative values, so midpoint is set to 0. Set midpoint = NA to show the full spectrum of the color palette.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-76-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="hospitals-7" class="level4">
+<h4 class="anchored" data-anchor-id="hospitals-7">Hospitals</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb141"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb141-1"><a href="#cb141-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kde_hospital_bw_raster) <span class="sc">+</span></span>
+<span id="cb141-2"><a href="#cb141-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="st">"v"</span>) <span class="sc">+</span></span>
+<span id="cb141-3"><a href="#cb141-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>), <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Variable(s) "v" contains positive and negative values, so midpoint is set to 0. Set midpoint = NA to show the full spectrum of the color palette.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-77-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="polyclinics-7" class="level4">
+<h4 class="anchored" data-anchor-id="polyclinics-7">Polyclinics</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb143"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb143-1"><a href="#cb143-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kde_poly_bw_raster) <span class="sc">+</span></span>
+<span id="cb143-2"><a href="#cb143-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="st">"v"</span>) <span class="sc">+</span></span>
+<span id="cb143-3"><a href="#cb143-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>), <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-78-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="nursing-homes-7" class="level4">
+<h4 class="anchored" data-anchor-id="nursing-homes-7">Nursing Homes</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb144"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kde_nursing_bw_raster) <span class="sc">+</span></span>
+<span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="st">"v"</span>) <span class="sc">+</span></span>
+<span id="cb144-3"><a href="#cb144-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>), <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Variable(s) "v" contains positive and negative values, so midpoint is set to 0. Set midpoint = NA to show the full spectrum of the color palette.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-79-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+<section id="bus-stops-5" class="level4">
+<h4 class="anchored" data-anchor-id="bus-stops-5">Bus Stops</h4>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb146"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(kde_busstop_bw_raster) <span class="sc">+</span></span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_raster</span>(<span class="st">"v"</span>) <span class="sc">+</span></span>
+<span id="cb146-3"><a href="#cb146-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">legend.position =</span> <span class="fu">c</span>(<span class="st">"right"</span>, <span class="st">"bottom"</span>), <span class="at">frame =</span> <span class="cn">FALSE</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Variable(s) "v" contains positive and negative values, so midpoint is set to 0. Set midpoint = NA to show the full spectrum of the color palette.</code></pre>
+</div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-80-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="nearest-neighbour-analysis" class="level2">
+<h2 class="anchored" data-anchor-id="nearest-neighbour-analysis">Nearest Neighbour Analysis</h2>
+<section id="general-practitioner-clinics-8" class="level3">
+<h3 class="anchored" data-anchor-id="general-practitioner-clinics-8">General Practitioner Clinics</h3>
+<ul>
+<li><p>Ho = The distribution of general practitioner clinics are randomly distributed.</p></li>
+<li><p>H1 = The distribution of general practitioner clinics are not randomly distributed.</p></li>
+</ul>
+<p>With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that general practitioner clinics are not randomly distributed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb148"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(gp_ppp.km,</span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction =</span> <span class="st">"none"</span>, </span>
+<span id="cb148-3"><a href="#cb148-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion =</span> <span class="st">"mpsz_owin"</span>, </span>
+<span id="cb148-4"><a href="#cb148-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative =</span> <span class="fu">c</span>(<span class="st">"clustered"</span>), </span>
+<span id="cb148-5"><a href="#cb148-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Monte Carlo test based on 99 simulations of CSR with fixed n
+
+data:  gp_ppp.km
+R = 0.34551, p-value = 0.01
+alternative hypothesis: clustered (R &lt; 1)</code></pre>
+</div>
+</div>
+</section>
+<section id="hospitals-8" class="level3">
+<h3 class="anchored" data-anchor-id="hospitals-8">Hospitals</h3>
+<ul>
+<li><p>Ho = The distribution of hospitals are randomly distributed.</p></li>
+<li><p>H1 = The distribution of hospitals are not randomly distributed.</p></li>
+</ul>
+<p>With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that hospitals are not randomly distributed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb150"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(hospital_ppp.km,</span>
+<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction =</span> <span class="st">"none"</span>, </span>
+<span id="cb150-3"><a href="#cb150-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion =</span> <span class="st">"mpsz_owin"</span>, </span>
+<span id="cb150-4"><a href="#cb150-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative =</span> <span class="fu">c</span>(<span class="st">"clustered"</span>), </span>
+<span id="cb150-5"><a href="#cb150-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Monte Carlo test based on 99 simulations of CSR with fixed n
+
+data:  hospital_ppp.km
+R = 0.45977, p-value = 0.01
+alternative hypothesis: clustered (R &lt; 1)</code></pre>
+</div>
+</div>
+</section>
+<section id="polyclinics-8" class="level3">
+<h3 class="anchored" data-anchor-id="polyclinics-8">Polyclinics</h3>
+<ul>
+<li><p>Ho = The distribution of polyclinics are randomly distributed.</p></li>
+<li><p>H1 = The distribution of polyclinics are not randomly distributed.</p></li>
+</ul>
+<p>With the p-value above than the alpha value of 0.05, we accept the null hypothesis and accept that polyclinics are randomly distributed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb152"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(poly_ppp.km,</span>
+<span id="cb152-2"><a href="#cb152-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction =</span> <span class="st">"none"</span>, </span>
+<span id="cb152-3"><a href="#cb152-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion =</span> <span class="st">"mpsz_owin"</span>, </span>
+<span id="cb152-4"><a href="#cb152-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative =</span> <span class="fu">c</span>(<span class="st">"clustered"</span>), </span>
+<span id="cb152-5"><a href="#cb152-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Monte Carlo test based on 99 simulations of CSR with fixed n
+
+data:  poly_ppp.km
+R = 1.0189, p-value = 0.09
+alternative hypothesis: clustered (R &lt; 1)</code></pre>
+</div>
+</div>
+</section>
+<section id="nursing-homes-8" class="level3">
+<h3 class="anchored" data-anchor-id="nursing-homes-8">Nursing Homes</h3>
+<ul>
+<li><p>Ho = The distribution of nursing homes are randomly distributed.</p></li>
+<li><p>H1 = The distribution of nursing homes are not randomly distributed.</p></li>
+</ul>
+<p>With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that nursing homes are not randomly distributed.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb154"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a><span class="fu">clarkevans.test</span>(nursing_ppp.km,</span>
+<span id="cb154-2"><a href="#cb154-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">correction =</span> <span class="st">"none"</span>, </span>
+<span id="cb154-3"><a href="#cb154-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">clipregion =</span> <span class="st">"mpsz_owin"</span>, </span>
+<span id="cb154-4"><a href="#cb154-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">alternative =</span> <span class="fu">c</span>(<span class="st">"clustered"</span>), </span>
+<span id="cb154-5"><a href="#cb154-5" aria-hidden="true" tabindex="-1"></a>                <span class="at">nsim =</span> <span class="dv">99</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>
+    Clark-Evans test
+    No edge correction
+    Monte Carlo test based on 99 simulations of CSR with fixed n
+
+data:  nursing_ppp.km
+R = 0.70478, p-value = 0.01
+alternative hypothesis: clustered (R &lt; 1)</code></pre>
 </div>
 </div>
 
