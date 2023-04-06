@@ -214,7 +214,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <section id="r-packages" class="level1">
 <h1>R Packages</h1>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readr, sf, tmap)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section>
 <section id="import-data" class="level1">
@@ -842,8 +842,8 @@ introduced by coercion</code></pre>
 </div>
 </section>
 </section>
-<section id="validity-of-geometries-of-sds" class="level2">
-<h2 class="anchored" data-anchor-id="validity-of-geometries-of-sds">Validity of Geometries of sds</h2>
+<section id="validity-of-geometries-of-train-stations" class="level2">
+<h2 class="anchored" data-anchor-id="validity-of-geometries-of-train-stations">Validity of Geometries of Train Stations</h2>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb51"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">length</span>(<span class="fu">which</span>(<span class="fu">st_is_valid</span>(trainstation_sf) <span class="sc">==</span> <span class="cn">FALSE</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -860,169 +860,204 @@ introduced by coercion</code></pre>
 </div>
 </div>
 </section>
+<section id="excluding-unnecessary-data-points" class="level2">
+<h2 class="anchored" data-anchor-id="excluding-unnecessary-data-points">Excluding Unnecessary Data Points</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>gp_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(mpsz, gp_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: attribute variables are assumed to be spatially constant throughout
+all geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>hospital_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(mpsz, hospital_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: attribute variables are assumed to be spatially constant throughout
+all geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>poly_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(mpsz, poly_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: attribute variables are assumed to be spatially constant throughout
+all geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb61"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a>nursing_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(mpsz, nursing_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: attribute variables are assumed to be spatially constant throughout
+all geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a>busstop_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(mpsz, busstop_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: attribute variables are assumed to be spatially constant throughout
+all geometries</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>trainstation_sf <span class="ot">&lt;-</span> <span class="fu">st_intersection</span>(mpsz, trainstation_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stderr">
+<pre><code>Warning: attribute variables are assumed to be spatially constant throughout
+all geometries</code></pre>
+</div>
+</div>
+</section>
 </section>
 <section id="data-visualisation" class="level1">
 <h1>Data Visualisation</h1>
 <section id="general-practitioner-clinics-2" class="level2">
 <h2 class="anchored" data-anchor-id="general-practitioner-clinics-2">General Practitioner Clinics</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb55"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb67"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>tmap mode set to plotting</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb57"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
-<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
-<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
-<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
-<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>() <span class="sc">+</span> </span>
-<span id="cb57-7"><a href="#cb57-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(gp_sf) <span class="sc">+</span> </span>
-<span id="cb57-8"><a href="#cb57-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">24</span>,</span>
-<span id="cb57-9"><a href="#cb57-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"blue"</span>,</span>
-<span id="cb57-10"><a href="#cb57-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb57-11"><a href="#cb57-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"General Practitioner Clinics"</span>,</span>
-<span id="cb57-12"><a href="#cb57-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_fill</span>() <span class="sc">+</span> </span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(gp_sf) <span class="sc">+</span> </span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">24</span>,</span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"blue"</span>,</span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"General Practitioner Clinics"</span>,</span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>Warning: One tm layer group has duplicated layer types, which are omitted. To
 draw multiple layers of the same type, use multiple layer groups (i.e. specify
 tm_shape prior to each of them).</code></pre>
 </div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-30-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="hospitals-2" class="level2">
 <h2 class="anchored" data-anchor-id="hospitals-2">Hospitals</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb59"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>general_hospital <span class="ot">=</span> hospital_sf[hospital_sf<span class="sc">$</span>TYPE <span class="sc">==</span> <span class="st">"GENERAL"</span>,]</span>
-<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>specialised_hospital <span class="ot">=</span> hospital_sf[hospital_sf<span class="sc">$</span>TYPE <span class="sc">==</span> <span class="st">"SPECIALISED"</span>,]</span>
-<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>community_hospital <span class="ot">=</span> hospital_sf[hospital_sf<span class="sc">$</span>TYPE <span class="sc">==</span> <span class="st">"COMMUNITY"</span>,]</span>
-<span id="cb59-4"><a href="#cb59-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-5"><a href="#cb59-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb59-6"><a href="#cb59-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
-<span id="cb59-7"><a href="#cb59-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
-<span id="cb59-8"><a href="#cb59-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
-<span id="cb59-9"><a href="#cb59-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
-<span id="cb59-10"><a href="#cb59-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb59-11"><a href="#cb59-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(general_hospital) <span class="sc">+</span> </span>
-<span id="cb59-12"><a href="#cb59-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(</span>
-<span id="cb59-13"><a href="#cb59-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape=</span><span class="dv">23</span>,</span>
-<span id="cb59-14"><a href="#cb59-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"red"</span>,</span>
-<span id="cb59-15"><a href="#cb59-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb59-16"><a href="#cb59-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(specialised_hospital) <span class="sc">+</span> </span>
-<span id="cb59-17"><a href="#cb59-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(</span>
-<span id="cb59-18"><a href="#cb59-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape=</span><span class="dv">23</span>,</span>
-<span id="cb59-19"><a href="#cb59-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"blue"</span>,</span>
-<span id="cb59-20"><a href="#cb59-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb59-21"><a href="#cb59-21" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(community_hospital) <span class="sc">+</span> </span>
-<span id="cb59-22"><a href="#cb59-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(</span>
-<span id="cb59-23"><a href="#cb59-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape=</span><span class="dv">23</span>,</span>
-<span id="cb59-24"><a href="#cb59-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"green"</span>,</span>
-<span id="cb59-25"><a href="#cb59-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb59-26"><a href="#cb59-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Hospitals"</span>,</span>
-<span id="cb59-27"><a href="#cb59-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>general_hospital <span class="ot">=</span> hospital_sf[hospital_sf<span class="sc">$</span>TYPE <span class="sc">==</span> <span class="st">"GENERAL"</span>,]</span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>specialised_hospital <span class="ot">=</span> hospital_sf[hospital_sf<span class="sc">$</span>TYPE <span class="sc">==</span> <span class="st">"SPECIALISED"</span>,]</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>community_hospital <span class="ot">=</span> hospital_sf[hospital_sf<span class="sc">$</span>TYPE <span class="sc">==</span> <span class="st">"COMMUNITY"</span>,]</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(general_hospital) <span class="sc">+</span> </span>
+<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(</span>
+<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape=</span><span class="dv">23</span>,</span>
+<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"red"</span>,</span>
+<span id="cb71-15"><a href="#cb71-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb71-16"><a href="#cb71-16" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(specialised_hospital) <span class="sc">+</span> </span>
+<span id="cb71-17"><a href="#cb71-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(</span>
+<span id="cb71-18"><a href="#cb71-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape=</span><span class="dv">23</span>,</span>
+<span id="cb71-19"><a href="#cb71-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"blue"</span>,</span>
+<span id="cb71-20"><a href="#cb71-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb71-21"><a href="#cb71-21" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(community_hospital) <span class="sc">+</span> </span>
+<span id="cb71-22"><a href="#cb71-22" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(</span>
+<span id="cb71-23"><a href="#cb71-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">shape=</span><span class="dv">23</span>,</span>
+<span id="cb71-24"><a href="#cb71-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"green"</span>,</span>
+<span id="cb71-25"><a href="#cb71-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb71-26"><a href="#cb71-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Hospitals"</span>,</span>
+<span id="cb71-27"><a href="#cb71-27" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-31-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="polyclinics-2" class="level2">
 <h2 class="anchored" data-anchor-id="polyclinics-2">Polyclinics</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb60"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb72"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>tmap mode set to plotting</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb62"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
-<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
-<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
-<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
-<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(poly_sf) <span class="sc">+</span> </span>
-<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">22</span>,</span>
-<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"orange"</span>,</span>
-<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Polyclinics"</span>,</span>
-<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb74"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(poly_sf) <span class="sc">+</span> </span>
+<span id="cb74-7"><a href="#cb74-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">22</span>,</span>
+<span id="cb74-8"><a href="#cb74-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"orange"</span>,</span>
+<span id="cb74-9"><a href="#cb74-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb74-10"><a href="#cb74-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Polyclinics"</span>,</span>
+<span id="cb74-11"><a href="#cb74-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-32-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="nursing-homes-2" class="level2">
 <h2 class="anchored" data-anchor-id="nursing-homes-2">Nursing Homes</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb63"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb75"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>tmap mode set to plotting</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb65"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
-<span id="cb65-2"><a href="#cb65-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
-<span id="cb65-3"><a href="#cb65-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
-<span id="cb65-4"><a href="#cb65-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
-<span id="cb65-5"><a href="#cb65-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb65-6"><a href="#cb65-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nursing_sf) <span class="sc">+</span> </span>
-<span id="cb65-7"><a href="#cb65-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">21</span>,</span>
-<span id="cb65-8"><a href="#cb65-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"green"</span>,</span>
-<span id="cb65-9"><a href="#cb65-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb65-10"><a href="#cb65-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Nursing Homes"</span>,</span>
-<span id="cb65-11"><a href="#cb65-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb77"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
+<span id="cb77-2"><a href="#cb77-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb77-3"><a href="#cb77-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
+<span id="cb77-4"><a href="#cb77-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
+<span id="cb77-5"><a href="#cb77-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb77-6"><a href="#cb77-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(nursing_sf) <span class="sc">+</span> </span>
+<span id="cb77-7"><a href="#cb77-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">21</span>,</span>
+<span id="cb77-8"><a href="#cb77-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"green"</span>,</span>
+<span id="cb77-9"><a href="#cb77-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb77-10"><a href="#cb77-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Nursing Homes"</span>,</span>
+<span id="cb77-11"><a href="#cb77-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-33-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="bus-stops" class="level2">
 <h2 class="anchored" data-anchor-id="bus-stops">Bus Stops</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb66"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb78"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>tmap mode set to plotting</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb68"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
-<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
-<span id="cb68-3"><a href="#cb68-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
-<span id="cb68-4"><a href="#cb68-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
-<span id="cb68-5"><a href="#cb68-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb68-6"><a href="#cb68-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(busstop_sf) <span class="sc">+</span> </span>
-<span id="cb68-7"><a href="#cb68-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">20</span>,</span>
-<span id="cb68-8"><a href="#cb68-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"darkblue"</span>,</span>
-<span id="cb68-9"><a href="#cb68-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb68-10"><a href="#cb68-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Bus Stops"</span>,</span>
-<span id="cb68-11"><a href="#cb68-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb80"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
+<span id="cb80-2"><a href="#cb80-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb80-3"><a href="#cb80-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
+<span id="cb80-4"><a href="#cb80-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
+<span id="cb80-5"><a href="#cb80-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb80-6"><a href="#cb80-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(busstop_sf) <span class="sc">+</span> </span>
+<span id="cb80-7"><a href="#cb80-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">20</span>,</span>
+<span id="cb80-8"><a href="#cb80-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"darkblue"</span>,</span>
+<span id="cb80-9"><a href="#cb80-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb80-10"><a href="#cb80-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Bus Stops"</span>,</span>
+<span id="cb80-11"><a href="#cb80-11" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-34-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
 <section id="mrt-stations" class="level2">
 <h2 class="anchored" data-anchor-id="mrt-stations">MRT Stations</h2>
 <div class="cell">
-<div class="sourceCode cell-code" id="cb69"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a>mrt <span class="ot">&lt;-</span> trainstation_sf[trainstation_sf<span class="sc">$</span>TYP_CD_DES <span class="sc">==</span> <span class="st">"MRT"</span>,]</span>
-<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>lrt <span class="ot">&lt;-</span> trainstation_sf[trainstation_sf<span class="sc">$</span>TYP_CD_DES <span class="sc">==</span> <span class="st">"LRT"</span>,]</span>
-<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb81"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a>mrt <span class="ot">&lt;-</span> trainstation_sf[trainstation_sf<span class="sc">$</span>TYP_CD_DES <span class="sc">==</span> <span class="st">"MRT"</span>,]</span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a>lrt <span class="ot">&lt;-</span> trainstation_sf[trainstation_sf<span class="sc">$</span>TYP_CD_DES <span class="sc">==</span> <span class="st">"LRT"</span>,]</span>
+<span id="cb81-3"><a href="#cb81-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb81-4"><a href="#cb81-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tmap_mode</span>(<span class="st">"plot"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>tmap mode set to plotting</code></pre>
 </div>
-<div class="sourceCode cell-code" id="cb71"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
-<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
-<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
-<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
-<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
-<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mrt) <span class="sc">+</span> </span>
-<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">20</span>,</span>
-<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"green"</span>,</span>
-<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lrt) <span class="sc">+</span> </span>
-<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">20</span>,</span>
-<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"darkgreen"</span>,</span>
-<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
-<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Train Stations"</span>,</span>
-<span id="cb71-15"><a href="#cb71-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb83"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(total_pop) <span class="sc">+</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_polygons</span>(</span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">"Total...2"</span>,</span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">style =</span> <span class="st">"cont"</span>,</span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.4</span>) <span class="sc">+</span></span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(mrt) <span class="sc">+</span> </span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">20</span>,</span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"green"</span>,</span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb83-10"><a href="#cb83-10" aria-hidden="true" tabindex="-1"></a><span class="fu">tm_shape</span>(lrt) <span class="sc">+</span> </span>
+<span id="cb83-11"><a href="#cb83-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_symbols</span>(<span class="at">shape=</span><span class="dv">20</span>,</span>
+<span id="cb83-12"><a href="#cb83-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">col  =</span> <span class="st">"darkgreen"</span>,</span>
+<span id="cb83-13"><a href="#cb83-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.15</span>) <span class="sc">+</span></span>
+<span id="cb83-14"><a href="#cb83-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tm_layout</span>(<span class="at">main.title=</span><span class="st">"Train Stations"</span>,</span>
+<span id="cb83-15"><a href="#cb83-15" aria-hidden="true" tabindex="-1"></a>            <span class="at">main.title.position =</span> <span class="st">"center"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output-display">
-<p><img src="index_files/figure-html/unnamed-chunk-35-1.png" class="img-fluid" width="672"></p>
+<p><img src="index_files/figure-html/unnamed-chunk-36-1.png" class="img-fluid" width="672"></p>
 </div>
 </div>
 </section>
@@ -1031,12 +1066,1594 @@ tm_shape prior to each of them).</code></pre>
 <h1>First-order Spatial Point Patterns Analysis</h1>
 <div class="cell">
 <div class="cell-output-display">
-<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-c8b5cecf9a78da188d19" style="width:100%;height:464px;"></div>
-<script type="application/json" data-for="htmlwidget-c8b5cecf9a78da188d19">{"x":{"diagram":"digraph flowchart {\n  graph [layout = dot, rankdir = LR]\n  node [fontname = arial, shape = oval]\n  tab1 [label = \"simple feature\"]\n  tab2 [label = \"spatial*\"]\n  tab3 [label = \"generic spatial\"]\n  tab4 [label = \"ppp\"]\n  \n  tab1 -> tab2 -> tab3 -> tab4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+<div class="grViz html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-194b88738b764d8175e8" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-194b88738b764d8175e8">{"x":{"diagram":"digraph flowchart {\n  graph [layout = dot, rankdir = LR]\n  node [fontname = arial, shape = oval]\n  tab1 [label = \"simple feature\"]\n  tab2 [label = \"spatial*\"]\n  tab3 [label = \"generic spatial\"]\n  tab4 [label = \"ppp\"]\n  \n  tab1 -> tab2 -> tab3 -> tab4;\n}","config":{"engine":"dot","options":null}},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+<section id="conversion-of-datatypes" class="level2">
+<h2 class="anchored" data-anchor-id="conversion-of-datatypes">Conversion of Datatypes</h2>
+<p>idk why train stations converts into spatial polygon</p>
+<section id="converting-sf-data-frames-to-sps-spatial-class" class="level3">
+<h3 class="anchored" data-anchor-id="converting-sf-data-frames-to-sps-spatial-class">Converting <em>sf</em> data frames to sp’s *Spatial** class</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb84"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>mpsz_spatial <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(mpsz)</span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a>gp_spatial <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(gp_sf)</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>hospital_spatial <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(hospital_sf)</span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>poly_spatial <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(poly_sf)</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>nursing_spatial <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(nursing_sf)</span>
+<span id="cb84-6"><a href="#cb84-6" aria-hidden="true" tabindex="-1"></a>busstop_spatial <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(busstop_sf)</span>
+<span id="cb84-7"><a href="#cb84-7" aria-hidden="true" tabindex="-1"></a>trainstation_spatial <span class="ot">&lt;-</span> <span class="fu">as_Spatial</span>(trainstation_sf)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="converting-sps-spatial-class-into-generic-sp-format" class="level3">
+<h3 class="anchored" data-anchor-id="converting-sps-spatial-class-into-generic-sp-format">Converting sp’s *Spatial** Class into Generic <em>sp</em> Format</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb85"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb85-1"><a href="#cb85-1" aria-hidden="true" tabindex="-1"></a>mpsz_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(mpsz_spatial, <span class="st">"SpatialPolygons"</span>)</span>
+<span id="cb85-2"><a href="#cb85-2" aria-hidden="true" tabindex="-1"></a>gp_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(gp_spatial, <span class="st">"SpatialPoints"</span>)</span>
+<span id="cb85-3"><a href="#cb85-3" aria-hidden="true" tabindex="-1"></a>hospital_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(hospital_spatial, <span class="st">"SpatialPoints"</span>)</span>
+<span id="cb85-4"><a href="#cb85-4" aria-hidden="true" tabindex="-1"></a>poly_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(poly_spatial, <span class="st">"SpatialPoints"</span>)</span>
+<span id="cb85-5"><a href="#cb85-5" aria-hidden="true" tabindex="-1"></a>nursing_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(nursing_spatial, <span class="st">"SpatialPoints"</span>)</span>
+<span id="cb85-6"><a href="#cb85-6" aria-hidden="true" tabindex="-1"></a>busstop_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(busstop_spatial, <span class="st">"SpatialPoints"</span>)</span>
+<span id="cb85-7"><a href="#cb85-7" aria-hidden="true" tabindex="-1"></a>trainstation_sp <span class="ot">&lt;-</span> <span class="fu">as</span>(trainstation_spatial, <span class="st">"SpatialPolygons"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="converting-generic-sp-format-into-spatstats-ppp-format" class="level3">
+<h3 class="anchored" data-anchor-id="converting-generic-sp-format-into-spatstats-ppp-format">Converting Generic <em>sp</em> Format into spatstat’s <em>ppp</em> Format</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb86"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>gp_ppp <span class="ot">&lt;-</span> <span class="fu">as</span>(gp_sp, <span class="st">"ppp"</span>)</span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>hospital_ppp <span class="ot">&lt;-</span> <span class="fu">as</span>(hospital_sp, <span class="st">"ppp"</span>)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>poly_ppp <span class="ot">&lt;-</span> <span class="fu">as</span>(poly_sp, <span class="st">"ppp"</span>)</span>
+<span id="cb86-4"><a href="#cb86-4" aria-hidden="true" tabindex="-1"></a>nursing_ppp <span class="ot">&lt;-</span> <span class="fu">as</span>(nursing_sp, <span class="st">"ppp"</span>)</span>
+<span id="cb86-5"><a href="#cb86-5" aria-hidden="true" tabindex="-1"></a>busstop_ppp <span class="ot">&lt;-</span> <span class="fu">as</span>(busstop_sp, <span class="st">"ppp"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+<section id="data-visualisation-1" class="level3">
+<h3 class="anchored" data-anchor-id="data-visualisation-1">Data Visualisation</h3>
+<div class="panel-tabset">
+<ul class="nav nav-tabs" role="tablist"><li class="nav-item" role="presentation"><a class="nav-link active" id="tabset-13-1-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-1" role="tab" aria-controls="tabset-13-1" aria-selected="true">Master Plan Subzone 2019</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-2-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-2" role="tab" aria-controls="tabset-13-2" aria-selected="false">General Practitioner Clinics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-3-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-3" role="tab" aria-controls="tabset-13-3" aria-selected="false">Hospitals</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-4-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-4" role="tab" aria-controls="tabset-13-4" aria-selected="false">Polyclinics</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-5-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-5" role="tab" aria-controls="tabset-13-5" aria-selected="false">Nursing Homes</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-6-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-6" role="tab" aria-controls="tabset-13-6" aria-selected="false">Bus Stops</a></li><li class="nav-item" role="presentation"><a class="nav-link" id="tabset-13-7-tab" data-bs-toggle="tab" data-bs-target="#tabset-13-7" role="tab" aria-controls="tabset-13-7" aria-selected="false">Mrt Stations</a></li></ul>
+<div class="tab-content">
+<div id="tabset-13-1" class="tab-pane active" role="tabpanel" aria-labelledby="tabset-13-1-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb87"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb87-1"><a href="#cb87-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(mpsz_spatial, <span class="at">main=</span><span class="st">"General Practitioner Clinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-41-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-13-2" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-2-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb88"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(gp_ppp, <span class="at">main=</span><span class="st">"General Practitioner Clinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-42-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-13-3" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-3-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb89"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb89-1"><a href="#cb89-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(hospital_ppp, <span class="at">main=</span><span class="st">"Hospitals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-43-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-13-4" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-4-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb90"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(poly_ppp, <span class="at">main=</span><span class="st">"Polyclinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-44-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-13-5" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-5-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb91"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb91-1"><a href="#cb91-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(nursing_ppp, <span class="at">main=</span><span class="st">"Nursing Homes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-45-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-13-6" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-6-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb92"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(busstop_ppp, <span class="at">main=</span><span class="st">"Bus Stops"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-46-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+<div id="tabset-13-7" class="tab-pane" role="tabpanel" aria-labelledby="tabset-13-7-tab">
+<div class="cell">
+<div class="sourceCode cell-code" id="cb93"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb93-1"><a href="#cb93-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(trainstation_spatial, <span class="at">main=</span><span class="st">"Mrt Stations"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-47-1.png" class="img-fluid" width="672"></p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="check-for-duplicate-data-points" class="level2">
+<h2 class="anchored" data-anchor-id="check-for-duplicate-data-points">Check for Duplicate Data Points</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb94"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(gp_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb96"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(hospital_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb98"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(poly_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb100"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(nursing_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb102"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(busstop_ppp))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] TRUE</code></pre>
+</div>
+</div>
+<section id="handle-duplicated-points" class="level3">
+<h3 class="anchored" data-anchor-id="handle-duplicated-points">Handle Duplicated Points</h3>
+<p>If we want to know how many locations have more than one point event, we can use the code chunk below.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb104"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">multiplicity</span>(gp_ppp) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 554</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb106"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">multiplicity</span>(nursing_ppp) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 4</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb108"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sum</span>(<span class="fu">multiplicity</span>(busstop_ppp) <span class="sc">&gt;</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] 2</code></pre>
+</div>
+</div>
+<p>The second solution is use jittering, which will add a small perturbation to the duplicate points so that they do not occupy the exact same space.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb110"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>gp_ppp_jit <span class="ot">&lt;-</span> <span class="fu">rjitter</span>(gp_ppp,<span class="at">retry =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb110-2"><a href="#cb110-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">nsim =</span> <span class="dv">1</span>, </span>
+<span id="cb110-3"><a href="#cb110-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">drop =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb110-4"><a href="#cb110-4" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(gp_ppp_jit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb112"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>nursing_ppp_jit <span class="ot">&lt;-</span> <span class="fu">rjitter</span>(nursing_ppp,<span class="at">retry =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb112-2"><a href="#cb112-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">nsim =</span> <span class="dv">1</span>, </span>
+<span id="cb112-3"><a href="#cb112-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">drop =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb112-4"><a href="#cb112-4" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(nursing_ppp_jit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb114"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a>busstop_ppp_jit <span class="ot">&lt;-</span> <span class="fu">rjitter</span>(busstop_ppp,<span class="at">retry =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>                             <span class="at">nsim =</span> <span class="dv">1</span>, </span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>                             <span class="at">drop =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a><span class="fu">any</span>(<span class="fu">duplicated</span>(busstop_ppp_jit))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] FALSE</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="creating-owin-object" class="level2">
+<h2 class="anchored" data-anchor-id="creating-owin-object">Creating <em>owin</em> Object</h2>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb116"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a>mpsz_owin <span class="ot">&lt;-</span> <span class="fu">as</span>(mpsz_sp, <span class="st">"owin"</span>)</span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a>gp_ppp <span class="ot">=</span> gp_ppp_jit[mpsz_owin]</span>
+<span id="cb116-3"><a href="#cb116-3" aria-hidden="true" tabindex="-1"></a>hospital_ppp <span class="ot">=</span> hospital_ppp[mpsz_owin]</span>
+<span id="cb116-4"><a href="#cb116-4" aria-hidden="true" tabindex="-1"></a>poly_ppp <span class="ot">=</span> poly_ppp[mpsz_owin]</span>
+<span id="cb116-5"><a href="#cb116-5" aria-hidden="true" tabindex="-1"></a>nursing_ppp <span class="ot">=</span> nursing_ppp_jit[mpsz_owin]</span>
+<span id="cb116-6"><a href="#cb116-6" aria-hidden="true" tabindex="-1"></a>busstop_ppp <span class="ot">=</span> busstop_ppp_jit[mpsz_owin]</span>
+<span id="cb116-7"><a href="#cb116-7" aria-hidden="true" tabindex="-1"></a>mpsz_owin</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>window: polygonal boundary
+enclosing rectangle: [2667.54, 56396.44] x [15748.72, 50256.33] units</code></pre>
+</div>
+</div>
+</section>
+<section id="kernel-density-estimation-kde" class="level2">
+<h2 class="anchored" data-anchor-id="kernel-density-estimation-kde">Kernel Density Estimation (KDE)</h2>
+<p>rescale</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb118"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a>gp_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale</span>(gp_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a>hospital_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale</span>(hospital_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb118-3"><a href="#cb118-3" aria-hidden="true" tabindex="-1"></a>poly_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale</span>(poly_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb118-4"><a href="#cb118-4" aria-hidden="true" tabindex="-1"></a>nursing_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale</span>(nursing_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span>
+<span id="cb118-5"><a href="#cb118-5" aria-hidden="true" tabindex="-1"></a>busstop_ppp.km <span class="ot">&lt;-</span> <span class="fu">rescale</span>(busstop_ppp, <span class="dv">1000</span>, <span class="st">"km"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+<section id="general-practitioner-clinics-4" class="level3">
+<h3 class="anchored" data-anchor-id="general-practitioner-clinics-4">General Practitioner Clinics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb119"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb119-1"><a href="#cb119-1" aria-hidden="true" tabindex="-1"></a>gp_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(gp_ppp.km,</span>
+<span id="cb119-2"><a href="#cb119-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
+<span id="cb119-3"><a href="#cb119-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb119-4"><a href="#cb119-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
+<span id="cb119-5"><a href="#cb119-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"General Practitioner Clinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-61-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb120"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a>gp_bw</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Colour map for the range [-2.44909262616618e-14, 106.041951484205] 
+                                      interval  colour
+1   [-2.44909262616618e-14, 0.414226372985153) #000C7D
+2       [0.414226372985153, 0.828452745970331) #000D7F
+3        [0.828452745970331, 1.24267911895551) #000D80
+4         [1.24267911895551, 1.65690549194069) #000E82
+5         [1.65690549194069, 2.07113186492586) #000E84
+6         [2.07113186492586, 2.48535823791104) #000E85
+7         [2.48535823791104, 2.89958461089622) #000F87
+8          [2.89958461089622, 3.3138109838814) #000F89
+9          [3.3138109838814, 3.72803735686658) #00108A
+10        [3.72803735686658, 4.14226372985175) #00108C
+11        [4.14226372985175, 4.55649010283693) #00118E
+12        [4.55649010283693, 4.97071647582211) #00118F
+13        [4.97071647582211, 5.38494284880729) #001191
+14        [5.38494284880729, 5.79916922179246) #001292
+15        [5.79916922179246, 6.21339559477764) #001294
+16        [6.21339559477764, 6.62762196776282) #001295
+17          [6.62762196776282, 7.041848340748) #001397
+18          [7.041848340748, 7.45607471373318) #001398
+19        [7.45607471373318, 7.87030108671835) #001399
+20        [7.87030108671835, 8.28452745970353) #00149B
+21        [8.28452745970353, 8.69875383268871) #00149C
+22        [8.69875383268871, 9.11298020567389) #00149D
+23        [9.11298020567389, 9.52720657865907) #00149E
+24        [9.52720657865907, 9.94143295164424) #00159F
+25        [9.94143295164424, 10.3556593246294) #0015A0
+26        [10.3556593246294, 10.7698856976146) #0015A1
+27        [10.7698856976146, 11.1841120705998) #0015A2
+28         [11.1841120705998, 11.598338443585) #0015A3
+29         [11.598338443585, 12.0125648165701) #0015A4
+30        [12.0125648165701, 12.4267911895553) #0016A5
+31        [12.4267911895553, 12.8410175625405) #0016A6
+32        [12.8410175625405, 13.2552439355257) #0016A6
+33        [13.2552439355257, 13.6694703085108) #0016A7
+34         [13.6694703085108, 14.083696681496) #0016A8
+35         [14.083696681496, 14.4979230544812) #0016A8
+36        [14.4979230544812, 14.9121494274664) #0416A8
+37        [14.9121494274664, 15.3263758004516) #0E16A9
+38        [15.3263758004516, 15.7406021734367) #1715A9
+39        [15.7406021734367, 16.1548285464219) #1F15A9
+40        [16.1548285464219, 16.5690549194071) #2515A9
+41        [16.5690549194071, 16.9832812923923) #2B15A9
+42        [16.9832812923923, 17.3975076653774) #3115A8
+43        [17.3975076653774, 17.8117340383626) #3614A8
+44        [17.8117340383626, 18.2259604113478) #3B14A7
+45         [18.2259604113478, 18.640186784333) #4013A6
+46         [18.640186784333, 19.0544131573182) #4413A5
+47        [19.0544131573182, 19.4686395303033) #4912A4
+48        [19.4686395303033, 19.8828659032885) #4D12A3
+49        [19.8828659032885, 20.2970922762737) #5111A2
+50        [20.2970922762737, 20.7113186492589) #5411A1
+51         [20.7113186492589, 21.125545022244) #5810A0
+52         [21.125545022244, 21.5397713952292) #5B0F9F
+53        [21.5397713952292, 21.9539977682144) #5F0F9E
+54        [21.9539977682144, 22.3682241411996) #620E9E
+55        [22.3682241411996, 22.7824505141848) #650E9D
+56        [22.7824505141848, 23.1966768871699) #680D9C
+57        [23.1966768871699, 23.6109032601551) #6B0D9B
+58        [23.6109032601551, 24.0251296331403) #6D0C9A
+59        [24.0251296331403, 24.4393560061255) #700B99
+60        [24.4393560061255, 24.8535823791106) #730B98
+61        [24.8535823791106, 25.2678087520958) #750A98
+62         [25.2678087520958, 25.682035125081) #780A97
+63         [25.682035125081, 26.0962614980662) #7A0996
+64        [26.0962614980662, 26.5104878710514) #7D0896
+65        [26.5104878710514, 26.9247142440365) #7E0895
+66        [26.9247142440365, 27.3389406170217) #800794
+67        [27.3389406170217, 27.7531669900069) #820794
+68        [27.7531669900069, 28.1673933629921) #840693
+69        [28.1673933629921, 28.5816197359772) #860692
+70        [28.5816197359772, 28.9958461089624) #880692
+71        [28.9958461089624, 29.4100724819476) #8A0591
+72        [29.4100724819476, 29.8242988549328) #8C0591
+73         [29.8242988549328, 30.238525227918) #8E0490
+74         [30.238525227918, 30.6527516009031) #900490
+75        [30.6527516009031, 31.0669779738883) #92048F
+76        [31.0669779738883, 31.4812043468735) #94038F
+77        [31.4812043468735, 31.8954307198587) #96038E
+78        [31.8954307198587, 32.3096570928438) #98038E
+79         [32.3096570928438, 32.723883465829) #9A028D
+80         [32.723883465829, 33.1381098388142) #9C028D
+81        [33.1381098388142, 33.5523362117994) #9E028D
+82        [33.5523362117994, 33.9665625847846) #A0018C
+83        [33.9665625847846, 34.3807889577697) #A2018C
+84        [34.3807889577697, 34.7950153307549) #A4018B
+85        [34.7950153307549, 35.2092417037401) #A6018B
+86        [35.2092417037401, 35.6234680767253) #A8008A
+87        [35.6234680767253, 36.0376944497105) #AA008A
+88        [36.0376944497105, 36.4519208226956) #AB0089
+89        [36.4519208226956, 36.8661471956808) #AD0089
+90         [36.8661471956808, 37.280373568666) #AF0088
+91         [37.280373568666, 37.6945999416512) #B10088
+92        [37.6945999416512, 38.1088263146363) #B30087
+93        [38.1088263146363, 38.5230526876215) #B50087
+94        [38.5230526876215, 38.9372790606067) #B70086
+95        [38.9372790606067, 39.3515054335919) #B80086
+96        [39.3515054335919, 39.7657318065771) #BA0086
+97        [39.7657318065771, 40.1799581795622) #BC0085
+98        [40.1799581795622, 40.5941845525474) #BE0085
+99        [40.5941845525474, 41.0084109255326) #C00084
+100       [41.0084109255326, 41.4226372985178) #C20084
+101       [41.4226372985178, 41.8368636715029) #C30083
+102       [41.8368636715029, 42.2510900444881) #C50083
+103       [42.2510900444881, 42.6653164174733) #C70082
+104       [42.6653164174733, 43.0795427904585) #C90082
+105       [43.0795427904585, 43.4937691634437) #CB0081
+106       [43.4937691634437, 43.9079955364288) #CD0081
+107        [43.9079955364288, 44.322221909414) #CE0080
+108        [44.322221909414, 44.7364482823992) #D00080
+109       [44.7364482823992, 45.1506746553844) #D20080
+110       [45.1506746553844, 45.5649010283695) #D40080
+111       [45.5649010283695, 45.9791274013547) #D5007F
+112       [45.9791274013547, 46.3933537743399) #D7007F
+113       [46.3933537743399, 46.8075801473251) #D9007E
+114       [46.8075801473251, 47.2218065203103) #DA007E
+115       [47.2218065203103, 47.6360328932954) #DC007D
+116       [47.6360328932954, 48.0502592662806) #DD007C
+117       [48.0502592662806, 48.4644856392658) #DF017C
+118        [48.4644856392658, 48.878712012251) #E1027B
+119        [48.878712012251, 49.2929383852361) #E2047B
+120       [49.2929383852361, 49.7071647582213) #E4067A
+121       [49.7071647582213, 50.1213911312065) #E5087A
+122       [50.1213911312065, 50.5356175041917) #E70B79
+123       [50.5356175041917, 50.9498438771769) #E80D78
+124        [50.9498438771769, 51.364070250162) #E91078
+125        [51.364070250162, 51.7782966231472) #EB1277
+126       [51.7782966231472, 52.1925229961324) #EC1477
+127       [52.1925229961324, 52.6067493691176) #ED1676
+128       [52.6067493691176, 53.0209757421027) #EF1875
+129       [53.0209757421027, 53.4352021150879) #F01A75
+130       [53.4352021150879, 53.8494284880731) #F11C74
+131       [53.8494284880731, 54.2636548610583) #F31E73
+132       [54.2636548610583, 54.6778812340435) #F42073
+133       [54.6778812340435, 55.0921076070286) #F52272
+134       [55.0921076070286, 55.5063339800138) #F62471
+135        [55.5063339800138, 55.920560352999) #F72671
+136        [55.920560352999, 56.3347867259842) #F82870
+137       [56.3347867259842, 56.7490130989693) #FA2A6F
+138       [56.7490130989693, 57.1632394719545) #FB2C6F
+139       [57.1632394719545, 57.5774658449397) #FC2E6E
+140       [57.5774658449397, 57.9916922179249) #FD306D
+141       [57.9916922179249, 58.4059185909101) #FE326C
+142       [58.4059185909101, 58.8201449638952) #FE346C
+143       [58.8201449638952, 59.2343713368804) #FE366B
+144       [59.2343713368804, 59.6485977098656) #FE386A
+145       [59.6485977098656, 60.0628240828508) #FE3A6A
+146       [60.0628240828508, 60.4770504558359) #FE3D69
+147       [60.4770504558359, 60.8912768288211) #FE3F68
+148       [60.8912768288211, 61.3055032018063) #FE4167
+149       [61.3055032018063, 61.7197295747915) #FE4366
+150       [61.7197295747915, 62.1339559477767) #FE4566
+151       [62.1339559477767, 62.5481823207618) #FE4765
+152        [62.5481823207618, 62.962408693747) #FE4964
+153        [62.962408693747, 63.3766350667322) #FE4B63
+154       [63.3766350667322, 63.7908614397174) #FE4D62
+155       [63.7908614397174, 64.2050878127025) #FE5062
+156       [64.2050878127025, 64.6193141856877) #FE5261
+157       [64.6193141856877, 65.0335405586729) #FE5460
+158       [65.0335405586729, 65.4477669316581) #FE565F
+159       [65.4477669316581, 65.8619933046432) #FE585E
+160       [65.8619933046432, 66.2762196776284) #FE5A5D
+161       [66.2762196776284, 66.6904460506136) #FE5C5C
+162       [66.6904460506136, 67.1046724235988) #FE5F5B
+163        [67.1046724235988, 67.518898796584) #FE615B
+164        [67.518898796584, 67.9331251695691) #FE635A
+165       [67.9331251695691, 68.3473515425543) #FE6559
+166       [68.3473515425543, 68.7615779155395) #FE6758
+167       [68.7615779155395, 69.1758042885247) #FE6A57
+168       [69.1758042885247, 69.5900306615098) #FE6C56
+169        [69.5900306615098, 70.004257034495) #FE6E55
+170        [70.004257034495, 70.4184834074802) #FE7054
+171       [70.4184834074802, 70.8327097804654) #FE7253
+172       [70.8327097804654, 71.2469361534506) #FE7452
+173       [71.2469361534506, 71.6611625264357) #FE7651
+174       [71.6611625264357, 72.0753888994209) #FE7850
+175       [72.0753888994209, 72.4896152724061) #FE7A4E
+176       [72.4896152724061, 72.9038416453913) #FE7C4D
+177       [72.9038416453913, 73.3180680183765) #FE7E4C
+178       [73.3180680183765, 73.7322943913616) #FE7F4B
+179       [73.7322943913616, 74.1465207643468) #FE804A
+180        [74.1465207643468, 74.560747137332) #FE8249
+181        [74.560747137332, 74.9749735103172) #FE8448
+182       [74.9749735103172, 75.3891998833023) #FE8647
+183       [75.3891998833023, 75.8034262562875) #FE8745
+184       [75.8034262562875, 76.2176526292727) #FE8944
+185       [76.2176526292727, 76.6318790022579) #FE8B43
+186        [76.6318790022579, 77.046105375243) #FE8D42
+187        [77.046105375243, 77.4603317482282) #FE8E40
+188       [77.4603317482282, 77.8745581212134) #FE903F
+189       [77.8745581212134, 78.2887844941986) #FE923E
+190       [78.2887844941986, 78.7030108671838) #FE943C
+191       [78.7030108671838, 79.1172372401689) #FE953B
+192       [79.1172372401689, 79.5314636131541) #FE9639
+193       [79.5314636131541, 79.9456899861393) #FE9838
+194       [79.9456899861393, 80.3599163591245) #FE9A37
+195       [80.3599163591245, 80.7741427321097) #FE9B35
+196       [80.7741427321097, 81.1883691050948) #FE9D34
+197         [81.1883691050948, 81.60259547808) #FE9F32
+198         [81.60259547808, 82.0168218510652) #FEA031
+199       [82.0168218510652, 82.4310482240504) #FEA22F
+200       [82.4310482240504, 82.8452745970355) #FEA32E
+201       [82.8452745970355, 83.2595009700207) #FEA52D
+202       [83.2595009700207, 83.6737273430059) #FEA62B
+203       [83.6737273430059, 84.0879537159911) #FEA82A
+204       [84.0879537159911, 84.5021800889762) #FEA929
+205       [84.5021800889762, 84.9164064619614) #FEAB28
+206       [84.9164064619614, 85.3306328349466) #FEAC27
+207       [85.3306328349466, 85.7448592079318) #FEAE26
+208        [85.7448592079318, 86.159085580917) #FEAF26
+209        [86.159085580917, 86.5733119539021) #FEB125
+210       [86.5733119539021, 86.9875383268873) #FEB224
+211       [86.9875383268873, 87.4017646998725) #FEB423
+212       [87.4017646998725, 87.8159910728577) #FEB523
+213       [87.8159910728577, 88.2302174458429) #FEB622
+214        [88.2302174458429, 88.644443818828) #FEB822
+215        [88.644443818828, 89.0586701918132) #FEB921
+216       [89.0586701918132, 89.4728965647984) #FEBB20
+217       [89.4728965647984, 89.8871229377836) #FEBC20
+218       [89.8871229377836, 90.3013493107687) #FEBD1F
+219       [90.3013493107687, 90.7155756837539) #FEBF1F
+220       [90.7155756837539, 91.1298020567391) #FEC01F
+221       [91.1298020567391, 91.5440284297243) #FEC21E
+222       [91.5440284297243, 91.9582548027094) #FEC31E
+223       [91.9582548027094, 92.3724811756946) #FEC41E
+224       [92.3724811756946, 92.7867075486798) #FEC61D
+225        [92.7867075486798, 93.200933921665) #FEC71D
+226        [93.200933921665, 93.6151602946502) #FEC81D
+227       [93.6151602946502, 94.0293866676353) #FECA1D
+228       [94.0293866676353, 94.4436130406205) #FECB1D
+229       [94.4436130406205, 94.8578394136057) #FECC1D
+230       [94.8578394136057, 95.2720657865909) #FECE1C
+231       [95.2720657865909, 95.6862921595761) #FECF1C
+232       [95.6862921595761, 96.1005185325612) #FED01C
+233       [96.1005185325612, 96.5147449055464) #FED21C
+234       [96.5147449055464, 96.9289712785316) #FED31C
+235       [96.9289712785316, 97.3431976515168) #FED41C
+236       [97.3431976515168, 97.7574240245019) #FED61D
+237       [97.7574240245019, 98.1716503974871) #FED71D
+238       [98.1716503974871, 98.5858767704723) #FED81D
+239       [98.5858767704723, 99.0001031434575) #FEDA1D
+240       [99.0001031434575, 99.4143295164426) #FEDB1D
+241       [99.4143295164426, 99.8285558894278) #FEDC1D
+242       [99.8285558894278, 100.242782262413) #FEDE1E
+243       [100.242782262413, 100.657008635398) #FEDF1E
+244       [100.657008635398, 101.071235008383) #FEE01E
+245       [101.071235008383, 101.485461381369) #FEE21E
+246       [101.485461381369, 101.899687754354) #FEE31F
+247       [101.899687754354, 102.313914127339) #FEE41F
+248       [102.313914127339, 102.728140500324) #FEE61F
+249       [102.728140500324, 103.142366873309) #FEE720
+250       [103.142366873309, 103.556593246294) #FEE820
+251        [103.556593246294, 103.97081961928) #FEE921
+252        [103.97081961928, 104.385045992265) #FEEB21
+253        [104.385045992265, 104.79927236525) #FEEC22
+254        [104.79927236525, 105.213498738235) #FEED22
+255        [105.213498738235, 105.62772511122) #FEEF23
+256        [105.62772511122, 106.041951484205] #FEF023</code></pre>
+</div>
+</div>
+</section>
+<section id="hospitals-4" class="level3">
+<h3 class="anchored" data-anchor-id="hospitals-4">Hospitals</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb122"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a>hospital_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(hospital_ppp.km,</span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
+<span id="cb122-3"><a href="#cb122-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb122-4"><a href="#cb122-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
+<span id="cb122-5"><a href="#cb122-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Hospitals"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-62-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb123"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb123-1"><a href="#cb123-1" aria-hidden="true" tabindex="-1"></a>hospital_bw</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Colour map for the range [-6.61721370020085e-17, 0.653028280091083] 
+                                        interval  colour
+1   [-6.61721370020085e-17, 0.00255089171910573) #000C7D
+2     [0.00255089171910573, 0.00510178343821152) #000D7F
+3     [0.00510178343821152, 0.00765267515731732) #000D80
+4      [0.00765267515731732, 0.0102035668764231) #000E82
+5       [0.0102035668764231, 0.0127544585955289) #000E84
+6       [0.0127544585955289, 0.0153053503146347) #000E85
+7       [0.0153053503146347, 0.0178562420337405) #000F87
+8       [0.0178562420337405, 0.0204071337528463) #000F89
+9       [0.0204071337528463, 0.0229580254719521) #00108A
+10      [0.0229580254719521, 0.0255089171910579) #00108C
+11      [0.0255089171910579, 0.0280598089101637) #00118E
+12      [0.0280598089101637, 0.0306107006292695) #00118F
+13      [0.0306107006292695, 0.0331615923483753) #001191
+14      [0.0331615923483753, 0.0357124840674811) #001292
+15      [0.0357124840674811, 0.0382633757865869) #001294
+16      [0.0382633757865869, 0.0408142675056927) #001295
+17      [0.0408142675056927, 0.0433651592247985) #001397
+18      [0.0433651592247985, 0.0459160509439042) #001398
+19        [0.0459160509439042, 0.04846694266301) #001399
+20        [0.04846694266301, 0.0510178343821158) #00149B
+21      [0.0510178343821158, 0.0535687261012216) #00149C
+22      [0.0535687261012216, 0.0561196178203274) #00149D
+23      [0.0561196178203274, 0.0586705095394332) #00149E
+24       [0.0586705095394332, 0.061221401258539) #00159F
+25       [0.061221401258539, 0.0637722929776448) #0015A0
+26      [0.0637722929776448, 0.0663231846967506) #0015A1
+27      [0.0663231846967506, 0.0688740764158564) #0015A2
+28      [0.0688740764158564, 0.0714249681349622) #0015A3
+29       [0.0714249681349622, 0.073975859854068) #0015A4
+30       [0.073975859854068, 0.0765267515731738) #0016A5
+31      [0.0765267515731738, 0.0790776432922796) #0016A6
+32      [0.0790776432922796, 0.0816285350113854) #0016A6
+33      [0.0816285350113854, 0.0841794267304912) #0016A7
+34       [0.0841794267304912, 0.086730318449597) #0016A8
+35       [0.086730318449597, 0.0892812101687028) #0016A8
+36      [0.0892812101687028, 0.0918321018878086) #0416A8
+37      [0.0918321018878086, 0.0943829936069144) #0E16A9
+38      [0.0943829936069144, 0.0969338853260202) #1715A9
+39      [0.0969338853260202, 0.0994847770451259) #1F15A9
+40       [0.0994847770451259, 0.102035668764232) #2515A9
+41        [0.102035668764232, 0.104586560483338) #2B15A9
+42        [0.104586560483338, 0.107137452202443) #3115A8
+43        [0.107137452202443, 0.109688343921549) #3614A8
+44        [0.109688343921549, 0.112239235640655) #3B14A7
+45        [0.112239235640655, 0.114790127359761) #4013A6
+46        [0.114790127359761, 0.117341019078867) #4413A5
+47        [0.117341019078867, 0.119891910797972) #4912A4
+48        [0.119891910797972, 0.122442802517078) #4D12A3
+49        [0.122442802517078, 0.124993694236184) #5111A2
+50         [0.124993694236184, 0.12754458595529) #5411A1
+51         [0.12754458595529, 0.130095477674395) #5810A0
+52        [0.130095477674395, 0.132646369393501) #5B0F9F
+53        [0.132646369393501, 0.135197261112607) #5F0F9E
+54        [0.135197261112607, 0.137748152831713) #620E9E
+55        [0.137748152831713, 0.140299044550819) #650E9D
+56        [0.140299044550819, 0.142849936269924) #680D9C
+57         [0.142849936269924, 0.14540082798903) #6B0D9B
+58         [0.14540082798903, 0.147951719708136) #6D0C9A
+59        [0.147951719708136, 0.150502611427242) #700B99
+60        [0.150502611427242, 0.153053503146348) #730B98
+61        [0.153053503146348, 0.155604394865453) #750A98
+62        [0.155604394865453, 0.158155286584559) #780A97
+63        [0.158155286584559, 0.160706178303665) #7A0996
+64        [0.160706178303665, 0.163257070022771) #7D0896
+65        [0.163257070022771, 0.165807961741877) #7E0895
+66        [0.165807961741877, 0.168358853460982) #800794
+67        [0.168358853460982, 0.170909745180088) #820794
+68        [0.170909745180088, 0.173460636899194) #840693
+69          [0.173460636899194, 0.1760115286183) #860692
+70          [0.1760115286183, 0.178562420337406) #880692
+71        [0.178562420337406, 0.181113312056511) #8A0591
+72        [0.181113312056511, 0.183664203775617) #8C0591
+73        [0.183664203775617, 0.186215095494723) #8E0490
+74        [0.186215095494723, 0.188765987213829) #900490
+75        [0.188765987213829, 0.191316878932935) #92048F
+76         [0.191316878932935, 0.19386777065204) #94038F
+77         [0.19386777065204, 0.196418662371146) #96038E
+78        [0.196418662371146, 0.198969554090252) #98038E
+79        [0.198969554090252, 0.201520445809358) #9A028D
+80        [0.201520445809358, 0.204071337528464) #9C028D
+81        [0.204071337528464, 0.206622229247569) #9E028D
+82        [0.206622229247569, 0.209173120966675) #A0018C
+83        [0.209173120966675, 0.211724012685781) #A2018C
+84        [0.211724012685781, 0.214274904404887) #A4018B
+85        [0.214274904404887, 0.216825796123993) #A6018B
+86        [0.216825796123993, 0.219376687843098) #A8008A
+87        [0.219376687843098, 0.221927579562204) #AA008A
+88         [0.221927579562204, 0.22447847128131) #AB0089
+89         [0.22447847128131, 0.227029363000416) #AD0089
+90        [0.227029363000416, 0.229580254719522) #AF0088
+91        [0.229580254719522, 0.232131146438627) #B10088
+92        [0.232131146438627, 0.234682038157733) #B30087
+93        [0.234682038157733, 0.237232929876839) #B50087
+94        [0.237232929876839, 0.239783821595945) #B70086
+95         [0.239783821595945, 0.24233471331505) #B80086
+96         [0.24233471331505, 0.244885605034156) #BA0086
+97        [0.244885605034156, 0.247436496753262) #BC0085
+98        [0.247436496753262, 0.249987388472368) #BE0085
+99        [0.249987388472368, 0.252538280191474) #C00084
+100        [0.252538280191474, 0.25508917191058) #C20084
+101        [0.25508917191058, 0.257640063629685) #C30083
+102       [0.257640063629685, 0.260190955348791) #C50083
+103       [0.260190955348791, 0.262741847067897) #C70082
+104       [0.262741847067897, 0.265292738787003) #C90082
+105       [0.265292738787003, 0.267843630506108) #CB0081
+106       [0.267843630506108, 0.270394522225214) #CD0081
+107        [0.270394522225214, 0.27294541394432) #CE0080
+108        [0.27294541394432, 0.275496305663426) #D00080
+109       [0.275496305663426, 0.278047197382532) #D20080
+110       [0.278047197382532, 0.280598089101637) #D40080
+111       [0.280598089101637, 0.283148980820743) #D5007F
+112       [0.283148980820743, 0.285699872539849) #D7007F
+113       [0.285699872539849, 0.288250764258955) #D9007E
+114       [0.288250764258955, 0.290801655978061) #DA007E
+115       [0.290801655978061, 0.293352547697166) #DC007D
+116       [0.293352547697166, 0.295903439416272) #DD007C
+117       [0.295903439416272, 0.298454331135378) #DF017C
+118       [0.298454331135378, 0.301005222854484) #E1027B
+119        [0.301005222854484, 0.30355611457359) #E2047B
+120        [0.30355611457359, 0.306107006292695) #E4067A
+121       [0.306107006292695, 0.308657898011801) #E5087A
+122       [0.308657898011801, 0.311208789730907) #E70B79
+123       [0.311208789730907, 0.313759681450013) #E80D78
+124       [0.313759681450013, 0.316310573169119) #E91078
+125       [0.316310573169119, 0.318861464888224) #EB1277
+126        [0.318861464888224, 0.32141235660733) #EC1477
+127        [0.32141235660733, 0.323963248326436) #ED1676
+128       [0.323963248326436, 0.326514140045542) #EF1875
+129       [0.326514140045542, 0.329065031764648) #F01A75
+130       [0.329065031764648, 0.331615923483753) #F11C74
+131       [0.331615923483753, 0.334166815202859) #F31E73
+132       [0.334166815202859, 0.336717706921965) #F42073
+133       [0.336717706921965, 0.339268598641071) #F52272
+134       [0.339268598641071, 0.341819490360177) #F62471
+135       [0.341819490360177, 0.344370382079282) #F72671
+136       [0.344370382079282, 0.346921273798388) #F82870
+137       [0.346921273798388, 0.349472165517494) #FA2A6F
+138         [0.349472165517494, 0.3520230572366) #FB2C6F
+139         [0.3520230572366, 0.354573948955705) #FC2E6E
+140       [0.354573948955705, 0.357124840674811) #FD306D
+141       [0.357124840674811, 0.359675732393917) #FE326C
+142       [0.359675732393917, 0.362226624113023) #FE346C
+143       [0.362226624113023, 0.364777515832129) #FE366B
+144       [0.364777515832129, 0.367328407551234) #FE386A
+145        [0.367328407551234, 0.36987929927034) #FE3A6A
+146        [0.36987929927034, 0.372430190989446) #FE3D69
+147       [0.372430190989446, 0.374981082708552) #FE3F68
+148       [0.374981082708552, 0.377531974427658) #FE4167
+149       [0.377531974427658, 0.380082866146763) #FE4366
+150       [0.380082866146763, 0.382633757865869) #FE4566
+151       [0.382633757865869, 0.385184649584975) #FE4765
+152       [0.385184649584975, 0.387735541304081) #FE4964
+153       [0.387735541304081, 0.390286433023187) #FE4B63
+154       [0.390286433023187, 0.392837324742292) #FE4D62
+155       [0.392837324742292, 0.395388216461398) #FE5062
+156       [0.395388216461398, 0.397939108180504) #FE5261
+157        [0.397939108180504, 0.40048999989961) #FE5460
+158        [0.40048999989961, 0.403040891618716) #FE565F
+159       [0.403040891618716, 0.405591783337821) #FE585E
+160       [0.405591783337821, 0.408142675056927) #FE5A5D
+161       [0.408142675056927, 0.410693566776033) #FE5C5C
+162       [0.410693566776033, 0.413244458495139) #FE5F5B
+163       [0.413244458495139, 0.415795350214245) #FE615B
+164        [0.415795350214245, 0.41834624193335) #FE635A
+165        [0.41834624193335, 0.420897133652456) #FE6559
+166       [0.420897133652456, 0.423448025371562) #FE6758
+167       [0.423448025371562, 0.425998917090668) #FE6A57
+168       [0.425998917090668, 0.428549808809774) #FE6C56
+169       [0.428549808809774, 0.431100700528879) #FE6E55
+170       [0.431100700528879, 0.433651592247985) #FE7054
+171       [0.433651592247985, 0.436202483967091) #FE7253
+172       [0.436202483967091, 0.438753375686197) #FE7452
+173       [0.438753375686197, 0.441304267405303) #FE7651
+174       [0.441304267405303, 0.443855159124408) #FE7850
+175       [0.443855159124408, 0.446406050843514) #FE7A4E
+176        [0.446406050843514, 0.44895694256262) #FE7C4D
+177        [0.44895694256262, 0.451507834281726) #FE7E4C
+178       [0.451507834281726, 0.454058726000832) #FE7F4B
+179       [0.454058726000832, 0.456609617719937) #FE804A
+180       [0.456609617719937, 0.459160509439043) #FE8249
+181       [0.459160509439043, 0.461711401158149) #FE8448
+182       [0.461711401158149, 0.464262292877255) #FE8647
+183       [0.464262292877255, 0.466813184596361) #FE8745
+184       [0.466813184596361, 0.469364076315466) #FE8944
+185       [0.469364076315466, 0.471914968034572) #FE8B43
+186       [0.471914968034572, 0.474465859753678) #FE8D42
+187       [0.474465859753678, 0.477016751472784) #FE8E40
+188       [0.477016751472784, 0.479567643191889) #FE903F
+189       [0.479567643191889, 0.482118534910995) #FE923E
+190       [0.482118534910995, 0.484669426630101) #FE943C
+191       [0.484669426630101, 0.487220318349207) #FE953B
+192       [0.487220318349207, 0.489771210068313) #FE9639
+193       [0.489771210068313, 0.492322101787418) #FE9838
+194       [0.492322101787418, 0.494872993506524) #FE9A37
+195        [0.494872993506524, 0.49742388522563) #FE9B35
+196        [0.49742388522563, 0.499974776944736) #FE9D34
+197       [0.499974776944736, 0.502525668663842) #FE9F32
+198       [0.502525668663842, 0.505076560382947) #FEA031
+199       [0.505076560382947, 0.507627452102053) #FEA22F
+200       [0.507627452102053, 0.510178343821159) #FEA32E
+201       [0.510178343821159, 0.512729235540265) #FEA52D
+202       [0.512729235540265, 0.515280127259371) #FEA62B
+203       [0.515280127259371, 0.517831018978476) #FEA82A
+204       [0.517831018978476, 0.520381910697582) #FEA929
+205       [0.520381910697582, 0.522932802416688) #FEAB28
+206       [0.522932802416688, 0.525483694135794) #FEAC27
+207       [0.525483694135794, 0.528034585854899) #FEAE26
+208       [0.528034585854899, 0.530585477574005) #FEAF26
+209       [0.530585477574005, 0.533136369293111) #FEB125
+210       [0.533136369293111, 0.535687261012217) #FEB224
+211       [0.535687261012217, 0.538238152731323) #FEB423
+212       [0.538238152731323, 0.540789044450429) #FEB523
+213       [0.540789044450429, 0.543339936169534) #FEB622
+214        [0.543339936169534, 0.54589082788864) #FEB822
+215        [0.54589082788864, 0.548441719607746) #FEB921
+216       [0.548441719607746, 0.550992611326852) #FEBB20
+217       [0.550992611326852, 0.553543503045957) #FEBC20
+218       [0.553543503045957, 0.556094394765063) #FEBD1F
+219       [0.556094394765063, 0.558645286484169) #FEBF1F
+220       [0.558645286484169, 0.561196178203275) #FEC01F
+221       [0.561196178203275, 0.563747069922381) #FEC21E
+222       [0.563747069922381, 0.566297961641486) #FEC31E
+223       [0.566297961641486, 0.568848853360592) #FEC41E
+224       [0.568848853360592, 0.571399745079698) #FEC61D
+225       [0.571399745079698, 0.573950636798804) #FEC71D
+226        [0.573950636798804, 0.57650152851791) #FEC81D
+227        [0.57650152851791, 0.579052420237015) #FECA1D
+228       [0.579052420237015, 0.581603311956121) #FECB1D
+229       [0.581603311956121, 0.584154203675227) #FECC1D
+230       [0.584154203675227, 0.586705095394333) #FECE1C
+231       [0.586705095394333, 0.589255987113439) #FECF1C
+232       [0.589255987113439, 0.591806878832544) #FED01C
+233        [0.591806878832544, 0.59435777055165) #FED21C
+234        [0.59435777055165, 0.596908662270756) #FED31C
+235       [0.596908662270756, 0.599459553989862) #FED41C
+236       [0.599459553989862, 0.602010445708968) #FED61D
+237       [0.602010445708968, 0.604561337428073) #FED71D
+238       [0.604561337428073, 0.607112229147179) #FED81D
+239       [0.607112229147179, 0.609663120866285) #FEDA1D
+240       [0.609663120866285, 0.612214012585391) #FEDB1D
+241       [0.612214012585391, 0.614764904304497) #FEDC1D
+242       [0.614764904304497, 0.617315796023602) #FEDE1E
+243       [0.617315796023602, 0.619866687742708) #FEDF1E
+244       [0.619866687742708, 0.622417579461814) #FEE01E
+245        [0.622417579461814, 0.62496847118092) #FEE21E
+246        [0.62496847118092, 0.627519362900026) #FEE31F
+247       [0.627519362900026, 0.630070254619131) #FEE41F
+248       [0.630070254619131, 0.632621146338237) #FEE61F
+249       [0.632621146338237, 0.635172038057343) #FEE720
+250       [0.635172038057343, 0.637722929776449) #FEE820
+251       [0.637722929776449, 0.640273821495555) #FEE921
+252        [0.640273821495555, 0.64282471321466) #FEEB21
+253        [0.64282471321466, 0.645375604933766) #FEEC22
+254       [0.645375604933766, 0.647926496652872) #FEED22
+255       [0.647926496652872, 0.650477388371978) #FEEF23
+256       [0.650477388371978, 0.653028280091083] #FEF023</code></pre>
+</div>
+</div>
+</section>
+<section id="polyclinics-4" class="level3">
+<h3 class="anchored" data-anchor-id="polyclinics-4">Polyclinics</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb125"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb125-1"><a href="#cb125-1" aria-hidden="true" tabindex="-1"></a>poly_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(poly_ppp.km,</span>
+<span id="cb125-2"><a href="#cb125-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
+<span id="cb125-3"><a href="#cb125-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb125-4"><a href="#cb125-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
+<span id="cb125-5"><a href="#cb125-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Polyclinics"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-63-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb126"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a>poly_bw</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Colour map for the range [1.25355171801733e-17, 0.111466322707585] 
+                                        interval  colour
+1   [1.25355171801733e-17, 0.000435415323076515) #000C7D
+2   [0.000435415323076515, 0.000870830646153017) #000D7F
+3    [0.000870830646153017, 0.00130624596922952) #000D80
+4     [0.00130624596922952, 0.00174166129230602) #000E82
+5     [0.00174166129230602, 0.00217707661538252) #000E84
+6     [0.00217707661538252, 0.00261249193845903) #000E85
+7     [0.00261249193845903, 0.00304790726153553) #000F87
+8     [0.00304790726153553, 0.00348332258461203) #000F89
+9     [0.00348332258461203, 0.00391873790768853) #00108A
+10    [0.00391873790768853, 0.00435415323076503) #00108C
+11    [0.00435415323076503, 0.00478956855384154) #00118E
+12    [0.00478956855384154, 0.00522498387691804) #00118F
+13    [0.00522498387691804, 0.00566039919999454) #001191
+14    [0.00566039919999454, 0.00609581452307104) #001292
+15    [0.00609581452307104, 0.00653122984614755) #001294
+16    [0.00653122984614755, 0.00696664516922405) #001295
+17    [0.00696664516922405, 0.00740206049230055) #001397
+18    [0.00740206049230055, 0.00783747581537705) #001398
+19    [0.00783747581537705, 0.00827289113845355) #001399
+20    [0.00827289113845355, 0.00870830646153006) #00149B
+21    [0.00870830646153006, 0.00914372178460656) #00149C
+22    [0.00914372178460656, 0.00957913710768306) #00149D
+23     [0.00957913710768306, 0.0100145524307596) #00149E
+24      [0.0100145524307596, 0.0104499677538361) #00159F
+25      [0.0104499677538361, 0.0108853830769126) #0015A0
+26      [0.0108853830769126, 0.0113207983999891) #0015A1
+27      [0.0113207983999891, 0.0117562137230656) #0015A2
+28      [0.0117562137230656, 0.0121916290461421) #0015A3
+29      [0.0121916290461421, 0.0126270443692186) #0015A4
+30      [0.0126270443692186, 0.0130624596922951) #0016A5
+31      [0.0130624596922951, 0.0134978750153716) #0016A6
+32      [0.0134978750153716, 0.0139332903384481) #0016A6
+33      [0.0139332903384481, 0.0143687056615246) #0016A7
+34      [0.0143687056615246, 0.0148041209846011) #0016A8
+35      [0.0148041209846011, 0.0152395363076776) #0016A8
+36      [0.0152395363076776, 0.0156749516307541) #0416A8
+37      [0.0156749516307541, 0.0161103669538306) #0E16A9
+38      [0.0161103669538306, 0.0165457822769071) #1715A9
+39      [0.0165457822769071, 0.0169811975999836) #1F15A9
+40      [0.0169811975999836, 0.0174166129230601) #2515A9
+41      [0.0174166129230601, 0.0178520282461366) #2B15A9
+42      [0.0178520282461366, 0.0182874435692131) #3115A8
+43      [0.0182874435692131, 0.0187228588922896) #3614A8
+44      [0.0187228588922896, 0.0191582742153661) #3B14A7
+45      [0.0191582742153661, 0.0195936895384426) #4013A6
+46      [0.0195936895384426, 0.0200291048615191) #4413A5
+47      [0.0200291048615191, 0.0204645201845956) #4912A4
+48      [0.0204645201845956, 0.0208999355076721) #4D12A3
+49      [0.0208999355076721, 0.0213353508307486) #5111A2
+50      [0.0213353508307486, 0.0217707661538251) #5411A1
+51      [0.0217707661538251, 0.0222061814769016) #5810A0
+52      [0.0222061814769016, 0.0226415967999781) #5B0F9F
+53      [0.0226415967999781, 0.0230770121230546) #5F0F9E
+54      [0.0230770121230546, 0.0235124274461311) #620E9E
+55      [0.0235124274461311, 0.0239478427692076) #650E9D
+56      [0.0239478427692076, 0.0243832580922841) #680D9C
+57      [0.0243832580922841, 0.0248186734153606) #6B0D9B
+58      [0.0248186734153606, 0.0252540887384371) #6D0C9A
+59      [0.0252540887384371, 0.0256895040615136) #700B99
+60      [0.0256895040615136, 0.0261249193845901) #730B98
+61      [0.0261249193845901, 0.0265603347076666) #750A98
+62      [0.0265603347076666, 0.0269957500307431) #780A97
+63      [0.0269957500307431, 0.0274311653538197) #7A0996
+64      [0.0274311653538197, 0.0278665806768962) #7D0896
+65      [0.0278665806768962, 0.0283019959999727) #7E0895
+66      [0.0283019959999727, 0.0287374113230492) #800794
+67      [0.0287374113230492, 0.0291728266461257) #820794
+68      [0.0291728266461257, 0.0296082419692022) #840693
+69      [0.0296082419692022, 0.0300436572922787) #860692
+70      [0.0300436572922787, 0.0304790726153552) #880692
+71      [0.0304790726153552, 0.0309144879384317) #8A0591
+72      [0.0309144879384317, 0.0313499032615082) #8C0591
+73      [0.0313499032615082, 0.0317853185845847) #8E0490
+74      [0.0317853185845847, 0.0322207339076612) #900490
+75      [0.0322207339076612, 0.0326561492307377) #92048F
+76      [0.0326561492307377, 0.0330915645538142) #94038F
+77      [0.0330915645538142, 0.0335269798768907) #96038E
+78      [0.0335269798768907, 0.0339623951999672) #98038E
+79      [0.0339623951999672, 0.0343978105230437) #9A028D
+80      [0.0343978105230437, 0.0348332258461202) #9C028D
+81      [0.0348332258461202, 0.0352686411691967) #9E028D
+82      [0.0352686411691967, 0.0357040564922732) #A0018C
+83      [0.0357040564922732, 0.0361394718153497) #A2018C
+84      [0.0361394718153497, 0.0365748871384262) #A4018B
+85      [0.0365748871384262, 0.0370103024615027) #A6018B
+86      [0.0370103024615027, 0.0374457177845792) #A8008A
+87      [0.0374457177845792, 0.0378811331076557) #AA008A
+88      [0.0378811331076557, 0.0383165484307322) #AB0089
+89      [0.0383165484307322, 0.0387519637538087) #AD0089
+90      [0.0387519637538087, 0.0391873790768852) #AF0088
+91      [0.0391873790768852, 0.0396227943999617) #B10088
+92      [0.0396227943999617, 0.0400582097230382) #B30087
+93      [0.0400582097230382, 0.0404936250461147) #B50087
+94      [0.0404936250461147, 0.0409290403691912) #B70086
+95      [0.0409290403691912, 0.0413644556922677) #B80086
+96      [0.0413644556922677, 0.0417998710153442) #BA0086
+97      [0.0417998710153442, 0.0422352863384207) #BC0085
+98      [0.0422352863384207, 0.0426707016614972) #BE0085
+99      [0.0426707016614972, 0.0431061169845737) #C00084
+100     [0.0431061169845737, 0.0435415323076502) #C20084
+101     [0.0435415323076502, 0.0439769476307267) #C30083
+102     [0.0439769476307267, 0.0444123629538032) #C50083
+103     [0.0444123629538032, 0.0448477782768797) #C70082
+104     [0.0448477782768797, 0.0452831935999562) #C90082
+105     [0.0452831935999562, 0.0457186089230327) #CB0081
+106     [0.0457186089230327, 0.0461540242461092) #CD0081
+107     [0.0461540242461092, 0.0465894395691858) #CE0080
+108     [0.0465894395691858, 0.0470248548922623) #D00080
+109     [0.0470248548922623, 0.0474602702153388) #D20080
+110     [0.0474602702153388, 0.0478956855384153) #D40080
+111     [0.0478956855384153, 0.0483311008614918) #D5007F
+112     [0.0483311008614918, 0.0487665161845683) #D7007F
+113     [0.0487665161845683, 0.0492019315076448) #D9007E
+114     [0.0492019315076448, 0.0496373468307213) #DA007E
+115     [0.0496373468307213, 0.0500727621537978) #DC007D
+116     [0.0500727621537978, 0.0505081774768743) #DD007C
+117     [0.0505081774768743, 0.0509435927999508) #DF017C
+118     [0.0509435927999508, 0.0513790081230273) #E1027B
+119     [0.0513790081230273, 0.0518144234461038) #E2047B
+120     [0.0518144234461038, 0.0522498387691803) #E4067A
+121     [0.0522498387691803, 0.0526852540922568) #E5087A
+122     [0.0526852540922568, 0.0531206694153333) #E70B79
+123     [0.0531206694153333, 0.0535560847384098) #E80D78
+124     [0.0535560847384098, 0.0539915000614863) #E91078
+125     [0.0539915000614863, 0.0544269153845628) #EB1277
+126     [0.0544269153845628, 0.0548623307076393) #EC1477
+127     [0.0548623307076393, 0.0552977460307158) #ED1676
+128     [0.0552977460307158, 0.0557331613537923) #EF1875
+129     [0.0557331613537923, 0.0561685766768688) #F01A75
+130     [0.0561685766768688, 0.0566039919999453) #F11C74
+131     [0.0566039919999453, 0.0570394073230218) #F31E73
+132     [0.0570394073230218, 0.0574748226460983) #F42073
+133     [0.0574748226460983, 0.0579102379691748) #F52272
+134     [0.0579102379691748, 0.0583456532922513) #F62471
+135     [0.0583456532922513, 0.0587810686153278) #F72671
+136     [0.0587810686153278, 0.0592164839384043) #F82870
+137     [0.0592164839384043, 0.0596518992614808) #FA2A6F
+138     [0.0596518992614808, 0.0600873145845573) #FB2C6F
+139     [0.0600873145845573, 0.0605227299076338) #FC2E6E
+140     [0.0605227299076338, 0.0609581452307103) #FD306D
+141     [0.0609581452307103, 0.0613935605537868) #FE326C
+142     [0.0613935605537868, 0.0618289758768633) #FE346C
+143     [0.0618289758768633, 0.0622643911999398) #FE366B
+144     [0.0622643911999398, 0.0626998065230163) #FE386A
+145     [0.0626998065230163, 0.0631352218460928) #FE3A6A
+146     [0.0631352218460928, 0.0635706371691693) #FE3D69
+147     [0.0635706371691693, 0.0640060524922458) #FE3F68
+148     [0.0640060524922458, 0.0644414678153223) #FE4167
+149     [0.0644414678153223, 0.0648768831383988) #FE4366
+150     [0.0648768831383988, 0.0653122984614753) #FE4566
+151     [0.0653122984614753, 0.0657477137845519) #FE4765
+152     [0.0657477137845519, 0.0661831291076283) #FE4964
+153     [0.0661831291076283, 0.0666185444307048) #FE4B63
+154     [0.0666185444307048, 0.0670539597537814) #FE4D62
+155     [0.0670539597537814, 0.0674893750768579) #FE5062
+156     [0.0674893750768579, 0.0679247903999344) #FE5261
+157     [0.0679247903999344, 0.0683602057230109) #FE5460
+158     [0.0683602057230109, 0.0687956210460874) #FE565F
+159     [0.0687956210460874, 0.0692310363691639) #FE585E
+160     [0.0692310363691639, 0.0696664516922404) #FE5A5D
+161     [0.0696664516922404, 0.0701018670153169) #FE5C5C
+162     [0.0701018670153169, 0.0705372823383934) #FE5F5B
+163     [0.0705372823383934, 0.0709726976614699) #FE615B
+164     [0.0709726976614699, 0.0714081129845464) #FE635A
+165     [0.0714081129845464, 0.0718435283076229) #FE6559
+166     [0.0718435283076229, 0.0722789436306994) #FE6758
+167     [0.0722789436306994, 0.0727143589537759) #FE6A57
+168     [0.0727143589537759, 0.0731497742768524) #FE6C56
+169     [0.0731497742768524, 0.0735851895999289) #FE6E55
+170     [0.0735851895999289, 0.0740206049230054) #FE7054
+171     [0.0740206049230054, 0.0744560202460819) #FE7253
+172     [0.0744560202460819, 0.0748914355691584) #FE7452
+173     [0.0748914355691584, 0.0753268508922349) #FE7651
+174     [0.0753268508922349, 0.0757622662153114) #FE7850
+175     [0.0757622662153114, 0.0761976815383879) #FE7A4E
+176     [0.0761976815383879, 0.0766330968614644) #FE7C4D
+177     [0.0766330968614644, 0.0770685121845409) #FE7E4C
+178     [0.0770685121845409, 0.0775039275076174) #FE7F4B
+179     [0.0775039275076174, 0.0779393428306939) #FE804A
+180     [0.0779393428306939, 0.0783747581537704) #FE8249
+181     [0.0783747581537704, 0.0788101734768469) #FE8448
+182     [0.0788101734768469, 0.0792455887999234) #FE8647
+183     [0.0792455887999234, 0.0796810041229999) #FE8745
+184     [0.0796810041229999, 0.0801164194460764) #FE8944
+185     [0.0801164194460764, 0.0805518347691529) #FE8B43
+186     [0.0805518347691529, 0.0809872500922294) #FE8D42
+187     [0.0809872500922294, 0.0814226654153059) #FE8E40
+188     [0.0814226654153059, 0.0818580807383824) #FE903F
+189     [0.0818580807383824, 0.0822934960614589) #FE923E
+190     [0.0822934960614589, 0.0827289113845354) #FE943C
+191     [0.0827289113845354, 0.0831643267076119) #FE953B
+192     [0.0831643267076119, 0.0835997420306884) #FE9639
+193     [0.0835997420306884, 0.0840351573537649) #FE9838
+194     [0.0840351573537649, 0.0844705726768414) #FE9A37
+195     [0.0844705726768414, 0.0849059879999179) #FE9B35
+196     [0.0849059879999179, 0.0853414033229944) #FE9D34
+197      [0.0853414033229944, 0.085776818646071) #FE9F32
+198      [0.085776818646071, 0.0862122339691475) #FEA031
+199      [0.0862122339691475, 0.086647649292224) #FEA22F
+200      [0.086647649292224, 0.0870830646153005) #FEA32E
+201      [0.0870830646153005, 0.087518479938377) #FEA52D
+202      [0.087518479938377, 0.0879538952614535) #FEA62B
+203       [0.0879538952614535, 0.08838931058453) #FEA82A
+204       [0.08838931058453, 0.0888247259076065) #FEA929
+205      [0.0888247259076065, 0.089260141230683) #FEAB28
+206      [0.089260141230683, 0.0896955565537595) #FEAC27
+207      [0.0896955565537595, 0.090130971876836) #FEAE26
+208      [0.090130971876836, 0.0905663871999125) #FEAF26
+209      [0.0905663871999125, 0.091001802522989) #FEB125
+210      [0.091001802522989, 0.0914372178460655) #FEB224
+211      [0.0914372178460655, 0.091872633169142) #FEB423
+212      [0.091872633169142, 0.0923080484922185) #FEB523
+213      [0.0923080484922185, 0.092743463815295) #FEB622
+214      [0.092743463815295, 0.0931788791383715) #FEB822
+215      [0.0931788791383715, 0.093614294461448) #FEB921
+216      [0.093614294461448, 0.0940497097845245) #FEBB20
+217      [0.0940497097845245, 0.094485125107601) #FEBC20
+218      [0.094485125107601, 0.0949205404306775) #FEBD1F
+219      [0.0949205404306775, 0.095355955753754) #FEBF1F
+220      [0.095355955753754, 0.0957913710768305) #FEC01F
+221      [0.0957913710768305, 0.096226786399907) #FEC21E
+222      [0.096226786399907, 0.0966622017229835) #FEC31E
+223       [0.0966622017229835, 0.09709761704606) #FEC41E
+224       [0.09709761704606, 0.0975330323691365) #FEC61D
+225      [0.0975330323691365, 0.097968447692213) #FEC71D
+226      [0.097968447692213, 0.0984038630152895) #FEC81D
+227      [0.0984038630152895, 0.098839278338366) #FECA1D
+228      [0.098839278338366, 0.0992746936614425) #FECB1D
+229      [0.0992746936614425, 0.099710108984519) #FECC1D
+230       [0.099710108984519, 0.100145524307596) #FECE1C
+231       [0.100145524307596, 0.100580939630672) #FECF1C
+232       [0.100580939630672, 0.101016354953749) #FED01C
+233       [0.101016354953749, 0.101451770276825) #FED21C
+234       [0.101451770276825, 0.101887185599902) #FED31C
+235       [0.101887185599902, 0.102322600922978) #FED41C
+236       [0.102322600922978, 0.102758016246055) #FED61D
+237       [0.102758016246055, 0.103193431569131) #FED71D
+238       [0.103193431569131, 0.103628846892208) #FED81D
+239       [0.103628846892208, 0.104064262215284) #FEDA1D
+240       [0.104064262215284, 0.104499677538361) #FEDB1D
+241       [0.104499677538361, 0.104935092861437) #FEDC1D
+242       [0.104935092861437, 0.105370508184514) #FEDE1E
+243        [0.105370508184514, 0.10580592350759) #FEDF1E
+244        [0.10580592350759, 0.106241338830667) #FEE01E
+245       [0.106241338830667, 0.106676754153743) #FEE21E
+246        [0.106676754153743, 0.10711216947682) #FEE31F
+247        [0.10711216947682, 0.107547584799896) #FEE41F
+248       [0.107547584799896, 0.107983000122973) #FEE61F
+249       [0.107983000122973, 0.108418415446049) #FEE720
+250       [0.108418415446049, 0.108853830769126) #FEE820
+251       [0.108853830769126, 0.109289246092202) #FEE921
+252       [0.109289246092202, 0.109724661415279) #FEEB21
+253       [0.109724661415279, 0.110160076738355) #FEEC22
+254       [0.110160076738355, 0.110595492061432) #FEED22
+255       [0.110595492061432, 0.111030907384508) #FEEF23
+256       [0.111030907384508, 0.111466322707585] #FEF023</code></pre>
+</div>
+</div>
+</section>
+<section id="nursing-homes-4" class="level3">
+<h3 class="anchored" data-anchor-id="nursing-homes-4">Nursing Homes</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb128"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a>nursing_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(nursing_ppp.km,</span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
+<span id="cb128-3"><a href="#cb128-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb128-4"><a href="#cb128-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
+<span id="cb128-5"><a href="#cb128-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Nursing Homes"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-64-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb129"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb129-1"><a href="#cb129-1" aria-hidden="true" tabindex="-1"></a>nursing_bw</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Colour map for the range [-1.74190270980856e-16, 1.15104660464874] 
+                                        interval  colour
+1   [-1.74190270980856e-16, 0.00449627579940896) #000C7D
+2      [0.00449627579940896, 0.0089925515988181) #000D7F
+3       [0.0089925515988181, 0.0134888273982272) #000D80
+4       [0.0134888273982272, 0.0179851031976364) #000E82
+5       [0.0179851031976364, 0.0224813789970455) #000E84
+6       [0.0224813789970455, 0.0269776547964546) #000E85
+7       [0.0269776547964546, 0.0314739305958638) #000F87
+8       [0.0314739305958638, 0.0359702063952729) #000F89
+9       [0.0359702063952729, 0.0404664821946821) #00108A
+10      [0.0404664821946821, 0.0449627579940912) #00108C
+11      [0.0449627579940912, 0.0494590337935003) #00118E
+12      [0.0494590337935003, 0.0539553095929095) #00118F
+13      [0.0539553095929095, 0.0584515853923186) #001191
+14      [0.0584515853923186, 0.0629478611917277) #001292
+15      [0.0629478611917277, 0.0674441369911369) #001294
+16       [0.0674441369911369, 0.071940412790546) #001295
+17       [0.071940412790546, 0.0764366885899551) #001397
+18      [0.0764366885899551, 0.0809329643893643) #001398
+19      [0.0809329643893643, 0.0854292401887734) #001399
+20      [0.0854292401887734, 0.0899255159881825) #00149B
+21      [0.0899255159881825, 0.0944217917875917) #00149C
+22      [0.0944217917875917, 0.0989180675870008) #00149D
+23        [0.0989180675870008, 0.10341434338641) #00149E
+24         [0.10341434338641, 0.107910619185819) #00159F
+25        [0.107910619185819, 0.112406894985228) #0015A0
+26        [0.112406894985228, 0.116903170784637) #0015A1
+27        [0.116903170784637, 0.121399446584046) #0015A2
+28        [0.121399446584046, 0.125895722383456) #0015A3
+29        [0.125895722383456, 0.130391998182865) #0015A4
+30        [0.130391998182865, 0.134888273982274) #0016A5
+31        [0.134888273982274, 0.139384549781683) #0016A6
+32        [0.139384549781683, 0.143880825581092) #0016A6
+33        [0.143880825581092, 0.148377101380501) #0016A7
+34         [0.148377101380501, 0.15287337717991) #0016A8
+35          [0.15287337717991, 0.15736965297932) #0016A8
+36         [0.15736965297932, 0.161865928778729) #0416A8
+37        [0.161865928778729, 0.166362204578138) #0E16A9
+38        [0.166362204578138, 0.170858480377547) #1715A9
+39        [0.170858480377547, 0.175354756176956) #1F15A9
+40        [0.175354756176956, 0.179851031976365) #2515A9
+41        [0.179851031976365, 0.184347307775774) #2B15A9
+42        [0.184347307775774, 0.188843583575184) #3115A8
+43        [0.188843583575184, 0.193339859374593) #3614A8
+44        [0.193339859374593, 0.197836135174002) #3B14A7
+45        [0.197836135174002, 0.202332410973411) #4013A6
+46         [0.202332410973411, 0.20682868677282) #4413A5
+47         [0.20682868677282, 0.211324962572229) #4912A4
+48        [0.211324962572229, 0.215821238371638) #4D12A3
+49        [0.215821238371638, 0.220317514171048) #5111A2
+50        [0.220317514171048, 0.224813789970457) #5411A1
+51        [0.224813789970457, 0.229310065769866) #5810A0
+52        [0.229310065769866, 0.233806341569275) #5B0F9F
+53        [0.233806341569275, 0.238302617368684) #5F0F9E
+54        [0.238302617368684, 0.242798893168093) #620E9E
+55        [0.242798893168093, 0.247295168967502) #650E9D
+56        [0.247295168967502, 0.251791444766911) #680D9C
+57        [0.251791444766911, 0.256287720566321) #6B0D9B
+58         [0.256287720566321, 0.26078399636573) #6D0C9A
+59         [0.26078399636573, 0.265280272165139) #700B99
+60        [0.265280272165139, 0.269776547964548) #730B98
+61        [0.269776547964548, 0.274272823763957) #750A98
+62        [0.274272823763957, 0.278769099563366) #780A97
+63        [0.278769099563366, 0.283265375362775) #7A0996
+64        [0.283265375362775, 0.287761651162185) #7D0896
+65        [0.287761651162185, 0.292257926961594) #7E0895
+66        [0.292257926961594, 0.296754202761003) #800794
+67        [0.296754202761003, 0.301250478560412) #820794
+68        [0.301250478560412, 0.305746754359821) #840693
+69         [0.305746754359821, 0.31024303015923) #860692
+70         [0.31024303015923, 0.314739305958639) #880692
+71        [0.314739305958639, 0.319235581758049) #8A0591
+72        [0.319235581758049, 0.323731857557458) #8C0591
+73        [0.323731857557458, 0.328228133356867) #8E0490
+74        [0.328228133356867, 0.332724409156276) #900490
+75        [0.332724409156276, 0.337220684955685) #92048F
+76        [0.337220684955685, 0.341716960755094) #94038F
+77        [0.341716960755094, 0.346213236554503) #96038E
+78        [0.346213236554503, 0.350709512353912) #98038E
+79        [0.350709512353912, 0.355205788153322) #9A028D
+80        [0.355205788153322, 0.359702063952731) #9C028D
+81         [0.359702063952731, 0.36419833975214) #9E028D
+82         [0.36419833975214, 0.368694615551549) #A0018C
+83        [0.368694615551549, 0.373190891350958) #A2018C
+84        [0.373190891350958, 0.377687167150367) #A4018B
+85        [0.377687167150367, 0.382183442949776) #A6018B
+86        [0.382183442949776, 0.386679718749186) #A8008A
+87        [0.386679718749186, 0.391175994548595) #AA008A
+88        [0.391175994548595, 0.395672270348004) #AB0089
+89        [0.395672270348004, 0.400168546147413) #AD0089
+90        [0.400168546147413, 0.404664821946822) #AF0088
+91        [0.404664821946822, 0.409161097746231) #B10088
+92         [0.409161097746231, 0.41365737354564) #B30087
+93          [0.41365737354564, 0.41815364934505) #B50087
+94         [0.41815364934505, 0.422649925144459) #B70086
+95        [0.422649925144459, 0.427146200943868) #B80086
+96        [0.427146200943868, 0.431642476743277) #BA0086
+97        [0.431642476743277, 0.436138752542686) #BC0085
+98        [0.436138752542686, 0.440635028342095) #BE0085
+99        [0.440635028342095, 0.445131304141504) #C00084
+100       [0.445131304141504, 0.449627579940913) #C20084
+101       [0.449627579940913, 0.454123855740323) #C30083
+102       [0.454123855740323, 0.458620131539732) #C50083
+103       [0.458620131539732, 0.463116407339141) #C70082
+104        [0.463116407339141, 0.46761268313855) #C90082
+105        [0.46761268313855, 0.472108958937959) #CB0081
+106       [0.472108958937959, 0.476605234737368) #CD0081
+107       [0.476605234737368, 0.481101510536777) #CE0080
+108       [0.481101510536777, 0.485597786336187) #D00080
+109       [0.485597786336187, 0.490094062135596) #D20080
+110       [0.490094062135596, 0.494590337935005) #D40080
+111       [0.494590337935005, 0.499086613734414) #D5007F
+112       [0.499086613734414, 0.503582889533823) #D7007F
+113       [0.503582889533823, 0.508079165333232) #D9007E
+114       [0.508079165333232, 0.512575441132641) #DA007E
+115        [0.512575441132641, 0.51707171693205) #DC007D
+116         [0.51707171693205, 0.52156799273146) #DD007C
+117        [0.52156799273146, 0.526064268530869) #DF017C
+118       [0.526064268530869, 0.530560544330278) #E1027B
+119       [0.530560544330278, 0.535056820129687) #E2047B
+120       [0.535056820129687, 0.539553095929096) #E4067A
+121       [0.539553095929096, 0.544049371728505) #E5087A
+122       [0.544049371728505, 0.548545647527914) #E70B79
+123       [0.548545647527914, 0.553041923327323) #E80D78
+124       [0.553041923327323, 0.557538199126733) #E91078
+125       [0.557538199126733, 0.562034474926142) #EB1277
+126       [0.562034474926142, 0.566530750725551) #EC1477
+127        [0.566530750725551, 0.57102702652496) #ED1676
+128        [0.57102702652496, 0.575523302324369) #EF1875
+129       [0.575523302324369, 0.580019578123778) #F01A75
+130       [0.580019578123778, 0.584515853923188) #F11C74
+131       [0.584515853923188, 0.589012129722597) #F31E73
+132       [0.589012129722597, 0.593508405522006) #F42073
+133       [0.593508405522006, 0.598004681321415) #F52272
+134       [0.598004681321415, 0.602500957120824) #F62471
+135       [0.602500957120824, 0.606997232920233) #F72671
+136       [0.606997232920233, 0.611493508719642) #F82870
+137       [0.611493508719642, 0.615989784519051) #FA2A6F
+138       [0.615989784519051, 0.620486060318461) #FB2C6F
+139        [0.620486060318461, 0.62498233611787) #FC2E6E
+140        [0.62498233611787, 0.629478611917279) #FD306D
+141       [0.629478611917279, 0.633974887716688) #FE326C
+142       [0.633974887716688, 0.638471163516097) #FE346C
+143       [0.638471163516097, 0.642967439315506) #FE366B
+144       [0.642967439315506, 0.647463715114915) #FE386A
+145       [0.647463715114915, 0.651959990914325) #FE3A6A
+146       [0.651959990914325, 0.656456266713734) #FE3D69
+147       [0.656456266713734, 0.660952542513143) #FE3F68
+148       [0.660952542513143, 0.665448818312552) #FE4167
+149       [0.665448818312552, 0.669945094111961) #FE4366
+150        [0.669945094111961, 0.67444136991137) #FE4566
+151        [0.67444136991137, 0.678937645710779) #FE4765
+152       [0.678937645710779, 0.683433921510188) #FE4964
+153       [0.683433921510188, 0.687930197309598) #FE4B63
+154       [0.687930197309598, 0.692426473109007) #FE4D62
+155       [0.692426473109007, 0.696922748908416) #FE5062
+156       [0.696922748908416, 0.701419024707825) #FE5261
+157       [0.701419024707825, 0.705915300507234) #FE5460
+158       [0.705915300507234, 0.710411576306643) #FE565F
+159       [0.710411576306643, 0.714907852106052) #FE585E
+160       [0.714907852106052, 0.719404127905462) #FE5A5D
+161       [0.719404127905462, 0.723900403704871) #FE5C5C
+162        [0.723900403704871, 0.72839667950428) #FE5F5B
+163        [0.72839667950428, 0.732892955303689) #FE615B
+164       [0.732892955303689, 0.737389231103098) #FE635A
+165       [0.737389231103098, 0.741885506902507) #FE6559
+166       [0.741885506902507, 0.746381782701916) #FE6758
+167       [0.746381782701916, 0.750878058501325) #FE6A57
+168       [0.750878058501325, 0.755374334300735) #FE6C56
+169       [0.755374334300735, 0.759870610100144) #FE6E55
+170       [0.759870610100144, 0.764366885899553) #FE7054
+171       [0.764366885899553, 0.768863161698962) #FE7253
+172       [0.768863161698962, 0.773359437498371) #FE7452
+173        [0.773359437498371, 0.77785571329778) #FE7651
+174         [0.77785571329778, 0.78235198909719) #FE7850
+175        [0.78235198909719, 0.786848264896599) #FE7A4E
+176       [0.786848264896599, 0.791344540696008) #FE7C4D
+177       [0.791344540696008, 0.795840816495417) #FE7E4C
+178       [0.795840816495417, 0.800337092294826) #FE7F4B
+179       [0.800337092294826, 0.804833368094235) #FE804A
+180       [0.804833368094235, 0.809329643893644) #FE8249
+181       [0.809329643893644, 0.813825919693053) #FE8448
+182       [0.813825919693053, 0.818322195492463) #FE8647
+183       [0.818322195492463, 0.822818471291872) #FE8745
+184       [0.822818471291872, 0.827314747091281) #FE8944
+185        [0.827314747091281, 0.83181102289069) #FE8B43
+186        [0.83181102289069, 0.836307298690099) #FE8D42
+187       [0.836307298690099, 0.840803574489508) #FE8E40
+188       [0.840803574489508, 0.845299850288917) #FE903F
+189       [0.845299850288917, 0.849796126088327) #FE923E
+190       [0.849796126088327, 0.854292401887736) #FE943C
+191       [0.854292401887736, 0.858788677687145) #FE953B
+192       [0.858788677687145, 0.863284953486554) #FE9639
+193       [0.863284953486554, 0.867781229285963) #FE9838
+194       [0.867781229285963, 0.872277505085372) #FE9A37
+195       [0.872277505085372, 0.876773780884781) #FE9B35
+196        [0.876773780884781, 0.88127005668419) #FE9D34
+197          [0.88127005668419, 0.8857663324836) #FE9F32
+198         [0.8857663324836, 0.890262608283009) #FEA031
+199       [0.890262608283009, 0.894758884082418) #FEA22F
+200       [0.894758884082418, 0.899255159881827) #FEA32E
+201       [0.899255159881827, 0.903751435681236) #FEA52D
+202       [0.903751435681236, 0.908247711480645) #FEA62B
+203       [0.908247711480645, 0.912743987280054) #FEA82A
+204       [0.912743987280054, 0.917240263079464) #FEA929
+205       [0.917240263079464, 0.921736538878873) #FEAB28
+206       [0.921736538878873, 0.926232814678282) #FEAC27
+207       [0.926232814678282, 0.930729090477691) #FEAE26
+208         [0.930729090477691, 0.9352253662771) #FEAF26
+209         [0.9352253662771, 0.939721642076509) #FEB125
+210       [0.939721642076509, 0.944217917875918) #FEB224
+211       [0.944217917875918, 0.948714193675327) #FEB423
+212       [0.948714193675327, 0.953210469474737) #FEB523
+213       [0.953210469474737, 0.957706745274146) #FEB622
+214       [0.957706745274146, 0.962203021073555) #FEB822
+215       [0.962203021073555, 0.966699296872964) #FEB921
+216       [0.966699296872964, 0.971195572672373) #FEBB20
+217       [0.971195572672373, 0.975691848471782) #FEBC20
+218       [0.975691848471782, 0.980188124271192) #FEBD1F
+219       [0.980188124271192, 0.984684400070601) #FEBF1F
+220        [0.984684400070601, 0.98918067587001) #FEC01F
+221        [0.98918067587001, 0.993676951669419) #FEC21E
+222       [0.993676951669419, 0.998173227468828) #FEC31E
+223        [0.998173227468828, 1.00266950326824) #FEC41E
+224         [1.00266950326824, 1.00716577906765) #FEC61D
+225         [1.00716577906765, 1.01166205486706) #FEC71D
+226         [1.01166205486706, 1.01615833066646) #FEC81D
+227         [1.01615833066646, 1.02065460646587) #FECA1D
+228         [1.02065460646587, 1.02515088226528) #FECB1D
+229         [1.02515088226528, 1.02964715806469) #FECC1D
+230          [1.02964715806469, 1.0341434338641) #FECE1C
+231          [1.0341434338641, 1.03863970966351) #FECF1C
+232         [1.03863970966351, 1.04313598546292) #FED01C
+233         [1.04313598546292, 1.04763226126233) #FED21C
+234         [1.04763226126233, 1.05212853706174) #FED31C
+235         [1.05212853706174, 1.05662481286115) #FED41C
+236         [1.05662481286115, 1.06112108866056) #FED61D
+237         [1.06112108866056, 1.06561736445997) #FED71D
+238         [1.06561736445997, 1.07011364025937) #FED81D
+239         [1.07011364025937, 1.07460991605878) #FEDA1D
+240         [1.07460991605878, 1.07910619185819) #FEDB1D
+241          [1.07910619185819, 1.0836024676576) #FEDC1D
+242          [1.0836024676576, 1.08809874345701) #FEDE1E
+243         [1.08809874345701, 1.09259501925642) #FEDF1E
+244         [1.09259501925642, 1.09709129505583) #FEE01E
+245         [1.09709129505583, 1.10158757085524) #FEE21E
+246         [1.10158757085524, 1.10608384665465) #FEE31F
+247         [1.10608384665465, 1.11058012245406) #FEE41F
+248         [1.11058012245406, 1.11507639825347) #FEE61F
+249         [1.11507639825347, 1.11957267405287) #FEE720
+250         [1.11957267405287, 1.12406894985228) #FEE820
+251         [1.12406894985228, 1.12856522565169) #FEE921
+252          [1.12856522565169, 1.1330615014511) #FEEB21
+253          [1.1330615014511, 1.13755777725051) #FEEC22
+254         [1.13755777725051, 1.14205405304992) #FEED22
+255         [1.14205405304992, 1.14655032884933) #FEEF23
+256         [1.14655032884933, 1.15104660464874] #FEF023</code></pre>
+</div>
+</div>
+</section>
+<section id="bus-stops-2" class="level3">
+<h3 class="anchored" data-anchor-id="bus-stops-2">Bus Stops</h3>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb131"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb131-1"><a href="#cb131-1" aria-hidden="true" tabindex="-1"></a>busstop_bw <span class="ot">&lt;-</span> <span class="fu">plot</span>(<span class="fu">density</span>(busstop_ppp.km,</span>
+<span id="cb131-2"><a href="#cb131-2" aria-hidden="true" tabindex="-1"></a>             <span class="at">sigma =</span> bw.diggle,</span>
+<span id="cb131-3"><a href="#cb131-3" aria-hidden="true" tabindex="-1"></a>             <span class="at">edge =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb131-4"><a href="#cb131-4" aria-hidden="true" tabindex="-1"></a>             <span class="at">kernel =</span> <span class="st">"gaussian"</span>),</span>
+<span id="cb131-5"><a href="#cb131-5" aria-hidden="true" tabindex="-1"></a>     <span class="at">main =</span> <span class="st">"Bus Stops"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output-display">
+<p><img src="index_files/figure-html/unnamed-chunk-65-1.png" class="img-fluid" width="672"></p>
+</div>
+<div class="sourceCode cell-code" id="cb132"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>busstop_bw</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>Colour map for the range [-1.18121425196634e-14, 44.8641665164324] 
+                                      interval  colour
+1   [-1.18121425196634e-14, 0.175250650454802) #000C7D
+2       [0.175250650454802, 0.350501300909616) #000D7F
+3        [0.350501300909616, 0.52575195136443) #000D80
+4        [0.52575195136443, 0.701002601819244) #000E82
+5       [0.701002601819244, 0.876253252274058) #000E84
+6        [0.876253252274058, 1.05150390272887) #000E85
+7         [1.05150390272887, 1.22675455318369) #000F87
+8          [1.22675455318369, 1.4020052036385) #000F89
+9          [1.4020052036385, 1.57725585409331) #00108A
+10        [1.57725585409331, 1.75250650454813) #00108C
+11        [1.75250650454813, 1.92775715500294) #00118E
+12        [1.92775715500294, 2.10300780545776) #00118F
+13        [2.10300780545776, 2.27825845591257) #001191
+14        [2.27825845591257, 2.45350910636738) #001292
+15         [2.45350910636738, 2.6287597568222) #001294
+16         [2.6287597568222, 2.80401040727701) #001295
+17        [2.80401040727701, 2.97926105773183) #001397
+18        [2.97926105773183, 3.15451170818664) #001398
+19        [3.15451170818664, 3.32976235864145) #001399
+20        [3.32976235864145, 3.50501300909627) #00149B
+21        [3.50501300909627, 3.68026365955108) #00149C
+22         [3.68026365955108, 3.8555143100059) #00149D
+23         [3.8555143100059, 4.03076496046071) #00149E
+24        [4.03076496046071, 4.20601561091553) #00159F
+25        [4.20601561091553, 4.38126626137034) #0015A0
+26        [4.38126626137034, 4.55651691182515) #0015A1
+27        [4.55651691182515, 4.73176756227997) #0015A2
+28        [4.73176756227997, 4.90701821273478) #0015A3
+29         [4.90701821273478, 5.0822688631896) #0015A4
+30         [5.0822688631896, 5.25751951364441) #0016A5
+31        [5.25751951364441, 5.43277016409922) #0016A6
+32        [5.43277016409922, 5.60802081455404) #0016A6
+33        [5.60802081455404, 5.78327146500885) #0016A7
+34        [5.78327146500885, 5.95852211546367) #0016A8
+35        [5.95852211546367, 6.13377276591848) #0016A8
+36        [6.13377276591848, 6.30902341637329) #0416A8
+37        [6.30902341637329, 6.48427406682811) #0E16A9
+38        [6.48427406682811, 6.65952471728292) #1715A9
+39        [6.65952471728292, 6.83477536773774) #1F15A9
+40        [6.83477536773774, 7.01002601819255) #2515A9
+41        [7.01002601819255, 7.18527666864736) #2B15A9
+42        [7.18527666864736, 7.36052731910218) #3115A8
+43        [7.36052731910218, 7.53577796955699) #3614A8
+44        [7.53577796955699, 7.71102862001181) #3B14A7
+45        [7.71102862001181, 7.88627927046662) #4013A6
+46        [7.88627927046662, 8.06152992092143) #4413A5
+47        [8.06152992092143, 8.23678057137625) #4912A4
+48        [8.23678057137625, 8.41203122183106) #4D12A3
+49        [8.41203122183106, 8.58728187228587) #5111A2
+50        [8.58728187228587, 8.76253252274069) #5411A1
+51         [8.76253252274069, 8.9377831731955) #5810A0
+52         [8.9377831731955, 9.11303382365032) #5B0F9F
+53        [9.11303382365032, 9.28828447410513) #5F0F9E
+54        [9.28828447410513, 9.46353512455994) #620E9E
+55        [9.46353512455994, 9.63878577501476) #650E9D
+56        [9.63878577501476, 9.81403642546957) #680D9C
+57        [9.81403642546957, 9.98928707592439) #6B0D9B
+58        [9.98928707592439, 10.1645377263792) #6D0C9A
+59         [10.1645377263792, 10.339788376834) #700B99
+60         [10.339788376834, 10.5150390272888) #730B98
+61        [10.5150390272888, 10.6902896777436) #750A98
+62        [10.6902896777436, 10.8655403281985) #780A97
+63        [10.8655403281985, 11.0407909786533) #7A0996
+64        [11.0407909786533, 11.2160416291081) #7D0896
+65        [11.2160416291081, 11.3912922795629) #7E0895
+66        [11.3912922795629, 11.5665429300177) #800794
+67        [11.5665429300177, 11.7417935804725) #820794
+68        [11.7417935804725, 11.9170442309273) #840693
+69        [11.9170442309273, 12.0922948813822) #860692
+70         [12.0922948813822, 12.267545531837) #880692
+71         [12.267545531837, 12.4427961822918) #8A0591
+72        [12.4427961822918, 12.6180468327466) #8C0591
+73        [12.6180468327466, 12.7932974832014) #8E0490
+74        [12.7932974832014, 12.9685481336562) #900490
+75         [12.9685481336562, 13.143798784111) #92048F
+76         [13.143798784111, 13.3190494345659) #94038F
+77        [13.3190494345659, 13.4943000850207) #96038E
+78        [13.4943000850207, 13.6695507354755) #98038E
+79        [13.6695507354755, 13.8448013859303) #9A028D
+80        [13.8448013859303, 14.0200520363851) #9C028D
+81        [14.0200520363851, 14.1953026868399) #9E028D
+82        [14.1953026868399, 14.3705533372947) #A0018C
+83        [14.3705533372947, 14.5458039877496) #A2018C
+84        [14.5458039877496, 14.7210546382044) #A4018B
+85        [14.7210546382044, 14.8963052886592) #A6018B
+86         [14.8963052886592, 15.071555939114) #A8008A
+87         [15.071555939114, 15.2468065895688) #AA008A
+88        [15.2468065895688, 15.4220572400236) #AB0089
+89        [15.4220572400236, 15.5973078904784) #AD0089
+90        [15.5973078904784, 15.7725585409333) #AF0088
+91        [15.7725585409333, 15.9478091913881) #B10088
+92        [15.9478091913881, 16.1230598418429) #B30087
+93        [16.1230598418429, 16.2983104922977) #B50087
+94        [16.2983104922977, 16.4735611427525) #B70086
+95        [16.4735611427525, 16.6488117932073) #B80086
+96        [16.6488117932073, 16.8240624436621) #BA0086
+97        [16.8240624436621, 16.9993130941169) #BC0085
+98        [16.9993130941169, 17.1745637445718) #BE0085
+99        [17.1745637445718, 17.3498143950266) #C00084
+100       [17.3498143950266, 17.5250650454814) #C20084
+101       [17.5250650454814, 17.7003156959362) #C30083
+102        [17.7003156959362, 17.875566346391) #C50083
+103        [17.875566346391, 18.0508169968458) #C70082
+104       [18.0508169968458, 18.2260676473006) #C90082
+105       [18.2260676473006, 18.4013182977555) #CB0081
+106       [18.4013182977555, 18.5765689482103) #CD0081
+107       [18.5765689482103, 18.7518195986651) #CE0080
+108       [18.7518195986651, 18.9270702491199) #D00080
+109       [18.9270702491199, 19.1023208995747) #D20080
+110       [19.1023208995747, 19.2775715500295) #D40080
+111       [19.2775715500295, 19.4528222004843) #D5007F
+112       [19.4528222004843, 19.6280728509392) #D7007F
+113        [19.6280728509392, 19.803323501394) #D9007E
+114        [19.803323501394, 19.9785741518488) #DA007E
+115       [19.9785741518488, 20.1538248023036) #DC007D
+116       [20.1538248023036, 20.3290754527584) #DD007C
+117       [20.3290754527584, 20.5043261032132) #DF017C
+118        [20.5043261032132, 20.679576753668) #E1027B
+119        [20.679576753668, 20.8548274041229) #E2047B
+120       [20.8548274041229, 21.0300780545777) #E4067A
+121       [21.0300780545777, 21.2053287050325) #E5087A
+122       [21.2053287050325, 21.3805793554873) #E70B79
+123       [21.3805793554873, 21.5558300059421) #E80D78
+124       [21.5558300059421, 21.7310806563969) #E91078
+125       [21.7310806563969, 21.9063313068517) #EB1277
+126       [21.9063313068517, 22.0815819573066) #EC1477
+127       [22.0815819573066, 22.2568326077614) #ED1676
+128       [22.2568326077614, 22.4320832582162) #EF1875
+129        [22.4320832582162, 22.607333908671) #F01A75
+130        [22.607333908671, 22.7825845591258) #F11C74
+131       [22.7825845591258, 22.9578352095806) #F31E73
+132       [22.9578352095806, 23.1330858600354) #F42073
+133       [23.1330858600354, 23.3083365104903) #F52272
+134       [23.3083365104903, 23.4835871609451) #F62471
+135       [23.4835871609451, 23.6588378113999) #F72671
+136       [23.6588378113999, 23.8340884618547) #F82870
+137       [23.8340884618547, 24.0093391123095) #FA2A6F
+138       [24.0093391123095, 24.1845897627643) #FB2C6F
+139       [24.1845897627643, 24.3598404132191) #FC2E6E
+140        [24.3598404132191, 24.535091063674) #FD306D
+141        [24.535091063674, 24.7103417141288) #FE326C
+142       [24.7103417141288, 24.8855923645836) #FE346C
+143       [24.8855923645836, 25.0608430150384) #FE366B
+144       [25.0608430150384, 25.2360936654932) #FE386A
+145        [25.2360936654932, 25.411344315948) #FE3A6A
+146        [25.411344315948, 25.5865949664028) #FE3D69
+147       [25.5865949664028, 25.7618456168577) #FE3F68
+148       [25.7618456168577, 25.9370962673125) #FE4167
+149       [25.9370962673125, 26.1123469177673) #FE4366
+150       [26.1123469177673, 26.2875975682221) #FE4566
+151       [26.2875975682221, 26.4628482186769) #FE4765
+152       [26.4628482186769, 26.6380988691317) #FE4964
+153       [26.6380988691317, 26.8133495195865) #FE4B63
+154       [26.8133495195865, 26.9886001700413) #FE4D62
+155       [26.9886001700413, 27.1638508204962) #FE5062
+156        [27.1638508204962, 27.339101470951) #FE5261
+157        [27.339101470951, 27.5143521214058) #FE5460
+158       [27.5143521214058, 27.6896027718606) #FE565F
+159       [27.6896027718606, 27.8648534223154) #FE585E
+160       [27.8648534223154, 28.0401040727702) #FE5A5D
+161        [28.0401040727702, 28.215354723225) #FE5C5C
+162        [28.215354723225, 28.3906053736799) #FE5F5B
+163       [28.3906053736799, 28.5658560241347) #FE615B
+164       [28.5658560241347, 28.7411066745895) #FE635A
+165       [28.7411066745895, 28.9163573250443) #FE6559
+166       [28.9163573250443, 29.0916079754991) #FE6758
+167       [29.0916079754991, 29.2668586259539) #FE6A57
+168       [29.2668586259539, 29.4421092764087) #FE6C56
+169       [29.4421092764087, 29.6173599268636) #FE6E55
+170       [29.6173599268636, 29.7926105773184) #FE7054
+171       [29.7926105773184, 29.9678612277732) #FE7253
+172        [29.9678612277732, 30.143111878228) #FE7452
+173        [30.143111878228, 30.3183625286828) #FE7651
+174       [30.3183625286828, 30.4936131791376) #FE7850
+175       [30.4936131791376, 30.6688638295924) #FE7A4E
+176       [30.6688638295924, 30.8441144800473) #FE7C4D
+177       [30.8441144800473, 31.0193651305021) #FE7E4C
+178       [31.0193651305021, 31.1946157809569) #FE7F4B
+179       [31.1946157809569, 31.3698664314117) #FE804A
+180       [31.3698664314117, 31.5451170818665) #FE8249
+181       [31.5451170818665, 31.7203677323213) #FE8448
+182       [31.7203677323213, 31.8956183827761) #FE8647
+183        [31.8956183827761, 32.070869033231) #FE8745
+184        [32.070869033231, 32.2461196836858) #FE8944
+185       [32.2461196836858, 32.4213703341406) #FE8B43
+186       [32.4213703341406, 32.5966209845954) #FE8D42
+187       [32.5966209845954, 32.7718716350502) #FE8E40
+188        [32.7718716350502, 32.947122285505) #FE903F
+189        [32.947122285505, 33.1223729359598) #FE923E
+190       [33.1223729359598, 33.2976235864147) #FE943C
+191       [33.2976235864147, 33.4728742368695) #FE953B
+192       [33.4728742368695, 33.6481248873243) #FE9639
+193       [33.6481248873243, 33.8233755377791) #FE9838
+194       [33.8233755377791, 33.9986261882339) #FE9A37
+195       [33.9986261882339, 34.1738768386887) #FE9B35
+196       [34.1738768386887, 34.3491274891435) #FE9D34
+197       [34.3491274891435, 34.5243781395983) #FE9F32
+198       [34.5243781395983, 34.6996287900532) #FEA031
+199        [34.6996287900532, 34.874879440508) #FEA22F
+200        [34.874879440508, 35.0501300909628) #FEA32E
+201       [35.0501300909628, 35.2253807414176) #FEA52D
+202       [35.2253807414176, 35.4006313918724) #FEA62B
+203       [35.4006313918724, 35.5758820423272) #FEA82A
+204       [35.5758820423272, 35.7511326927821) #FEA929
+205       [35.7511326927821, 35.9263833432369) #FEAB28
+206       [35.9263833432369, 36.1016339936917) #FEAC27
+207       [36.1016339936917, 36.2768846441465) #FEAE26
+208       [36.2768846441465, 36.4521352946013) #FEAF26
+209       [36.4521352946013, 36.6273859450561) #FEB125
+210       [36.6273859450561, 36.8026365955109) #FEB224
+211       [36.8026365955109, 36.9778872459657) #FEB423
+212       [36.9778872459657, 37.1531378964206) #FEB523
+213       [37.1531378964206, 37.3283885468754) #FEB622
+214       [37.3283885468754, 37.5036391973302) #FEB822
+215        [37.5036391973302, 37.678889847785) #FEB921
+216        [37.678889847785, 37.8541404982398) #FEBB20
+217       [37.8541404982398, 38.0293911486946) #FEBC20
+218       [38.0293911486946, 38.2046417991494) #FEBD1F
+219       [38.2046417991494, 38.3798924496043) #FEBF1F
+220       [38.3798924496043, 38.5551431000591) #FEC01F
+221       [38.5551431000591, 38.7303937505139) #FEC21E
+222       [38.7303937505139, 38.9056444009687) #FEC31E
+223       [38.9056444009687, 39.0808950514235) #FEC41E
+224       [39.0808950514235, 39.2561457018783) #FEC61D
+225       [39.2561457018783, 39.4313963523331) #FEC71D
+226        [39.4313963523331, 39.606647002788) #FEC81D
+227        [39.606647002788, 39.7818976532428) #FECA1D
+228       [39.7818976532428, 39.9571483036976) #FECB1D
+229       [39.9571483036976, 40.1323989541524) #FECC1D
+230       [40.1323989541524, 40.3076496046072) #FECE1C
+231        [40.3076496046072, 40.482900255062) #FECF1C
+232        [40.482900255062, 40.6581509055168) #FED01C
+233       [40.6581509055168, 40.8334015559717) #FED21C
+234       [40.8334015559717, 41.0086522064265) #FED31C
+235       [41.0086522064265, 41.1839028568813) #FED41C
+236       [41.1839028568813, 41.3591535073361) #FED61D
+237       [41.3591535073361, 41.5344041577909) #FED71D
+238       [41.5344041577909, 41.7096548082457) #FED81D
+239       [41.7096548082457, 41.8849054587005) #FEDA1D
+240       [41.8849054587005, 42.0601561091554) #FEDB1D
+241       [42.0601561091554, 42.2354067596102) #FEDC1D
+242        [42.2354067596102, 42.410657410065) #FEDE1E
+243        [42.410657410065, 42.5859080605198) #FEDF1E
+244       [42.5859080605198, 42.7611587109746) #FEE01E
+245       [42.7611587109746, 42.9364093614294) #FEE21E
+246       [42.9364093614294, 43.1116600118842) #FEE31F
+247       [43.1116600118842, 43.2869106623391) #FEE41F
+248       [43.2869106623391, 43.4621613127939) #FEE61F
+249       [43.4621613127939, 43.6374119632487) #FEE720
+250       [43.6374119632487, 43.8126626137035) #FEE820
+251       [43.8126626137035, 43.9879132641583) #FEE921
+252       [43.9879132641583, 44.1631639146131) #FEEB21
+253       [44.1631639146131, 44.3384145650679) #FEEC22
+254       [44.3384145650679, 44.5136652155227) #FEED22
+255       [44.5136652155227, 44.6889158659776) #FEEF23
+256       [44.6889158659776, 44.8641665164324] #FEF023</code></pre>
 </div>
 </div>
 
 
+</section>
+</section>
 </section>
 
 </main> <!-- /main -->
