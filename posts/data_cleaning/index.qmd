@@ -1,0 +1,428 @@
+---
+title: "Data Cleaning"
+author: "Group 9"
+date: "2023-04-05"
+date-modified: "`r Sys.Date()`"
+categories: [news]
+---
+
+# R Packages
+
+```{r}
+pacman::p_load(readr, sf, tmap)
+```
+
+# Import Data
+
+## Aspatial Data
+
+### General Practitioner Clinics
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+gp_data <- read_csv("data/aspatial/gp_data_geocoded.csv")[,-1]
+```
+
+#### Data
+
+```{r}
+head(gp_data, 5)
+```
+:::
+
+### Hospitals
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+hospital_data <- read_csv("data/aspatial/hospital_data_geocoded.csv")
+```
+
+#### Data
+
+```{r}
+head(hospital_data, 5)
+```
+
+:::
+
+### Polyclinics
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+poly_data <- read_csv("data/aspatial/polyclinic_data_geocoded.csv")
+```
+
+#### Data
+
+```{r}
+head(poly_data, 5)
+```
+
+:::
+
+### Nursing Homes
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+nursing_data <- read_csv("data/aspatial/nursing_home_data_geocoded.csv")
+```
+
+#### Data
+
+```{r}
+head(nursing_data, 5)
+```
+
+:::
+
+### Resident Population by Planning Area/Subzone, Age Group and Sex
+
+Only total population, not separated by genders
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+pop_data <- read_csv("data/aspatial/Resident Population 2015.csv", skip=11)[1:379,1:19]
+```
+
+#### Data
+
+```{r}
+head(pop_data, 5)
+```
+:::
+
+
+
+## Geospatial Data
+
+### Master Plan Subzone 2019
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial/MPSZ-2019", 
+                            layer = "MPSZ-2019") %>% 
+  st_transform(crs = 3414)
+```
+
+#### Data
+
+```{r}
+head(mpsz, 5)
+```
+:::
+
+### Locations of Bus Stops
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+busstop_sf <- st_read(dsn = "data/geospatial/BusStop_Feb2023", 
+                            layer = "BusStop") %>% 
+  st_transform(crs = 3414)
+```
+
+#### Data
+
+```{r}
+head(busstop_sf, 5)
+```
+:::
+
+### Locations of Train Stations
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+trainstation_sf <- st_read(dsn = "data/geospatial/TrainStation_Feb2023", 
+                            layer = "RapidTransitSystemStation")[,c(-1, -2)] %>% 
+  st_transform(crs = 3414)
+```
+
+#### Data
+
+```{r}
+head(trainstation_sf, 5)
+```
+:::
+
+
+
+
+
+
+
+# Data Preparation
+## Retrieve Geospatial Data
+
+### General Practitioner Clinics
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+gp_sf <- st_as_sf(gp_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+```
+
+#### Data
+```{r}
+head(gp_sf, 5)
+```
+:::
+
+### Hospitals
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+hospital_sf <- st_as_sf(hospital_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+```
+
+#### Data
+```{r}
+head(hospital_sf, 5)
+```
+:::
+
+
+### Polyclinics
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+poly_sf <- st_as_sf(poly_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+```
+
+#### Data
+```{r}
+head(poly_sf, 5)
+```
+:::
+
+### Nursing Homes
+
+::: {.panel-tabset}
+#### Code
+
+```{r}
+nursing_sf <- st_as_sf(nursing_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+```
+
+#### Data
+```{r}
+head(nursing_sf, 5)
+```
+:::
+
+
+
+
+## Merge MPSZ with Population Data
+
+### Convert Data Types
+```{r}
+pop_is_char <- sapply(pop_data[c(2:19)], is.character)
+pop_data[c(2:19)][ , pop_is_char] <- as.data.frame(apply(pop_data[c(2:19)][ , pop_is_char], 2, as.numeric))
+```
+
+### Total Population
+
+```{r}
+pop_data$...1  = toupper(pop_data$...1)
+
+total_pop <- merge(x = mpsz, y = pop_data, by.x = "SUBZONE_N", by.y = "...1", all.x = TRUE)
+```
+
+## Validity of Geometries of sds
+```{r}
+length(which(st_is_valid(trainstation_sf) == FALSE))
+```
+
+make valid cannot do
+
+
+```{r}
+trainstation_sf <- trainstation_sf[st_is_valid(trainstation_sf) == TRUE,]
+trainstation_sf <- trainstation_sf[!st_is_empty(trainstation_sf),,drop=FALSE]
+length(which(st_is_valid(trainstation_sf) == FALSE))
+```
+
+
+
+
+
+
+# Data Visualisation
+
+## General Practitioner Clinics
+
+```{r}
+tmap_mode("plot")
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total...2",
+    style = "cont",
+    alpha = 0.4) +
+  tm_fill() + 
+tm_shape(gp_sf) + 
+  tm_symbols(shape=24,
+    col  = "blue",
+    size = 0.15) +
+  tm_layout(main.title="General Practitioner Clinics",
+            main.title.position = "center")
+```
+
+## Hospitals
+
+```{r}
+general_hospital = hospital_sf[hospital_sf$TYPE == "GENERAL",]
+specialised_hospital = hospital_sf[hospital_sf$TYPE == "SPECIALISED",]
+community_hospital = hospital_sf[hospital_sf$TYPE == "COMMUNITY",]
+
+
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total...2",
+    style = "cont",
+    alpha = 0.4) +
+tm_shape(general_hospital) + 
+  tm_symbols(
+    shape=23,
+    col  = "red",
+    size = 0.15) +
+tm_shape(specialised_hospital) + 
+  tm_symbols(
+    shape=23,
+    col  = "blue",
+    size = 0.15) +
+tm_shape(community_hospital) + 
+  tm_symbols(
+    shape=23,
+    col  = "green",
+    size = 0.15) +
+  tm_layout(main.title="Hospitals",
+            main.title.position = "center")
+```
+
+
+
+## Polyclinics
+
+```{r}
+tmap_mode("plot")
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total...2",
+    style = "cont",
+    alpha = 0.4) +
+tm_shape(poly_sf) + 
+  tm_symbols(shape=22,
+    col  = "orange",
+    size = 0.15) +
+  tm_layout(main.title="Polyclinics",
+            main.title.position = "center")
+```
+
+
+
+
+## Nursing Homes
+
+```{r}
+tmap_mode("plot")
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total...2",
+    style = "cont",
+    alpha = 0.4) +
+tm_shape(nursing_sf) + 
+  tm_symbols(shape=21,
+    col  = "green",
+    size = 0.15) +
+  tm_layout(main.title="Nursing Homes",
+            main.title.position = "center")
+```
+
+
+
+## Bus Stops
+
+```{r}
+tmap_mode("plot")
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total...2",
+    style = "cont",
+    alpha = 0.4) +
+tm_shape(busstop_sf) + 
+  tm_symbols(shape=20,
+    col  = "darkblue",
+    size = 0.15) +
+  tm_layout(main.title="Bus Stops",
+            main.title.position = "center")
+```
+
+
+
+## MRT Stations
+
+```{r}
+mrt <- trainstation_sf[trainstation_sf$TYP_CD_DES == "MRT",]
+lrt <- trainstation_sf[trainstation_sf$TYP_CD_DES == "LRT",]
+
+tmap_mode("plot")
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total...2",
+    style = "cont",
+    alpha = 0.4) +
+tm_shape(mrt) + 
+  tm_symbols(shape=20,
+    col  = "green",
+    size = 0.15) +
+tm_shape(lrt) + 
+  tm_symbols(shape=20,
+    col  = "darkgreen",
+    size = 0.15) +
+  tm_layout(main.title="Train Stations",
+            main.title.position = "center")
+```
+
+
+
+# First-order Spatial Point Patterns Analysis
+```{r echo=FALSE}
+pacman::p_load(DiagrammeR)
+grViz(diagram = "digraph flowchart {
+  graph [layout = dot, rankdir = LR]
+  node [fontname = arial, shape = oval]
+  tab1 [label = '@@1']
+  tab2 [label = '@@2']
+  tab3 [label = '@@3']
+  tab4 [label = '@@4']
+  
+  tab1 -> tab2 -> tab3 -> tab4;
+}
+  
+  [1]: 'simple feature'
+  [2]: 'spatial*'    
+  [3]: 'generic spatial'   
+  [4]: 'ppp'  
+  ")
+```
+

@@ -24,10 +24,10 @@ We want to explore the relation between transportation and these facilities.
 
 # Dataset
 
-- [Master Plan 2014 Subzone Boundary (Web)](https://data.gov.sg/dataset/master-plan-2014-subzone-boundary-web?resource_id=1c6b586b-61ca-45a9-b704-df4c9057fbd6) - SHP files of Singapore subzone boundaries
-- [Resident Population by Planning Area/Subzone, Age Group and Sex, 2015](https://tablebuilder.singstat.gov.sg/table/CT/8182) - CSV file
-- [SDCP MRT Station Point](https://data.gov.sg/dataset/lta-mrt-station-exit) - SHP files
-- [Bus Stop Location](https://datamall.lta.gov.sg/content/datamall/en/static-data.html) - SHP files
+-   [Master Plan 2014 Subzone Boundary (Web)](https://data.gov.sg/dataset/master-plan-2014-subzone-boundary-web?resource_id=1c6b586b-61ca-45a9-b704-df4c9057fbd6) - SHP files of Singapore subzone boundaries
+-   [Resident Population by Planning Area/Subzone, Age Group and Sex, 2015](https://tablebuilder.singstat.gov.sg/table/CT/8182) - CSV file
+-   [SDCP MRT Station Point](https://data.gov.sg/dataset/lta-mrt-station-exit) - SHP files
+-   [Bus Stop Location](https://datamall.lta.gov.sg/content/datamall/en/static-data.html) - SHP files
 
 # Relevant Works
 
