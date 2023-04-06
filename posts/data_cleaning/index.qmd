@@ -9,7 +9,7 @@ categories: [news]
 # R Packages
 
 ```{r}
-pacman::p_load(readr, sf, tmap)
+pacman::p_load(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools)
 ```
 
 # Import Data
@@ -248,7 +248,8 @@ pop_data$...1  = toupper(pop_data$...1)
 total_pop <- merge(x = mpsz, y = pop_data, by.x = "SUBZONE_N", by.y = "...1", all.x = TRUE)
 ```
 
-## Validity of Geometries of sds
+
+## Validity of Geometries of Train Stations
 ```{r}
 length(which(st_is_valid(trainstation_sf) == FALSE))
 ```
@@ -260,10 +261,19 @@ make valid cannot do
 trainstation_sf <- trainstation_sf[st_is_valid(trainstation_sf) == TRUE,]
 trainstation_sf <- trainstation_sf[!st_is_empty(trainstation_sf),,drop=FALSE]
 length(which(st_is_valid(trainstation_sf) == FALSE))
+
 ```
 
 
-
+## Excluding Unnecessary Data Points
+```{r}
+gp_sf <- st_intersection(mpsz, gp_sf)
+hospital_sf <- st_intersection(mpsz, hospital_sf)
+poly_sf <- st_intersection(mpsz, poly_sf)
+nursing_sf <- st_intersection(mpsz, nursing_sf)
+busstop_sf <- st_intersection(mpsz, busstop_sf)
+trainstation_sf <- st_intersection(mpsz, trainstation_sf)
+```
 
 
 
@@ -425,4 +435,218 @@ grViz(diagram = "digraph flowchart {
   [4]: 'ppp'  
   ")
 ```
+
+## Conversion of Datatypes
+
+idk why train stations converts into spatial polygon
+
+### Converting *sf* data frames to sp’s *Spatial** class
+```{r}
+mpsz_spatial <- as_Spatial(mpsz)
+gp_spatial <- as_Spatial(gp_sf)
+hospital_spatial <- as_Spatial(hospital_sf)
+poly_spatial <- as_Spatial(poly_sf)
+nursing_spatial <- as_Spatial(nursing_sf)
+busstop_spatial <- as_Spatial(busstop_sf)
+trainstation_spatial <- as_Spatial(trainstation_sf)
+```
+
+### Converting sp’s *Spatial** Class into Generic *sp* Format
+```{r}
+mpsz_sp <- as(mpsz_spatial, "SpatialPolygons")
+gp_sp <- as(gp_spatial, "SpatialPoints")
+hospital_sp <- as(hospital_spatial, "SpatialPoints")
+poly_sp <- as(poly_spatial, "SpatialPoints")
+nursing_sp <- as(nursing_spatial, "SpatialPoints")
+busstop_sp <- as(busstop_spatial, "SpatialPoints")
+trainstation_sp <- as(trainstation_spatial, "SpatialPolygons")
+```
+
+### Converting Generic *sp* Format into spatstat’s *ppp* Format
+```{r}
+gp_ppp <- as(gp_sp, "ppp")
+hospital_ppp <- as(hospital_sp, "ppp")
+poly_ppp <- as(poly_sp, "ppp")
+nursing_ppp <- as(nursing_sp, "ppp")
+busstop_ppp <- as(busstop_sp, "ppp")
+```
+
+### Data Visualisation
+
+::: {.panel-tabset}
+
+#### Master Plan Subzone 2019
+
+```{r}
+plot(mpsz_spatial, main="General Practitioner Clinics")
+```
+
+#### General Practitioner Clinics
+```{r}
+plot(gp_ppp, main="General Practitioner Clinics")
+```
+
+
+#### Hospitals
+```{r}
+plot(hospital_ppp, main="Hospitals")
+```
+
+
+#### Polyclinics
+```{r}
+plot(poly_ppp, main="Polyclinics")
+```
+
+#### Nursing Homes
+```{r}
+plot(nursing_ppp, main="Nursing Homes")
+```
+
+#### Bus Stops
+```{r}
+plot(busstop_ppp, main="Bus Stops")
+```
+
+
+#### Mrt Stations
+```{r}
+plot(trainstation_spatial, main="Mrt Stations")
+```
+:::
+
+## Check for Duplicate Data Points
+```{r}
+any(duplicated(gp_ppp))
+```
+
+```{r}
+any(duplicated(hospital_ppp))
+```
+```{r}
+any(duplicated(poly_ppp))
+```
+
+```{r}
+any(duplicated(nursing_ppp))
+```
+
+
+```{r}
+any(duplicated(busstop_ppp))
+```
+
+### Handle Duplicated Points
+If we want to know how many locations have more than one point event, we can use the code chunk below.
+```{r}
+sum(multiplicity(gp_ppp) > 1)
+```
+```{r}
+sum(multiplicity(nursing_ppp) > 1)
+```
+
+
+```{r}
+sum(multiplicity(busstop_ppp) > 1)
+```
+
+
+
+The second solution is use jittering, which will add a small perturbation to the duplicate points so that they do not occupy the exact same space.
+
+```{r}
+gp_ppp_jit <- rjitter(gp_ppp,retry = TRUE,
+                             nsim = 1, 
+                             drop = TRUE)
+any(duplicated(gp_ppp_jit))
+```
+
+```{r}
+nursing_ppp_jit <- rjitter(nursing_ppp,retry = TRUE,
+                             nsim = 1, 
+                             drop = TRUE)
+any(duplicated(nursing_ppp_jit))
+```
+
+
+```{r}
+busstop_ppp_jit <- rjitter(busstop_ppp,retry = TRUE,
+                             nsim = 1, 
+                             drop = TRUE)
+any(duplicated(busstop_ppp_jit))
+```
+
+## Creating *owin* Object
+```{r}
+mpsz_owin <- as(mpsz_sp, "owin")
+gp_ppp = gp_ppp_jit[mpsz_owin]
+hospital_ppp = hospital_ppp[mpsz_owin]
+poly_ppp = poly_ppp[mpsz_owin]
+nursing_ppp = nursing_ppp_jit[mpsz_owin]
+busstop_ppp = busstop_ppp_jit[mpsz_owin]
+mpsz_owin
+```
+
+## Kernel Density Estimation (KDE)
+
+rescale
+```{r}
+gp_ppp.km <- rescale(gp_ppp, 1000, "km")
+hospital_ppp.km <- rescale(hospital_ppp, 1000, "km")
+poly_ppp.km <- rescale(poly_ppp, 1000, "km")
+nursing_ppp.km <- rescale(nursing_ppp, 1000, "km")
+busstop_ppp.km <- rescale(busstop_ppp, 1000, "km")
+```
+
+### General Practitioner Clinics
+```{r}
+gp_bw <- plot(density(gp_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian"),
+     main = "General Practitioner Clinics")
+gp_bw
+```
+
+### Hospitals
+```{r}
+hospital_bw <- plot(density(hospital_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian"),
+     main = "Hospitals")
+hospital_bw
+```
+
+
+### Polyclinics
+```{r}
+poly_bw <- plot(density(poly_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian"),
+     main = "Polyclinics")
+poly_bw
+```
+
+### Nursing Homes
+```{r}
+nursing_bw <- plot(density(nursing_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian"),
+     main = "Nursing Homes")
+nursing_bw
+```
+
+### Bus Stops
+```{r}
+busstop_bw <- plot(density(busstop_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian"),
+     main = "Bus Stops")
+busstop_bw
+```
+
 
