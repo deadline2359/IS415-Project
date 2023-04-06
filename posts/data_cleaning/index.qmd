@@ -605,7 +605,6 @@ gp_bw <- plot(density(gp_ppp.km,
              edge = TRUE,
              kernel = "gaussian"),
      main = "General Practitioner Clinics")
-gp_bw
 ```
 
 ### Hospitals
@@ -615,7 +614,6 @@ hospital_bw <- plot(density(hospital_ppp.km,
              edge = TRUE,
              kernel = "gaussian"),
      main = "Hospitals")
-hospital_bw
 ```
 
 
@@ -626,7 +624,6 @@ poly_bw <- plot(density(poly_ppp.km,
              edge = TRUE,
              kernel = "gaussian"),
      main = "Polyclinics")
-poly_bw
 ```
 
 ### Nursing Homes
@@ -636,7 +633,6 @@ nursing_bw <- plot(density(nursing_ppp.km,
              edge = TRUE,
              kernel = "gaussian"),
      main = "Nursing Homes")
-nursing_bw
 ```
 
 ### Bus Stops
@@ -646,7 +642,6 @@ busstop_bw <- plot(density(busstop_ppp.km,
              edge = TRUE,
              kernel = "gaussian"),
      main = "Bus Stops")
-busstop_bw
 ```
 
 
