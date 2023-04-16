@@ -7,7 +7,7 @@ website:
     right:
       - about.qmd
       - icon: github
-        href: https://github.com/
+        href: https://github.com/deadline2359/IS415-Project
 format:
   html:
     theme: cosmo
