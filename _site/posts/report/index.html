@@ -144,135 +144,468 @@ ul.task-list li input[type="checkbox"] {
 
 
 
+<div class="justify">
 <section id="abstract" class="level1">
 <h1>Abstract</h1>
-<div class="justify">
 <p>Accessibility and distribution of healthcare networks are critical for national healthcare, particularly for the elderly population who are at a higher risk of developing multiple chronic illnesses.</p>
-<p>Since 2017, during the restructuring of the Regional Health System (RHS), Singapore has implemented health policies by creating an integrated network of acute hospitals, community and primary care providers within a certain geographic region, aiming to provide comprehensive care and a care continuum for patients [2].</p>
-<p>However, little emphasis has been given to assessing the accessibility of healthcare services from a spatial analytical perspective. Much information on the internet is largely general diagrams of spatial information [3,6]. This research article aims to analyse the geographical accessibility, kernel density clusters and distribution networks of major healthcare services in Singapore, which includes acute and community hospitals, primary care networks (PCN), eldercare and nursing homes, and General Practitioners (GPs) services under the Community Health Assist Scheme (CHAS) for older persons.</p>
-</div>
+<p>Since the restructuring of the Regional Health System (RHS) in 2017, Singapore has implemented health policies by creating an integrated network of acute hospitals, community and primary care providers within a certain geographic region, aiming to provide comprehensive care and a care continuum for patients [4].</p>
+<p>However, little emphasis has been given to assessing the accessibility of healthcare services from a geospatial analytical perspective. This research article aims to analyse the geographical accessibility, kernel density clusters and distribution networks of major healthcare services in Singapore, which includes acute and community hospitals, primary care networks (PCN), eldercare and nursing homes, and General Practitioners (GPs) services under the Community Health Assist Scheme (CHAS) for older persons.</p>
 </section>
 <section id="introduction" class="level1">
 <h1>Introduction</h1>
-<div class="justify">
-<p>With an ageing population and a growing burden of chronic diseases, care delivery in Singapore is becoming increasingly complex [7]. The country’s health system is shifting its focus beyond hospitals to the community with an emphasis on health promotion at all stages of life [4]. This approach is highlighted under the Ministry of Health’s (MOH) strategic planning in preventive care to ensure long-term sustainability, reducing expenditure while providing quality and affordable healthcare for people of all ages.</p>
-<p>Moreover, Singapore’s healthcare system is being distributed into three Regional Health System (RHS) providers consisting of SingHealth, the National Healthcare Group (NHG), and the National University Health System (NUHS). RHS providers are increasingly looking into areas of health informatics, geographical and geospatial information to improve health service delivery outcomes, reduce cost, and improve continuity of care within the community.</p>
-</div>
+<p>With an ageing population and a growing burden of chronic diseases, care delivery in Singapore is becoming increasingly complex [10]. The country’s health system is shifting its focus beyond hospitals to the community with an emphasis on health promotion at all stages of life [7]. This approach is highlighted under the Ministry of Health’s (MOH) strategic planning in preventive care to ensure long-term sustainability, reducing expenditure while providing quality and affordable healthcare for people of all ages.</p>
+<p>Within Singapore’s healthcare system, it consists of three Regional Health System (RHS) providers, namely SingHealth, National Healthcare Group (NHG), and National University Health System (NUHS). To be future-ready, RHS providers are increasingly looking into areas of health informatics, geographical and geospatial information to improve health service delivery outcomes, reduce cost, and improve continuity of care within the community [6].</p>
 </section>
 <section id="methodology-of-data-collection" class="level1">
 <h1>Methodology of Data Collection</h1>
 <section id="collection-of-data-methods" class="level2">
 <h2 class="anchored" data-anchor-id="collection-of-data-methods">Collection of Data Methods</h2>
-<div class="justify">
-<p>We obtained address information and postal code of publicly available data on Acute and Community Hospitals, Eldercare and Nursing Homes, Primary Care Networks (PCN), and General Practitioners (GPs) services under the Community Health Assist Scheme (CHAS) from relevant governmental agencies and other websites.</p>
-</div>
+<p>We obtained address information and postal codes of publicly available data on Acute and Community Hospitals, Eldercare Facilities and Nursing Homes, Primary Care Networks (PCN), and General Practitioners (GPs) services under the Community Health Assist Scheme (CHAS) from relevant governmental agencies and other websites.</p>
+<section id="data-sources" class="level3">
+<h3 class="anchored" data-anchor-id="data-sources">Data Sources</h3>
+<table class="table">
+<caption>Table 1: Data Sources</caption>
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Data</th>
+<th>Source</th>
+<th>Additional Actions Required</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Government Restructured Hospitals</td>
+<td>HealthHub</td>
+<td>Conversion to SHP Files</td>
+</tr>
+<tr class="even">
+<td>Community and Rehabilitation Hospitals</td>
+<td>HealthHub</td>
+<td>Conversion to SHP Files</td>
+</tr>
+<tr class="odd">
+<td>Polyclinics</td>
+<td>Professor Kam Tin Seong</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Nursing Homes</td>
+<td>Professor Kam Tin Seong</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Eldercare Facilities</td>
+<td>Data.gov.sg</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Primary Care Networks Clinics</td>
+<td>Agency for Integrated Care (AIC)</td>
+<td>Conversion to SHP Files</td>
+</tr>
+<tr class="odd">
+<td>Community Health Assist Scheme Clinics</td>
+<td>Agency for Integrated Care (AIC) &amp; Community Health Assist Scheme (CHAS)</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Master Plan 2014 Planning Area Boundary (Web)</td>
+<td>Data.gov.sg</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Master Plan 2019 Subzone Boundary (No Sea)</td>
+<td>Data.gov.sg</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Resident Population by Planning Area/Subzone, Ethnic Group and Sex, 2015</td>
+<td>Data.gov.sg</td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>Roads Networks in Singapore</td>
+<td>Open Street Map</td>
+<td></td>
+</tr>
+<tr class="even">
+<td>Residential Buildings in Singapore</td>
+<td>Open Street Map</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+</section>
 </section>
 <section id="preprocessing-data-methods" class="level2">
 <h2 class="anchored" data-anchor-id="preprocessing-data-methods">Preprocessing Data Methods</h2>
-<div class="justify">
-<p>We use R studio to perform geocoding of the address and postal code using SLA API. Transform and convert the geospatial data point of locations of various healthcare facilities into a shapefile for usage in our R programming for geospatial analysis methods. We had to also do data scraping from web datatables and perform manual data cleaning for information that is incorrectly reflected as some of the organisations did not provide correct information.</p>
-</div>
+<p>We use R studio to perform geocoding of the addresses and postal codes using SLA API. After which, the data is transformed and converted into the geospatial data point of locations of various healthcare facilities into easily accessible shapefiles for usage in our R programming for geospatial analysis methods. Data scraping from web datatables are also conducted. The data scraped then required manual data cleaning for incorrectly reflected information as certain webpages did not provide correct/updated information.</p>
 </section>
 <section id="r-methods-of-data-analysis" class="level2">
 <h2 class="anchored" data-anchor-id="r-methods-of-data-analysis">R Methods of Data Analysis</h2>
-<div class="justify">
-<p>We used mainly two R methods to derive our geospatial analysis for analysing healthcare service in Singapore. First method we used was using the Kernel Density Estimation (KDE) - 1st Order Spatial Point Patterns Analysis Methods to evaluate the clustering patterns or distribution healthcare facilities in Singapore.</p>
-<p>Second method we used was using the Geographical Modelling of Accessibility, visualising accessibility using Hansen, KD2SFCA and SAM Methods to measure the accessibility of healthcare services in Singapore</p>
-<p>HealthHub performing Geocoding using Addresses and Postal Codes Conversion to SHP Files - Government Restructured Hospitals (Healthhub) - Community and Rehabilitation Hospitals (Healthhub) - Polyclinics (Prof Kam) - Nursing Homes (Prof Kam) - Eldercare Facilities (Data.gov.sg)</p>
-<p>Agency of Integrated Care performing Geocoding using Addresses &amp; Postal Codes Conversion to SHP Files - Primary Care Networks Clinics (PCN List) - Community Health Assist Scheme Clinics (AIC &amp; CHAS)</p>
-<p>Geospatial and Aspatial Datasets - Data.gov.sg – Masterplan 2014 and 2019 Subzone No Sea PL - Data.gov.sg - CostalOutline - Singapore Department of Statistics (DOS) – Population Data PA-SZ-AGE - LTA DataMall – Bus Stop Location &amp; Network</p>
-<p>Open Street Map (OSM) - OSM Singapore Roads Networks - OSM Filtering Residential Buildings - Real-Centroids of residential buildings</p>
-</div>
+<p>We used mainly two geospatial methods in our analysis of healthcare service in Singapore.</p>
+<p>First method is Kernel Density Estimation (KDE). It allows the evaluation of the clustering patterns and distribution of healthcare facilities in Singapore.</p>
+<p>Second method is geographical modelling of accessibility. Visualisation using Hansen, KD2SFCA, SAM and 2SFCA Methods to measure the accessibility of healthcare services in Singapore, and will be analysed in this paper.</p>
 </section>
 </section>
 <section id="motivation-of-rshiny-app-and-geospatial-visualisation-methods" class="level1">
-<h1>Motivation of RShiny App and geospatial visualisation methods</h1>
-<div class="justify">
+<h1>Motivation of RShiny App and Geospatial Visualisation methods</h1>
 <p>It is crucial to assess the healthcare system’s distribution and accessibility in Singapore to ensure that all residents have access to high-quality medical care. This application aims to do just that by providing valuable insights into the distribution of primary and tertiary healthcare facilities in Singapore.</p>
-<p>By using geospatial analytics, visualisation and mapping techniques, this application will identify potential gaps or disparities in healthcare accessibility and distribution. The insights gained from this analysis will help policymakers and healthcare providers make data-driven decisions to improve the planning and distribution of healthcare services in Singapore.</p>
+<p>By using geospatial analytics, visualisation and mapping techniques, this application will identify potential gaps or disparities in healthcare accessibility and distribution. We hope that the insights gained from this analysis will help policymakers and healthcare providers to make data-driven decisions to improve the planning and distribution of healthcare services in Singapore.</p>
 <p>The map models generated by this application will identify areas with high population densities but low healthcare facility densities, allowing policymakers to allocate resources and invest in healthcare infrastructure in these underserved areas. With these insights, policymakers can ensure that all residents have equal access to high-quality medical care, regardless of their location or socioeconomic status.</p>
 <p>This application’s visualisation and mapping capabilities will provide a detailed understanding of the healthcare system in Singapore, making it easier for policymakers and healthcare providers to identify areas for improvement. By utilising data-driven insights, Singapore can continue to be a leader in healthcare and ensure that all residents receive the best possible medical care.</p>
 <p>In summary, this application’s persuasive and dominant motivation is to identify potential gaps and disparities in healthcare accessibility and distribution in Singapore, provide valuable insights to policymakers and healthcare providers, and ultimately ensure that all residents have equal access to high-quality medical care.</p>
-</div>
 </section>
 <section id="initial-data-preparation" class="level1">
 <h1>Initial Data Preparation</h1>
-<div class="justify">
-<p>We use open street map data to obtain all roads in Singapore, which includes residential walkways and roads used by traffic. Hence we had to perform filtering methods to filter out roads used by vehicle transportation and small roads within living estates of Singapore residential areas. For each health facilities dataset we performed OD Matrix for each individual data set, although it was a time consuming process but it was needed for further data processing using R studio.</p>
-<p>Fig. 1. Show the all road network of Singapore inclusive of small roads within narrow roads in Singapore. This will enable it to perform QNEAT3 Network Analysis for OD Matrix Computation (Origin-Destination) between the hospital facilities and road networks points.</p>
+<p>To acquire accessibility, we need to obtain the road networks in Singapore. This data can be found from Open Street Map, which includes residential walkways and roads used by traffic. Hence we had to perform filtering methods to filter out roads used by vehicle transportation and small roads within living estates of Singapore residential areas.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/road_network.png" class="img-fluid figure-img" alt="Figure 1: Road Networks in Singapore"></p>
+<p></p><figcaption class="figure-caption">Figure 1: All Road Networks in Singapore before filtering, taken from QGIS</figcaption><p></p>
+</figure>
 </div>
+<p>In addition, we need to derive Origin-Destination (OD) Matrix for each type of medical facility. The process was time consuming but necessary for further data processing.</p>
+<p>In order to accomplish this, we utilise QGIS Network Analysis Toolbox 3 (QNEAT3) Network Analysis for OD Matrix Computation between the hospital facilities and road networks points.</p>
 <section id="obtaining-singapore-buildings-using-real-centroid" class="level2">
 <h2 class="anchored" data-anchor-id="obtaining-singapore-buildings-using-real-centroid">Obtaining Singapore Buildings using Real-Centroid</h2>
-<div class="justify">
-<p>Public and Private Residential Buildings shapefile &gt; Extraction of Shapefile into R</p>
+<p>Similarly using QGIS, we obtained the public and private residential buildings in Singapore, which is then saved as a shapefile</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/Picture20.jpg" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 2: Public and Private Residential Buildings in Singapore</figcaption><p></p>
+</figure>
 </div>
 </section>
 <section id="findings-of-geographical-accessibility-models" class="level2">
 <h2 class="anchored" data-anchor-id="findings-of-geographical-accessibility-models">Findings of Geographical Accessibility Models</h2>
-<div class="justify">
-<p>In figure 2, We will use the URA Master Plan Subzone map provided by Urban redevelopment authority as our reference point for the description of geographical location within Singapore, so it will be easier for reader to understand which geographical location we are referring to.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/buildings/ura_master_plan.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 3: URA Master Plan</figcaption><p></p>
+</figure>
 </div>
-<p>Population Size Largest - Central Region 2nd Largest - North-East and South-East Region 3rd Largest - South East Region 4th Largest - North West Region</p>
-<p>In figure 3, it represents all the private and public residential buildings extracted from the OSM layer. We had applied real-centroid to extract out the centroids of all livable buildings in Singapore.</p>
-<p>This will help us mathematically estimate and visually understand the demand within different geographical regions based on clusters of points of residents buildings within each region. Hence it will help us visually understand the geographical accessibility modelling of various regions within Singapore map. This would be effective in helping us understand how the density / cluster of KDE should be like for each given region within Singapore.</p>
-<p>In the diagram we notice that the largest proportion of citizens live within the Central, followed by the North-East, South-East and South West region, due to the large clusters of data points overlapping one another on the map. Moreover a smaller group of people live close to the North-West region of singapore. This will help us get a general understanding of the demand and supply, distribution of health service and accessibility of healthcare within certain regions.</p>
-<p>We would like to highlight that regions covered by forests have no healthcare facilities and it is important to exclude them when we are taking this into account when analysing our data for accessibility and distribution of healthcare services.</p>
-<p>ACC Hansen Values According to the diagram, we analyse ACC Hansen values by their lower and upper limit if ACC Hansen values are from 0 (Lower Limit) to 1100 (Upper Limit). We also want to highlight that the ranges for ACC Hansen may vary depending on the healthcare facilities dataset being used. A faster way to look at the information is to view the colour distribution the darker the colour is a representation that the area has higher accessibility of the healthcare facilities Hansen value between 0 and 51 is considered low accessibility Hasen value between 52 and 200 is moderate accessibility Hasen values above 200 could be considered as good accessibility.</p>
-<p>Accessibility to Eldercare using the Hansen Method From the diagram we can observe that accessibility of eldercare facilities is largely within the central region of Singapore. The North-East, South-East and South-West Region are generally largely accessible for residents.</p>
-<p>At the top of the North West Region, there is a lack of eldercare facilities, in which health policy makers could consider building more eldercare facilities in future national budgeting and planning. However the visualisation of the model suggests that eldercare are generally well distributed across Singapore.</p>
-<p>ACC Hansen Values We would like to highlight that the range of ACC Hansen values may differ based on the healthcare facilities dataset being used. A quick way to interpret the information is to observe the colour distribution across the map, where the darker colours indicate higher accessibility and light colour represent lower accessibility to healthcare facilities within a region Hansen value between 0 and 219 is considered low accessibility Hasen value between 220 and 1263 is moderate accessibility Hasen values above 1264 could be considered as good accessibility.</p>
-<p>PCN Clinics Accessibility using the Hansen Method From the diagram we can observe that accessibility of Primary Care Network (PCN) facilities are highly accessible within the Central, North-East and South-East Region region of Singapore, with reference to the dark purple colours within these regions. Additionally, the North West Region has acceptable range within the moderate accessibility of PCN Clinics for its residence.</p>
-<p>ACC Hansen Values We would like to highlight that the range of ACC Hansen values may differ based on the healthcare facilities dataset being used. A quick way to interpret the information is to observe the colour distribution across the map, where the darker colours indicate higher accessibility and light colour represent lower accessibility to healthcare facilities within a region Hansen value between 0 and 438 is considered low accessibility Hasen value between 439 and 2808 is moderate accessibility Hasen values above 2809 would be considered as good accessibility.</p>
-<p>Accessibility to CHAS Clinics using the Hansen Method From the diagram, it can be observed that accessibility of GP Clinics under CHAS are concentrated in the Central, North-East, and South-East regions of Singapore, as indicated by the dark purple colour within these areas. Additionally, the North West Region has acceptable range within the moderate accessibility of CHAS Clinics for its residence.</p>
-<p>ACC Hansen Colour Gradient Interpretation Darker colours indicate higher accessibility and light colour represent lower accessibility to healthcare facilities within a region</p>
-<p>Accessibility to Government Restructured Hospitals using the Hansen Method From the diagram, it can be observed that accessibility of Government Restructured Hospitals are largely accessible within the Central, North-East, South West regions of Singapore, as indicated by the dark blue colour within these areas. North West is in an acceptable range.</p>
-<p>MOH planning on upcoming hospitals However the South East Regions have significantly lower Government Restructured Hospitals which may not serve the residents living near the marine parade region. In future planning, the Ministry of Health (MOH) has announced that they will be building an Eastern Integrated Health Campus. Therefore, we believe that the accessibility for residents living in the South-East region will improve once it is built.</p>
-<p>ACC Hansen Colour Gradient Interpretation Darker colours indicate higher accessibility and light colour represent lower accessibility to healthcare facilities within a region</p>
-<p>Accessibility to Polyclinics using the Hansen Method From the diagram, it can be observed that accessibility of polyclinics is largely accessible within the Central, North-East, South West and East regions of Singapore, as indicated by the dark green colour within these areas.</p>
-<p>MOH planning on upcoming hospitals North West has lower accessibility. However in future planning, the Ministry of Health (MOH) has announced that they will be building Woodlands Health Campus. Therefore, we believe that the accessibility for residents living in the North-West region will improve once it is built.</p>
-<p>ACC Hansen Colour Gradient Interpretation Darker colours indicate higher accessibility and light colour represent lower accessibility to healthcare facilities within a region</p>
-<p>Accessibility to Nursing Homes using the Hansen Method From the diagram, it can be observed that accessibility of polyclinics is largely accessible within all regions of Singapore, as indicated by the dark red colour within the region.</p>
-<p>Other methods of accessibility using Hansen, KD2SFCA and SAM Methods We would like to inform users that are only interpreting the accessibility for hansen method, as there are also other methods like KD2SFCA and SAM Methods. However their principles are relatively similar to the Hasen Methods of accessibility. If you would like to have more information please view the RShiny App at https://is415-group9.shinyapps.io/IS415-Group9/</p>
-<p>Findings of Kernel Density Estimation Models with URA Master Plan and Residential Buildings</p>
-<p>In figure 1, We will use the URA Master Plan Subzone map provided by Urban redevelopment authority as our reference point for the description of geographical location within Singapore, so it will be easier for readers to understand which geographical location we are referring to.</p>
-<p>Population Size Largest - Central Region 2nd Largest - North-East and South-East Region 3rd Largest - South East Region 4th Largest - North West Region</p>
-<p>Figure 2, will help us mathematically estimate and visually understand the demand and supply of hospital facilities within different geographical regions based on clusters of points of residents buildings within each region. This would be effective in helping us understand how the density / cluster of KDE should be like for each given region within Singapore.</p>
-<p>In the diagram we notice that the largest proportion of citizens live within the Central, followed by the North-East, South-East and South West region, due to the large clusters of data points overlapping one another on the map. Moreover a smaller group of people live close to the North-West region of singapore. This will help us get a general understanding of the demand and supply, distribution of health service and accessibility of healthcare within certain regions.</p>
-<p>We would like to highlight that regions covered by forests have no healthcare facilities and it is important to exclude them when we are taking this into account when analysing our data for accessibility and distribution of healthcare services.</p>
-<p>Performing Kernel Density Estimation (KDE) - First Order SPPA We are applying Kernel density estimation (KDE) to estimate the distribution of healthcare clusters and to understand the distribution and allocation of healthcare facilities within each geographical location. We will also be using two different methods of kernel density estimation. Bw.diggle based on nearest neighbour of between two or more data points Gaussian distribution were points are closer to the allocated centre point have greater weight as compare to data point which are further from the middle point</p>
-<p>We would like to highlight that to interpret the Kernel Density Estimation visualisation, the representation of the KDE values typically ranges from 0 (Lower Limit) to 1 (Upper Limit), usually a positive value or could be higher values as the upper limit depending on the dataset being used in computation The higher the value the being closer to the upper limit, it will indicate that there is a higher density or cluster of healthcare facilities within the region The lower the value and being closer to the lower limit, it will indicate that there is a lower density or cluster of healthcare facilities within the region We can also determine based on the colour, e.g.&nbsp;if the colour is a brighter yellowish-pinkish it indicates that the density is higher and if the colour is dark blue it indicates there is a lower density Yellow = Indicating High Density / Clustering Pink = Indicating Medium Density / Clustering Dark Blue = Indicating Low Density / Clustering</p>
-<p>We would like to highlight that when we are interpreting clustering of hospitals we cannot determine how many hospitals are within the area as the sample size of hospital is relatively small within a given area, hence we are primarily relying on visual information to interpret the data. As we cannot split the number of hospitals into values smaller than 1, it doesn’t make any logical sense.</p>
-<p>Based on Figure 3, We can observe that the distribution of Government Restructured Hospitals shows a higher density / cluster of hospitals located within the central region. This is technically correct as the central region has a very high population density based on the number of residential buildings within an area compared to other regions.</p>
-<p>The information highlights that there is an estimated KDE value to be less than 1 within a given area, as indicated by the low occurrence of yellow hotspots. This suggests that the distribution of hospitals is distributed in a manner that within a given area, one hospital will serve multiple planning subzones. This could possibly explain the long waiting time at hospitals due to the population size each hospital is serving.</p>
-<p>However, based on the visualisation model the other region does not exhibit a similarly high density of clusters of hospitals. Hence it could mean demand for health service within the region is lower even when the population size is considerably high based on the number of residential buildings. Or healthcare services within the region are more efficient and do not require more hospitals within the same area.</p>
-<p>We would like to highlight that to interpret the Kernel Density Estimation visualisation, the representation of the KDE values typically ranges from 0 (Lower Limit) to 1 (Upper Limit), usually a positive value or could be higher values as the upper limit depending on the dataset being used in computation The higher the value the being closer to the upper limit, it will indicate that there is a higher density or cluster of healthcare facilities within the region The lower the value and being closer to the lower limit, it will indicate that there is a lower density or cluster of healthcare facilities within the region We can also determine based on the colour, e.g.&nbsp;if the colour is a brighter yellowish-pinkish it indicates that the density is higher and if the colour is dark blue it indicates there is a lower density Yellow = Indicating High Density / Clustering Pink = Indicating Medium Density / Clustering Dark Blue = Indicating Low Density / Clustering</p>
-<p>We would like to highlight that when we are interpreting clustering of polyclinics, we cannot determine how many hospitals are within the area as the sample size of polyclinics is relatively small within a given area, hence we are relying on visual information to interpret the data. As we cannot split the number of hospitals into values smaller than 1, it doesn’t make any logical sense.</p>
-<p>The information highlights that there is an estimated KDE value to be less than 1 within a given area, as indicated by the yellow hotspots. This suggests that the distribution of polyclinics is generally good, with comparison with areas of higher population density denoted by residential buildings.</p>
-<p>Based on Figure 4, We can observe that the distribution of polyclinics shows a higher density / cluster of hospitals located within areas where there are residential buildings. If we observe the KDE Model and density values, it indicates that there is a good distribution of yellow and pink gradients across areas of residential buildings. In which, it suggests that MOH has actually carried out effective planning in distributing polyclinics around Singapore.</p>
-<p>Yellow = Indicating High Density / Clustering Pink = Indicating Medium Density / Clustering Dark Blue = Indicating Low Density / Clustering</p>
-<p>Based on Figure 5, We can observe that the distribution of Nursing Homes shows a higher density value / cluster of hospitals located within the central region and north-east region. This indicates there is higher demand for nursing homes within this area.</p>
-<p>However based on the visualisation model the other region does not exhibit a similarly high density value / clusters of nursing homes. But if we observe the age distribution of elderly age 65 and above, it coincides with the area with higher values KDE distribution of nursing homes.</p>
-<p>Else it could mean demand for health services within these regions are lower even when the population size is considerably high based on the number of residential buildings or that there are less elderly within these planning areas.</p>
-<p>Yellow = Indicating High Density / Clustering Pink = Indicating Medium Density / Clustering Dark Blue = Indicating Low Density / Clustering</p>
-<p>Based on Figure 6, We can observe that the distribution of Nursing Homes shows a density value / cluster of hospitals located within the central region and north-east region. This indicates there is higher demand for nursing homes within this area.</p>
-<p>Conclusion</p>
-<p>Review and Critic on Past Works In Neutens (2015), the author gives a detailed overview of accessibility, fairness, and healthcare, highlighting the importance of research from different fields. This study emphasises the need for equal access and distribution in healthcare systems and explores various methods and challenges related to evaluating healthcare accessibility. While this review provides helpful information and forms a solid base for understanding healthcare accessibility, there are several key differences and similarities between Neutens (2015) and our project.</p>
-<p>Similarities Focus on healthcare accessibility: Both Neutens (2015) and our project mainly aim to evaluate healthcare services’ accessibility and distribution. We both understand the importance of these factors in creating fair healthcare systems and efficiently using medical resources.</p>
-<p>Differences Geographical focus: Neutens (2015) provides a wider, global view of healthcare accessibility issues, while our project specifically targets Singapore’s healthcare system. This narrower focus helps us to analyse Singapore’s healthcare infrastructure and its unique challenges more closely.</p>
-<p>Application to policy and planning: Neutens (2015) talks about general consequences of healthcare accessibility research for policy and planning. In contrast, our project specifically aims to offer insights and suggestions for Singapore’s policymakers and healthcare providers. By focusing on one country, our project can give more targeted advice for improving healthcare distribution and planning abilities within Singapore.</p>
-<p>Discussion As our classmates had similar projects we spoke about how hard it was to procure and clean the data and also put the app up on RShiny. We did get good responses from our classmates along the lines that they too feel that this project is of use to a government who wants to address the problem of accessibility to healthcare services.</p>
-<p>Future Work Including relevant data sets that would take into account various factors such as demand and supply of healthcare service. Such as using population size within each planning subzone, age, and other socioeconomic factors to understand healthcare access better and people from various demographics groups.</p>
-<p>Methodological enhancements: We’ll take a look at the methods we used in our study and think about other ways that could give us more accurate or detailed results. We might try different spatial analysis methods, like the gravity model, network analysis, or the two-step floating catchment area method.</p>
-<p>Comparative analysis: To get a better grasp of how Singapore’s healthcare system is doing, we’ll compare its accessibility and distribution to other countries or regions. This way, we can see where Singapore is awesome or needs to step up.</p>
-<p>Incorporation of user feedback: We’ll chat with important people like healthcare providers, policymakers, and patients to get their thoughts on the maps and visuals we created. This will make sure our work is helpful and makes sense for decision-making.</p>
-<p>Validation: We’ll double-check our results by comparing them to real-life data, like how patients actually use healthcare services or where new facilities are located. This will make sure our findings are solid and our suggestions are on point.</p>
-<p>By making these changes, we think our group’s work will give a more complete and useful look at the distribution and accessibility of healthcare facilities in Singapore, helping everyone from policymakers to the general public.</p>
-<p>Acknowledgements The authors would like to express their gratitude to Prof Kam Tin Seong from SMU for his patience and guidance in advising us on this project. Moreover he had also provided us with valuable healthcare datasets for us to perform our geospatial analysis.</p>
+<p>In this paper, we will be using the URA Master Plan Subzone map provided by Urban Redevelopment Authority (URA) as our reference point for the description of geographical locations within Singapore for easier understanding.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="images/image-2122975927.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 4: Clusters of Buildings in Singapore, after using Real-Centroid in QGIS</figcaption><p></p>
+</figure>
+</div>
+<p>In Figure 4, we had applied Real-Centroid to extract out the centroids of all livable buildings in Singapore in QGIS.</p>
+<p>This will help us mathematically estimate and visually understand the demand within different geographical regions based on clusters of points of residents buildings within each region. This further enables us to learn the geographical accessibility of various regions within Singapore. This would be effective in interpreting how the density/cluster sof KDE should be like for each given region.</p>
+<p>Looking at Figure 4, we can derive that the largest proportion of citizens live in the Central, followed by Northeast, Southeast and southwest, due to the large clusters of data points overlapping each another on the map. A small group of people is also noted to live close to the north-west region of Singapore. This will help us get a general understanding of the demand and supply, distribution of health service and accessibility of healthcare within certain regions.</p>
+<p>We would like to highlight that regions covered by forests have understandably no healthcare facility. As a result, it is important to take this into account when analysing our data for accessibility and distribution of healthcare services.</p>
+<section id="eldercare-facilities" class="level3">
+<h3 class="anchored" data-anchor-id="eldercare-facilities">Eldercare Facilities</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/accessibility/eldercare_acc.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 5: Accessibility of Eldercare Facilities (Hansen Method)</figcaption><p></p>
+</figure>
+</div>
+<section id="acc-hansen-values" class="level5">
+<h5 class="anchored" data-anchor-id="acc-hansen-values">ACC Hansen Values</h5>
+<p>We analyse the accessibility of eldercare facilities which accHansen values fall within 0 (lower limit) to 1100 (upper limit). We also want to highlight that the ranges for accHansen may vary depending on the healthcare facilities dataset being used.</p>
+<p>An efficient way to understand the data is to view the colour distribution. Dark shades represent higher accessibility of the healthcare facilities.</p>
+<p>In our analysis of eldercare facilities, we will use the following measures:</p>
+<ul>
+<li>Hansen value between 0 and 51 is considered low accessibility</li>
+<li>Hansen value between 52 and 200 is considered moderate accessibility</li>
+<li>Hansen values above 200 is considered high accessibility.</li>
+</ul>
+</section>
+<section id="accessibility-of-eldercare-facilities-using-hansen-method" class="level5">
+<h5 class="anchored" data-anchor-id="accessibility-of-eldercare-facilities-using-hansen-method">Accessibility of Eldercare Facilities using Hansen Method</h5>
+<p>From the figure, we can observe that accessibility of eldercare facilities is largely within the Central region of Singapore. However, the Northeast, Southeast and Southwest regions are generally largely accessible for residents as well.</p>
+<p>At the top of the Northwest region, there is a lack of eldercare facilities, in which health policy makers could consider building more eldercare facilities in future national budgeting and planning. But the visualisation of the model suggests that eldercare are generally well distributed across Singapore.</p>
 </section>
 </section>
+<section id="pcn-clinics" class="level3">
+<h3 class="anchored" data-anchor-id="pcn-clinics">PCN Clinics</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/accessibility/pcn_acc.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 6: Accessibility of PCN Clinics (Hansen Method)</figcaption><p></p>
+</figure>
+</div>
+<section id="acc-hansen-values-1" class="level5">
+<h5 class="anchored" data-anchor-id="acc-hansen-values-1">ACC Hansen Values</h5>
+<p>In our analysis of PCN clinics, we will use the following measures:</p>
+<ul>
+<li>Hansen value between 0 and 219 is considered low accessibility</li>
+<li>Hansen value between 220 and 1263 is considered moderate accessibility</li>
+<li>Hansen values above 1264 is considered high accessibility.</li>
+</ul>
+<p>We will also be understanding the accessibility through the colour distribution. Dark shades represent higher accessibility of the healthcare facilities.</p>
+</section>
+<section id="accessibility-of-pcn-clinic-using-hansen-method" class="level5">
+<h5 class="anchored" data-anchor-id="accessibility-of-pcn-clinic-using-hansen-method">Accessibility of PCN Clinic using Hansen Method</h5>
+<p>We can observe that accessibility of PCN facilities are highly accessible within the Central, Northeast and Southeast regions of Singapore, with reference to the darker regions. Additionally, the Northwest region has acceptable range within the moderate accessibility of PCN clinics for its residents.</p>
+</section>
+</section>
+<section id="chas-clinics" class="level3">
+<h3 class="anchored" data-anchor-id="chas-clinics">CHAS Clinics</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/accessibility/chas_acc.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 7: Accessibility of CHAS Clinics (Hansen Method)</figcaption><p></p>
+</figure>
+</div>
+<section id="acc-hansen-values-2" class="level5">
+<h5 class="anchored" data-anchor-id="acc-hansen-values-2">ACC Hansen Values</h5>
+<p>In our analysis of CHAS clinics, we will use the following measures:</p>
+<ul>
+<li>Hansen value between 0 and 438 is considered low accessibility</li>
+<li>Hansen value between 439 and 2808 is considered moderate accessibility</li>
+<li>Hansen values above 2809 is considered high accessibility.</li>
+</ul>
+<p>Similarly, we will be using the colour distribution as a way to access the graph.</p>
+</section>
+<section id="accessibility-of-chas-clinics-using-hansen-method" class="level5">
+<h5 class="anchored" data-anchor-id="accessibility-of-chas-clinics-using-hansen-method">Accessibility of CHAS Clinics using Hansen Method</h5>
+<p>From the figure above, it can be observed that accessibility of GP Clinics under CHAS are concentrated in the Central, Northeast, and Southeast regions of Singapore, as indicated by the darker regions. The Northwest region has also acceptable range within the moderate accessibility of CHAS Clinics for its residents.</p>
+</section>
+</section>
+<section id="hospitals" class="level3">
+<h3 class="anchored" data-anchor-id="hospitals">Hospitals</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/accessibility/hospital_acc.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 8: Accessibility of Hospitals (Hansen Method)</figcaption><p></p>
+</figure>
+</div>
+<section id="acc-hansen-values-3" class="level5">
+<h5 class="anchored" data-anchor-id="acc-hansen-values-3">ACC Hansen Values</h5>
+<p>In our analysis of hospitals, we will use the following measures:</p>
+<ul>
+<li>Hansen value between 0 and 2.260 is considered low accessibility.</li>
+<li>Hansen value between 2.260 and 30.232 is considered moderate accessibility.</li>
+<li>Hansen values above 30.232 is considered high accessibility.</li>
+</ul>
+<p>Likewise, the colour distribution will be used for analysis.</p>
+</section>
+<section id="accessibility-to-government-restructured-hospitals-using-the-hansen-method" class="level5">
+<h5 class="anchored" data-anchor-id="accessibility-to-government-restructured-hospitals-using-the-hansen-method">Accessibility to Government Restructured Hospitals using the Hansen Method</h5>
+<p>From the figure, it can be observed that accessibility of Government Restructured Hospitals are largely accessible within the Central, Northeast, Southwest regions of Singapore, as indicated by the darker colours within these areas. The Northwest region is in an acceptable range.</p>
+<p><strong>Upcoming Hospital</strong></p>
+<div class="grid">
+<div class="g-col-6">
+<p>The Southeast regions have notably less Government Restructured Hospitals, suggesting residents living near and within the Marine Parade region may be under-served.</p>
+<p>MOH has announced that they will be building an Eastern Integrated Health Campus. Therefore, we believe that the accessibility for residents living in the Southeast region will improve once it is built [5].</p>
+</div>
+<div class="g-col-6">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/upcoming_hospitals/eastern_integrated.png" class="img-fluid figure-img" width="180"></p>
+<p></p><figcaption class="figure-caption">Figure 9: Info on Eastern Integrated Health Campus</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="polyclinics" class="level4">
+<h4 class="anchored" data-anchor-id="polyclinics">Polyclinics</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/accessibility/poly_acc.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 10: Accessibility of Polyclinics (Hansen Method)</figcaption><p></p>
+</figure>
+</div>
+<section id="acc-hansen-values-4" class="level5">
+<h5 class="anchored" data-anchor-id="acc-hansen-values-4">ACC Hansen Values</h5>
+<p>In our analysis of polyclinics, we will use the following measures:</p>
+<ul>
+<li>Hansen value between 0 and 6.059 is considered low accessibility.</li>
+<li>Hansen value between 6.059 and 32.053 is considered moderate accessibility.</li>
+<li>Hansen values above 32.053 is considered high accessibility.</li>
+</ul>
+<p>Darker colours indicate higher accessibility and light colour represent lower accessibility to healthcare facilities within a region.</p>
+</section>
+<section id="accessibility-of-polyclinics-using-hansen-method" class="level5">
+<h5 class="anchored" data-anchor-id="accessibility-of-polyclinics-using-hansen-method">Accessibility of Polyclinics using Hansen Method</h5>
+<p>From the diagram, it can be observed that accessibility of polyclinics is largely accessible within the Central, Northeast, Southwest and East regions of Singapore, as indicated by the dark colours within these areas.</p>
+<p><strong>Upcoming Hospital</strong></p>
+<div class="grid">
+<div class="g-col-6">
+<p>Northwest has relatively low accessibility. However, the construction of Woodlands Health Campus has been announced by MOH [5]. Therefore, it can be expected that the accessibility for residents living in the Northwest region will improve with the completion of the institution.</p>
+</div>
+<div class="g-col-6">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/upcoming_hospitals/woodlands_health.png" class="img-fluid figure-img" width="180"></p>
+<p></p><figcaption class="figure-caption">Figure 11: Info on Woodlands Health Campus</figcaption><p></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="nursing-homes" class="level4">
+<h4 class="anchored" data-anchor-id="nursing-homes">Nursing Homes</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/accessibility/nursing_acc.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 12: Accessibility of Nursing Homes (Hansen Method)</figcaption><p></p>
+</figure>
+</div>
+<section id="acc-hansen-values-5" class="level5">
+<h5 class="anchored" data-anchor-id="acc-hansen-values-5">ACC Hansen Values</h5>
+<p>In our analysis of nursing homes, we will use the following measures:</p>
+<ul>
+<li>Hansen value between 0 and 20.880 is considered low accessibility.</li>
+<li>Hansen value between 20.880 and 108.574 is considered moderate accessibility.</li>
+<li>Hansen values above 108.574 is considered high accessibility.</li>
+</ul>
+<p>As mentioned, darker colours indicate higher accessibility and light colour represent lower accessibility to healthcare facilities within a region.</p>
+</section>
+<section id="accessibility-to-nursing-homes-using-the-hansen-method" class="level5">
+<h5 class="anchored" data-anchor-id="accessibility-to-nursing-homes-using-the-hansen-method">Accessibility to Nursing Homes using the Hansen Method</h5>
+<p>From the diagram, it can be observed that accessibility of nursing homes is largely accessible within all regions of Singapore, as indicated by the darker shades within the region.</p>
+</section>
+</section>
+</section>
+<section id="other-methods-of-accessibility" class="level3">
+<h3 class="anchored" data-anchor-id="other-methods-of-accessibility">Other Methods of Accessibility</h3>
+<p>Within this paper, we will be only interpreting the accessibility for Hansen method, understanding that there are also other methods namely KD2SFCA, SAM and 2SFCA. However, their principles are relatively similar to the Hansen methods of accessibility. Despite not elaborating in this paper, we have included them in our RShiny application [1].</p>
+</section>
+</section>
+<section id="findings-of-kernel-density-estimation-models-with-ura-master-plan-and-residential-buildings" class="level2">
+<h2 class="anchored" data-anchor-id="findings-of-kernel-density-estimation-models-with-ura-master-plan-and-residential-buildings">Findings of Kernel Density Estimation Models with URA Master Plan and Residential Buildings</h2>
+<section id="performing-kernel-density-estimation-kde" class="level3">
+<h3 class="anchored" data-anchor-id="performing-kernel-density-estimation-kde">Performing Kernel Density Estimation (KDE)</h3>
+<p>We applied Kernel Density Estimation (KDE) to estimate the distribution of healthcare clusters and to understand the distribution and allocation of healthcare facilities within each geographical location. Within our analysis in this paper, KDE is performed using Cross Validated Bandwidth Selection (bw.diggle) and Gaussian kernel.</p>
+<p>Cross Validated Bandwidth Selection, as its name implied, uses cross-validation to select a smoothing bandwidth that aid in KDE.</p>
+<p>The Gaussian kernel estimates that points are closer to the allocated centre point have greater weight as compare to data point which are further from the middle point</p>
+<p>Before proceeding, we would like to highlight KDE values fall within 0 (lower limit) to a higher number, depending on the dataset being used in computation. As such, KDE values may fall below 1, if the facilities are sparse across the region.</p>
+<p>Higher KDE values indicate that there is a higher density or clustering of healthcare facilities within the region. Similar to the interpretation of graphs for aalysing accessibility, we can also determine based on the colour.</p>
+<ul>
+<li><p>Yellow - Indicating High Density / Clustering</p></li>
+<li><p>Pink - Indicating Medium Density / Clustering</p></li>
+<li><p>Dark Blue - Indicating Low Density / Clustering</p></li>
+</ul>
+<section id="hospitals-1" class="level4">
+<h4 class="anchored" data-anchor-id="hospitals-1">Hospitals</h4>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images//KDE//hospital_kde.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 13: KDE of Hospitals</figcaption><p></p>
+</figure>
+</div>
+<p>In interpreting the clustering of hospitals, we cannot confidently determine how many hospitals are within a certain area as the number of hospitals is relatively small and sparse. This is understandably due to their purpose as being the last stop for medical help, as noted in the planning of Singapore’s healthcare system. Hence, we are primarily relying on visual information to interpret the data as we cannot meaningful classify the KDE values lower than 1.</p>
+<p>Based on Figure 13, we can observe that the distribution of Government Restructured Hospitals shows a higher density / cluster of hospitals located within the Central region. Since the Central region has a very high population density based on the number of residential buildings within an area compared to other regions, one can assume that hospitals will cluster within the region.</p>
+<p>The information highlights that there is an estimated KDE value to be less than 1 within a given area, as indicated by the low occurrence of yellow hotspots. This suggests that the distribution of hospitals is distributed in a manner that within a given area, a hospital will serve multiple planning subzones. This can potentally explain the long waiting time at hospitals due to the population size each hospital is serving.</p>
+<p>However, based on the visualisation model, the other regions do not exhibit a similarly high density of clusters of hospitals. Thus it could mean demand for health service within the region may be relatively lower, even when the population size is considerably high based on the number of residential buildings. Or, healthcare services within the region are more efficient and do not require more hospitals within the same area.</p>
+</section>
+</section>
+<section id="polyclinics-1" class="level3">
+<h3 class="anchored" data-anchor-id="polyclinics-1">Polyclinics</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images//KDE//poly_kde.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 14: KDE of Polyclinics</figcaption><p></p>
+</figure>
+</div>
+<p>Likewise for the interpretation of clustering of polyclinics, we cannot fully determine the number of hospitals within a given area as small number of polyclinics in Singapore. Hence we will too be relying on visual information to interpret the data.</p>
+<p>The graph depicts that a rather even spread of yellow hotspots, suggesting that the distribution of polyclinics is generally good, with comparison with areas of higher population density denoted by residential buildings.</p>
+<p>Based on Figure 14, we can observe that the distribution of polyclinics shows a higher density / cluster of hospitals located within areas where there are residential buildings. If we observe the KDE model and density values, it indicates that there is a good distribution of yellow and pink gradients across areas of residential buildings. It suggests that MOH has actually carried out effective planning in distributing polyclinics around Singapore.</p>
+</section>
+<section id="nursing-homes-1" class="level3">
+<h3 class="anchored" data-anchor-id="nursing-homes-1">Nursing Homes</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images//KDE//nursing_kde.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 15: KDE of Nursing Homes</figcaption><p></p>
+</figure>
+</div>
+<p>We can discover that the distribution of nursing homes shows a higher density value / cluster of hospitals located within the Central region and Northeast region. This could possibly indicate there is higher demand for nursing homes within this area. However, due to Singapore’s small landsize and public transportation, we cannot dismiss that nursing homes could be located in these regions due to historical reasons, rent prices, availability of land and/or other reasons, especially when considering that users of nursing homes are typically elderly living in these facilities for long period of time.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images//dashboard//nursing_locations.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 16: Locations of Nursing Homes</figcaption><p></p>
+</figure>
+</div>
+<p>Based on visualisation of nursing homes’ locations, the other regions do not exhibit a similarly high density value / clusters of nursing homes. But if we observe the geographical distribution for elderly aged 65 and above, it coincides with the area with higher values KDE distribution of nursing homes.</p>
+<p>Else, it could mean demand for health services within these regions are lower even when the population size is considerably high based on the number of residential buildings or that there are less elderly within these planning areas.</p>
+</section>
+<section id="primary-care-network-clinics" class="level3">
+<h3 class="anchored" data-anchor-id="primary-care-network-clinics">Primary Care Network Clinics</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images//KDE//pcn_kde.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 17: KDE of PCN Clinics</figcaption><p></p>
+</figure>
+</div>
+<p>Based on Figure 17, we can observe that the distribution of PCN clinics shows an average cluster size / density value of 20-30 within certain regions, this means that within a given area there are approximately 20-30 PCN Clinics. It also suggests that the PCN Clinics are relatively well distributed in Singapore, with reference to the residential buildings that citizens live in.</p>
+</section>
+<section id="eldercare-facilities-1" class="level3">
+<h3 class="anchored" data-anchor-id="eldercare-facilities-1">Eldercare Facilities</h3>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="data/images/KDE/eldercare_kde.png" class="img-fluid figure-img"></p>
+<p></p><figcaption class="figure-caption">Figure 18: KDE of Eldercare Facilities</figcaption><p></p>
+</figure>
+</div>
+<p>Based on Figure 17, the distribution of eldercare facilities can be observed to depict an average cluster size / density value of around 1 to 3 within certain regions. It is uncertain the most suitable number of eldercare facilities within a given area, as it is also determined by the size of the facilities. Assuming that 1 to 3 eldercare service per region is acceptable at the moment, we can assume that this number will rise as the elderly population increases.</p>
+</section>
+</section>
+</section>
+<section id="conclusion" class="level1">
+<h1>Conclusion</h1>
+<p>In conslusion, our observations indicate that the accessibility and spatial distribution of healthcare service in Singapore are generally well-distributed. Most areas with higher populations generally have better accessibility and distribution of healthcare services such as PCN clinics, CHAS clinics, Government Restructured and Community Hospitals, and eldercare services.</p>
+<p>Though there are only a couple of exceptions of regions which healthcare is less accessible, we urge relevant institutions like MOH to continue with their expansion of healthcare facilities in these under-served areas. This belief is supported by the fact that public housings are increasingly built in regions outside of central area (e.g., Punggol, Jurong East, Woodlands), and growing population, especially among elderly.</p>
+</section>
+<section id="review-and-critic-on-past-works" class="level1">
+<h1>Review and Critic on Past Works</h1>
+<p>In Neutens [2015], it gives a detailed overview of accessibility, fairness, and healthcare, highlighting the importance of research from different fields [11]. This study emphasises the need for equal access and distribution in healthcare systems and explores various methods and challenges related to evaluating healthcare accessibility. While this review provides helpful information and forms a solid base for understanding healthcare accessibility, there are several key differences and similarities between Neutens [2015] and our project.</p>
+<section id="similarities" class="level3">
+<h3 class="anchored" data-anchor-id="similarities">Similarities</h3>
+<p>Focus on healthcare accessibility: Both Neutens [2015] and our project mainly aim to evaluate healthcare services’ accessibility and distribution. We both understand the importance of these factors in creating fair healthcare systems and efficiently using medical resources.</p>
+</section>
+<section id="differences" class="level3">
+<h3 class="anchored" data-anchor-id="differences">Differences</h3>
+<p>Geographical focus for Neutens [2015] provides a wider, global view of healthcare accessibility issues, while our project specifically targets Singapore’s healthcare system. This narrower focus helps us to analyse Singapore’s healthcare infrastructure and its unique challenges more closely.</p>
+</section>
+<section id="application-to-policy-and-planning" class="level3">
+<h3 class="anchored" data-anchor-id="application-to-policy-and-planning">Application to Policy and Planning</h3>
+<p>Neutens (2015) talks about general consequences of healthcare accessibility research for policy and planning. In contrast, our project specifically aims to offer insights and suggestions for Singapore’s policymakers and healthcare providers. By focusing on one country, our project can give more targeted advice for improving healthcare distribution and planning capbilities within Singapore.</p>
+</section>
+</section>
+<section id="discussion" class="level1">
+<h1>Discussion</h1>
+<p>As our classmates had similar projects, we spoke about the difficulty in procuring and cleaning the data, and putting the app up on RShiny. We did get good responses from our classmates, whose comments suggest that they too feel that this project is of use to a government who wants to address the problem of accessibility to healthcare services.</p>
+</section>
+<section id="future-work" class="level1">
+<h1>Future Work</h1>
+<p>To expand on our work, researchers will benefits from including relevant data sets that would take into account various factors such as demand and supply of healthcare service, population size and residential information within each planning subzone, age range, and other socioeconomic factors to understand healthcare access better and people from various demographics groups.</p>
+<p>Providing information to these healthcare providers and policymakers so that they are able to utilise data to improve health services and to increase adoption of GIS analytics in health informatics in decision making.</p>
+<p>Providing a comparison with other countries to understand how Singapore’s healthcare system fares among other countries so as to compare the accessibility and distribution to other countries and regions. This way, we can effectively compare our healthcare system with countries that have a high reputation for their healthcare service such as Denmark, Norway and Switzerland.</p>
+<p>To check on the accuracy of our results, comparing them to real-life data, like how patients actually travel to respective healthcare facilities that are being located, is needed. This assures that our findings are accurate to real world conditions</p>
+<p>By making these changes, we think our group’s work will give a more complete and useful look at the accessibility and distribution of healthcare facilities in Singapore, helping everyone from policymakers to the general public.</p>
+</section>
+<section id="acknowledgements" class="level1">
+<h1>Acknowledgements</h1>
+<p>The authors would like to express our gratitude to Professor Kam Tin Seong from SMU for his patience and guidance in advising us on this project. Moreover he had also provided us with valuable healthcare datasets for us to perform our geospatial analysis.</p>
+</section>
+</div>
 <section id="references" class="level1">
 <h1>References</h1>
-<p>[1] Tin Seong KAM, Ketan BARSHIKAR, and Shaun Jun Hua TAN. 2012. DIVAD: A Dynamic and Interactive Visual Analytical Dashboard for Exploring and Analyzing Transport Data. International Journal of Computer, Electrical, Automation, Control and Information Engineering 6, 11 (November 2012), 834–1353. DOI:https://doi.org/10.5281/zenodo.1081041 [2] Ministry of Health. REORGANISATION OF HEALTHCARE SYSTEM INTO THREE INTEGRATED CLUSTERS TO BETTER MEET FUTURE HEALTHCARE NEEDS. Ministry of Health. Retrieved April 16, 2023 from https://www.moh.gov.sg/news-highlights/details/reorganisation-of-healthcare-system-into-three-integrated-clusters-to-better-meet-future-healthcare-needs [3] National Healthcare Group. RHS for the Central Region. National Healthcare Group. Retrieved April 16, 2023 from https://corp.nhg.com.sg/RHSys/Pages/RHS-for-the-Central-Region.aspx [4] Milawaty Nurjono, Pami Shrestha, Ian Yi Han Ang, Farah Shiraz, Ke Xin Eh, Sue-Anne Ee Shiow Toh, and Hubertus Johannes Maria Vrijhoef. 2020. Shifting care from hospital to community, a strategy to integrate care in Singapore: process evaluation of implementation fidelity. BMC Health Services Research 20, 1 (May 2020), 452. DOI:https://doi.org/10.1186/s12913-020-05263-w [5] Ritu Sharma and Aineena Hani. 2021. Transformational Shifts in Singapore’s Healthcare Industry - OpenGov Asia. Open Gov.&nbsp;Retrieved April 16, 2023 from https://opengovasia.com/transformational-shifts-in-singapores-healthcare-industry/ [6] Singapore General Hospital. 2018. Cared for, supported by many helping hands. Singapore General Hospital. Retrieved April 16, 2023 from http://www.sgh.com.sg:80/news/regional-health-system/cared-for-supported-by-many-helping-hands [7] Chin Soo Fang. 2022. S’pore’s population ageing rapidly: Nearly 1 in 5 citizens is 65 years and older. The Straits Times. Retrieved April 16, 2023 from https://www.straitstimes.com/singapore/singapores-population-ageing-rapidly-184-of-citizens-are-65-years-and-older</p>
+<p>[1] Group 9. Dr Go Where. Retrieved April 17, 2023 from https://is415-group9.shinyapps.io/IS415-Group9/</p>
+<p>[2] Alex Jingwei He and Vivien F. Y. Tang. 2021. Integration of health services for the elderly in Asia: A scoping review of Hong Kong, Singapore, Malaysia, Indonesia. Health Policy 125, 3 (March 2021), 351–362. DOI:https://doi.org/10.1016/j.healthpol.2020.12.020</p>
+<p>[3] Tin Seong KAM, Ketan BARSHIKAR, and Shaun Jun Hua TAN. 2012. DIVAD: A Dynamic and Interactive Visual Analytical Dashboard for Exploring and Analyzing Transport Data. International Journal of Computer, Electrical, Automation, Control and Information Engineering 6, 11 (November 2012), 834–1353. DOI:https://doi.org/10.5281/zenodo.1081041</p>
+<p>[4] Ministry of Health. REORGANISATION OF HEALTHCARE SYSTEM INTO THREE INTEGRATED CLUSTERS TO BETTER MEET FUTURE HEALTHCARE NEEDS. Ministry of Health. Retrieved April 16, 2023 from https://www.moh.gov.sg/news-highlights/details/reorganisation-of-healthcare-system-into-three-integrated-clusters-to-better-meet-future-healthcare-needs</p>
+<p>[5] Ministry of Health. Upcoming and Completed Healthcare Facilities. Ministry of Health. Retrieved April 17, 2023 from https://www.moh.gov.sg/upcoming-and-completed-healthcare-facilities</p>
+<p>[6] National Healthcare Group. RHS for the Central Region. National Healthcare Group. Retrieved April 16, 2023 from https://corp.nhg.com.sg/RHSys/Pages/RHS-for-the-Central-Region.aspx</p>
+<p>[7] Milawaty Nurjono, Pami Shrestha, Ian Yi Han Ang, Farah Shiraz, Ke Xin Eh, Sue-Anne Ee Shiow Toh, and Hubertus Johannes Maria Vrijhoef. 2020. Shifting care from hospital to community, a strategy to integrate care in Singapore: process evaluation of implementation fidelity. BMC Health Services Research 20, 1 (May 2020), 452. DOI:https://doi.org/10.1186/s12913-020-05263-w</p>
+<p>[8] Ritu Sharma and Aineena Hani. 2021. Transformational Shifts in Singapore’s Healthcare Industry - OpenGov Asia. Open Gov.&nbsp;Retrieved April 16, 2023 from https://opengovasia.com/transformational-shifts-in-singapores-healthcare-industry/</p>
+<p>[9] Singapore General Hospital. 2018. Cared for, supported by many helping hands. Singapore General Hospital. Retrieved April 16, 2023 from http://www.sgh.com.sg:80/news/regional-health-system/cared-for-supported-by-many-helping-hands</p>
+<p>[10] Chin Soo Fang. 2022. S’pore’s population ageing rapidly: Nearly 1 in 5 citizens is 65 years and older. The Straits Times. Retrieved April 16, 2023 from https://www.straitstimes.com/singapore/singapores-population-ageing-rapidly-184-of-citizens-are-65-years-and-older</p>
+<p>[11] Tijs Neutens. 2015. Accessibility, equity and health care: review and research directions for transport geographers. <em>Journal of Transport Geography</em> 43, (February 2015), 14–27. DOI:<a href="https://doi.org/10.1016/j.jtrangeo.2014.12.006" class="uri">https://doi.org/10.1016/j.jtrangeo.2014.12.006</a></p>
 
 
 </section>
