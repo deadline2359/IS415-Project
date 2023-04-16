@@ -1,0 +1,11 @@
+{
+  "hash": "fbbe8d1d2d6e5108b0872cd0252c1979",
+  "result": {
+    "markdown": "---\ntitle: \"Paper\"\nauthor: \"Group 9\"\ndate: \"2023-04-16\"\ndate-modified: \"2023-04-16\"\ncategories: [news]\n---\n\n<!-- ```{css echo=FALSE} -->\n\n<!-- .justify { -->\n<!--   text-align: justify !important; -->\n<!-- } -->\n\n<!-- ``` -->\n\n\n```{css}\n.panel-tabset .nav-link {\n  background-color: #a3d2e3;\n  box-shadow: 8px 5px 5px darkgrey;\n}\n\n.panel-tabset .tab-content{\n  box-shadow: 8px 5px 5px darkgrey;\n}\n```\n\n\n# Abstract\n\n::: justify\nAccessibility and distribution of healthcare networks are critical for national healthcare, particularly for the elderly population who are at a higher risk of developing multiple chronic illnesses.\n\nSince 2017, during the restructuring of the Regional Health System (RHS), Singapore has implemented health policies by creating an integrated network of acute hospitals, community and primary care providers within a certain geographic region, aiming to provide comprehensive care and a care continuum for patients.\n\nHowever, little emphasis has been given to assessing the accessibility of healthcare services from a spatial analytical perspective. Much information on the internet is largely general diagrams of spatial information. This research article aims to analyse the geographical accessibility, kernel density clusters and distribution networks of major healthcare services in Singapore, which includes acute and community hospitals, primary care networks (PCN), eldercare and nursing homes, and General Practitioners (GPs) services under the Community Health Assist Scheme (CHAS) for older persons.\n:::\n\n",
+    "supporting": [
+      "index_files"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

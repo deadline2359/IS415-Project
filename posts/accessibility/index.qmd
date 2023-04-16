@@ -1,0 +1,2030 @@
+---
+title: "Accessibility"
+author: "Group 9"
+date: "15 April 2023"
+date-modified: "`r Sys.Date()`"
+number-sections: true
+format: html
+execute: 
+  echo: true
+  eval: true
+  warning: false
+editor: visual
+---
+
+# 16  Modelling Geographical Accessibility
+
+## 16.1 Introduction
+
+In this hands-on exercise, you will gain hands-on experience on how to model geographical accessibility by using R's geospatial analysis packages.
+
+### 16.1.1 Learning Outcome
+
+By the end of this hands-on exercise, you will be able:
+
+-   to import GIS polygon data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
+
+-   to import aspatial data into R and save them as simple feature data frame by using appropriate functions of sf package of R;
+
+-   to computer accessibility measure by using Hansen's potential model and Spatial Accessibility Measure (SAM); and
+
+-   to visualise the accessibility measures by using tmap and ggplot2 packages.
+
+## 16.2 The data
+
+Four data sets will be used in this hands-on exercise, they are:
+
+-   `MP14_SUBZONE_NO_SEA_PL`: URA Master Plan 2014 subzone boundary GIS data. This data set is downloaded from data.gov.sg.
+
+-   `hexagons`: A 250m radius hexagons GIS data. This data set was created by using [*st_make_grid()*](https://r-spatial.github.io/sf/reference/st_make_grid.html) of sf package. It is in ESRI shapefile format.
+
+-   `ELDERCARE`: GIS data showing location of eldercare service. [This data](https://data.gov.sg/dataset/eldercare-services) is downloaded from data.gov.sg. There are two versions. One in ESRI shapefile format. The other one in Google kml file format. For the purpose of this hands-on exercise, ESRI shapefile format is provided.
+
+-   `OD_Matrix`: a distance matrix in csv format. There are six fields in the data file. They are:
+
+    -   `origin_id`: the unique id values of the origin (i.e. `fid` of hexagon data set.),
+
+    -   `destination_id`: the unique id values of the destination (i.e. `fid` of `ELDERCARE` data set.),
+
+    -   `entry_cost`: the perpendicular distance between the origins and the nearest road),
+
+    -   `network_cost`: the actual network distance from the origin and destination,
+
+    -   `exit_cost`: the perpendicular distance between the destination and the nearest road), and
+
+    -   `total_cost`: the summation of `entry_cost`, `network_cost` and `exit_cost`.
+
+All the values of the cost related fields are in **metres**.
+
+**Reminder:** *Except `MP14_SUBZONE_NO_SEA_PL` data set, the other three data set are specially prepared by Prof. Kam for teaching and research purpose. Students taking IS415 Geospatial Analytics and Applications are allowed to use them for hands-on exercise purpose. Please obtain formal approval from Prof. Kam if you want to use them for other courses or usage.*
+
+## 16.3 Getting Started
+
+Before we getting started, it is important for us to install the necessary R packages and launch them into RStudio environment.
+
+The R packages need for this exercise are as follows:
+
+-   Spatial data handling
+
+    -   sf
+
+-   Modelling geographical accessibility
+
+    -   spatialAcc
+
+-   Attribute data handling
+
+    -   tidyverse, especially readr and dplyr
+
+-   thematic mapping
+
+    -   tmap
+
+-   Staistical graphic
+
+    -   ggplot2
+
+-   Statistical analysis
+
+    -   ggstatsplot
+
+The code chunk below installs and launches these R packages into RStudio environment.
+
+```{r}
+pacman::p_load(tmap, SpatialAcc, sf, 
+               ggstatsplot, reshape2,
+               tidyverse, RColorBrewer)
+```
+
+Notice that with tidyverse, we do not have to install readr, dplyr and ggplots packages separately. In fact, tidyverse also installs other R packages such as tidyr, stringr, forcats, tibble, purrr and magrittr.
+
+## 16.4 Geospatial Data Wrangling
+
+### 16.4.1 Importing geospatial data
+
+Three geospatial data will be imported from the *data/geospatial* sub-folder. They are MP14_SUBZONE_NO_SEA_PL, hexagons and ELDERCARE.
+
+The code chunk below is used to import these three data sets shapefile by using *st_read()* of **sf** packages.
+
+**Importing Master Plan Subzone 2014 No Sea PL**
+
+```{r}
+mpsz <- st_read(dsn = "data/geospatial", layer = "MP14_SUBZONE_NO_SEA_PL")
+```
+
+    Reading layer `MP14_SUBZONE_NO_SEA_PL' from data source `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial' using driver `ESRI Shapefile'
+    Simple feature collection with 323 features and 15 fields
+    Geometry type: MULTIPOLYGON
+    Dimension:     XY
+    Bounding box:  xmin: 2667.538 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33
+    Projected CRS: SVY21
+
+**Importing Hexagons**
+
+```{r}
+hexagons <- st_read(dsn = "data/geospatial", layer = "hexagons") 
+```
+
+    Reading layer `hexagons' from data source `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial' using driver `ESRI Shapefile'
+    Simple feature collection with 3125 features and 6 fields
+    Geometry type: POLYGON
+    Dimension:     XY
+    Bounding box:  xmin: 2667.538 ymin: 21506.33 xmax: 50010.26 ymax: 50256.33
+    Projected CRS: SVY21 / Singapore TM
+
+**Importing Hexagons_2019**
+
+```{r}
+hexagons_2019 <- st_read(dsn = "data/geospatial/Hexagon 2019 Shapefile", 
+                         layer = "Hexagon_2019") 
+```
+
+    Reading layer `Hexagon_2019' from data source 
+      `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial\Hexagon 2019 Shapefile' using driver `ESRI Shapefile'
+    Simple feature collection with 4125 features and 6 fields
+    Geometry type: MULTIPOLYGON
+    Dimension:     XY
+    Bounding box:  xmin: 2667.575 ymin: 15748.72 xmax: 56396.44 ymax: 50256.33
+    Projected CRS: SVY21 / Singapore TM
+
+**Importing Eldercare Dataset**
+
+```{r}
+eldercare <- st_read(dsn = "data/geospatial/eldercare Shapefile", layer = "ELDERCARE") 
+```
+
+    Reading layer `ELDERCARE' from data source `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial' using driver `ESRI Shapefile'
+    Simple feature collection with 120 features and 19 fields
+    Geometry type: POINT
+    Dimension:     XY
+    Bounding box:  xmin: 14481.92 ymin: 28218.43 xmax: 41665.14 ymax: 46804.9
+    Projected CRS: SVY21 / Singapore TM
+
+**Importing PCN Clinics Dataset - Conversion into Geospatial format using QGIS**
+
+```{r}
+PCN_Clinics <- st_read(dsn = "data/geospatial/PCN Network Clinics Shapefile", 
+                       layer = "PCN Network Clinics") 
+```
+
+    Reading layer `PCN Network Clinics' from data source 
+      `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial\PCN Network Clinics Shapefile' using driver `ESRI Shapefile'
+    replacing null geometries with empty geometries
+    Simple feature collection with 828 features and 20 fields (with 1 geometry empty)
+    Geometry type: POINT
+    Dimension:     XY
+    Bounding box:  xmin: 4985.536 ymin: 26424.19 xmax: 45002.49 ymax: 48986.95
+    Projected CRS: SVY21 / Singapore TM
+
+**Importing CHAS_Clinics Dataset - Conversion into Geospatial format using QGIS**
+
+```{r}
+CHAS_Clinics <- st_read(dsn = "data/geospatial/CHAS Clinics Shapefile", 
+                       layer = "CHAS Clinics") 
+```
+
+    Reading layer `CHAS Clinics' from data source 
+      `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial\CHAS Clinics Shapefile' using driver `ESRI Shapefile'
+    replacing null geometries with empty geometries
+    Simple feature collection with 1917 features and 19 fields (with 5 geometries empty)
+    Geometry type: POINT
+    Dimension:     XY
+    Bounding box:  xmin: 4985.536 ymin: 26424.19 xmax: 45457.14 ymax: 48626.7
+    Projected CRS: SVY21 / Singapore TM
+
+**Importing Hospital Dataset - Conversion into Geospatial format using QGIS**
+
+```{r}
+Hospital <- st_read(dsn = "data/geospatial/Hospital Shapefile", 
+                       layer = "Hospital")
+```
+
+    Reading layer `Hospital' from data source `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial\Hospital Shapefile' using driver `ESRI Shapefile'
+    Simple feature collection with 27 features and 12 fields
+    Geometry type: POINT
+    Dimension:     XY
+    Bounding box:  xmin: 17857.55 ymin: 29122.03 xmax: 40851.78 ymax: 45093.16
+    Projected CRS: SVY21 / Singapore TM
+
+**Importing Polyclinics Dataset - Conversion into Geospatial format using QGIS**
+
+```{r}
+Polyclinics <- st_read(dsn = "data/geospatial/Polyclinics Shapefile", 
+                       layer = "Polyclinics") 
+```
+
+    Reading layer `Polyclinics' from data source `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial\Polyclinics Shapefile' using driver `ESRI Shapefile'
+    Simple feature collection with 22 features and 9 fields
+    Geometry type: POINT
+    Dimension:     XY
+    Bounding box:  xmin: 13049.46 ymin: 29117.43 xmax: 42034.52 ymax: 45848.17
+    Projected CRS: SVY21 / Singapore TM
+
+**Importing Nursing Homes Dataset - Conversion into Geospatial format using QGIS**
+
+```{r}
+Nursing_Homes <- st_read(dsn = "data/geospatial/Nursing Homes Shapefile", 
+                       layer = "Nursing Homes")
+```
+
+    Reading layer `Nursing Homes' from data source 
+      `C:\TWeishing\IS415-GAA\05-Group_Project\data\geospatial\Nursing Homes Shapefile' using driver `ESRI Shapefile'
+    Simple feature collection with 76 features and 8 fields
+    Geometry type: POINT
+    Dimension:     XY
+    Bounding box:  xmin: 12215.86 ymin: 28170.14 xmax: 44538.57 ymax: 47531.11
+    Projected CRS: SVY21 / Singapore TM
+
+The report above shows that the R object used to contain the imported MP14_SUBZONE_WEB_PL shapefile is called *mpsz* and it is a simple feature object. The geometry type is *multipolygon*. it is also important to note that mpsz simple feature object does not have EPSG information.
+
+### 16.4.2 Updating CRS information
+
+The code chunk below updates the newly imported *mpsz* with the correct ESPG code (i.e. 3414)
+
+```{r}
+mpsz <- st_transform(mpsz, 3414)
+hexagons <- st_transform(hexagons, 3414)
+hexagons_2019 <- st_transform(hexagons_2019, 3414)
+
+eldercare <- st_transform(eldercare, 3414)
+PCN_Clinics <- st_transform(PCN_Clinics, 3414)
+CHAS_Clinics <- st_transform(CHAS_Clinics, 3414)
+Hospital <- st_transform(Hospital, 3414)
+Polyclinics <- st_transform(Polyclinics, 3414)
+Nursing_Homes <- st_transform(Nursing_Homes, 3414)
+```
+
+After transforming the projection metadata, you can verify the projection of the newly transformed *mpsz_svy21* by using *st_crs()* of sf package.
+
+The code chunk below will be used to varify the newly transformed *mpsz_svy21*.
+
+```{r}
+st_crs(mpsz)
+```
+
+    Coordinate Reference System:
+      User input: EPSG:3414 
+      wkt:
+    PROJCRS["SVY21 / Singapore TM",
+        BASEGEOGCRS["SVY21",
+            DATUM["SVY21",
+                ELLIPSOID["WGS 84",6378137,298.257223563,
+                    LENGTHUNIT["metre",1]]],
+            PRIMEM["Greenwich",0,
+                ANGLEUNIT["degree",0.0174532925199433]],
+            ID["EPSG",4757]],
+        CONVERSION["Singapore Transverse Mercator",
+            METHOD["Transverse Mercator",
+                ID["EPSG",9807]],
+            PARAMETER["Latitude of natural origin",1.36666666666667,
+                ANGLEUNIT["degree",0.0174532925199433],
+                ID["EPSG",8801]],
+            PARAMETER["Longitude of natural origin",103.833333333333,
+                ANGLEUNIT["degree",0.0174532925199433],
+                ID["EPSG",8802]],
+            PARAMETER["Scale factor at natural origin",1,
+                SCALEUNIT["unity",1],
+                ID["EPSG",8805]],
+            PARAMETER["False easting",28001.642,
+                LENGTHUNIT["metre",1],
+                ID["EPSG",8806]],
+            PARAMETER["False northing",38744.572,
+                LENGTHUNIT["metre",1],
+                ID["EPSG",8807]]],
+        CS[Cartesian,2],
+            AXIS["northing (N)",north,
+                ORDER[1],
+                LENGTHUNIT["metre",1]],
+            AXIS["easting (E)",east,
+                ORDER[2],
+                LENGTHUNIT["metre",1]],
+        USAGE[
+            SCOPE["Cadastre, engineering survey, topographic mapping."],
+            AREA["Singapore - onshore and offshore."],
+            BBOX[1.13,103.59,1.47,104.07]],
+        ID["EPSG",3414]]
+
+Notice that the EPSG: is indicated as *3414* now.
+
+```{r}
+st_crs(hexagons)
+```
+
+    Coordinate Reference System:
+      User input: EPSG:3414 
+      wkt:
+    PROJCRS["SVY21 / Singapore TM",
+        BASEGEOGCRS["SVY21",
+            DATUM["SVY21",
+                ELLIPSOID["WGS 84",6378137,298.257223563,
+                    LENGTHUNIT["metre",1]]],
+            PRIMEM["Greenwich",0,
+                ANGLEUNIT["degree",0.0174532925199433]],
+            ID["EPSG",4757]],
+        CONVERSION["Singapore Transverse Mercator",
+            METHOD["Transverse Mercator",
+                ID["EPSG",9807]],
+            PARAMETER["Latitude of natural origin",1.36666666666667,
+                ANGLEUNIT["degree",0.0174532925199433],
+                ID["EPSG",8801]],
+            PARAMETER["Longitude of natural origin",103.833333333333,
+                ANGLEUNIT["degree",0.0174532925199433],
+                ID["EPSG",8802]],
+            PARAMETER["Scale factor at natural origin",1,
+                SCALEUNIT["unity",1],
+                ID["EPSG",8805]],
+            PARAMETER["False easting",28001.642,
+                LENGTHUNIT["metre",1],
+                ID["EPSG",8806]],
+            PARAMETER["False northing",38744.572,
+                LENGTHUNIT["metre",1],
+                ID["EPSG",8807]]],
+        CS[Cartesian,2],
+            AXIS["northing (N)",north,
+                ORDER[1],
+                LENGTHUNIT["metre",1]],
+            AXIS["easting (E)",east,
+                ORDER[2],
+                LENGTHUNIT["metre",1]],
+        USAGE[
+            SCOPE["Cadastre, engineering survey, topographic mapping."],
+            AREA["Singapore - onshore and offshore."],
+            BBOX[1.13,103.59,1.47,104.07]],
+        ID["EPSG",3414]]
+
+Notice that the EPSG: is indicated as *3414* now.
+
+### 16.4.3 Cleaning and updating attribute fields of the geospatial data
+
+There are many redundant fields in the data tables of both `eldercare` and `hexagons`. The code chunks below will be used to exclude those redundant fields. At the same time, a new field called `demand` and a new field called `capacity` will be added into the data table of `hexagons` and `eldercare` sf data frame respectively. Both fields are derive using *mutate()* of **dplyr** package.
+
+**Eldercare**
+
+```{r}
+eldercare <- eldercare %>%
+  select(fid, ADDRESSPOS) %>%
+  mutate(capacity = 100)
+```
+
+**PCN_Clinics**
+
+```{r}
+PCN_Clinics <- PCN_Clinics %>%
+  select(fid, results.PO) %>%
+  mutate(capacity = 100)
+```
+
+**CHAS_Clinics**
+
+```{r}
+CHAS_Clinics <- CHAS_Clinics %>%
+  select(fid, results.PO) %>%
+  mutate(capacity = 100)
+```
+
+**Hospital**
+
+```{r}
+Hospital <- Hospital %>%
+  select(fid, Postal.Cod) %>%
+  mutate(capacity = 100)
+```
+
+**Polyclinics**
+
+```{r}
+Polyclinics <- Polyclinics %>%
+  select(fid, Postal.Cod) %>%
+  mutate(capacity = 100)
+```
+
+**Nursing_Homes**
+
+```{r}
+Nursing_Homes <- Nursing_Homes %>%
+  select(fid, POSTAL_COD) %>%
+  mutate(capacity = 100)
+```
+
+**Hexagon 2014**
+
+```{r}
+hexagons <- hexagons %>%
+  select(fid) %>%
+  mutate(demand = 100)
+```
+
+**Hexagon 2019**
+
+```{r}
+hexagons_2019 <- hexagons_2019 %>%
+  select(fid) %>%
+  mutate(demand = 100)
+```
+
+Notice that for the purpose of this hands-on exercise, a constant value of 100 is used. In practice, actual demand of the hexagon and capacity of the eldercare centre should be used.
+
+## 16.5 Apsaital Data Handling and Wrangling
+
+### 16.5.1 Importing Distance Matrix
+
+The code chunk below uses *read_cvs()* of **readr** package to import `OD_Matrix.csv` into RStudio. The imported object is a tibble data.frame called `ODMatrix`.
+
+**Eldercare OD Matrix**
+
+```{r}
+ODMatrix_eldercare <- read_csv("data/aspatial/Hands-On Ex10 OD Matrix/OD_Matrix.csv", skip = 0)
+```
+
+    Rows: 375000 Columns: 6── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────
+    Delimiter: ","
+    dbl (6): origin_id, destination_id, entry_cost, network_cost, exit_cost, total_cost
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+**PCN Clinics OD Matrix**
+
+```{r}
+ODMatrix_PCN_Clinic <- read_csv("data/aspatial/PCN Clinics OD Matrix/Output OD Matrix PCN Clinics 2.csv", skip = 0)
+```
+
+    Rows: 3415500 Columns: 6── Column specification ────────────────────────────────────────────────────────────────────────────────────────────────
+    Delimiter: ","
+    dbl (6): origin_id, destination_id, entry_cost, network_cost, exit_cost, total_cost
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+**CHAS Clinics OD Matrix**
+
+```{r}
+ODMatrix_CHAS_Clinic <- read_csv("data/aspatial/CHAS Clinics OD Matrix/CHAS Clinic OD Matrix.csv", skip = 0)
+```
+
+    Rows: 7907625 Columns: 6── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────
+    Delimiter: ","
+    dbl (6): origin_id, destination_id, entry_cost, network_cost, exit_cost, total_cost
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+**Hospital OD Matrix**
+
+```{r}
+ODMatrix_Hospital <- read_csv("data/aspatial/Hospital OD Matrix/Hospitals OD Matrix.csv", skip = 0)
+```
+
+    Rows: 111375 Columns: 6── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────
+    Delimiter: ","
+    dbl (6): origin_id, destination_id, entry_cost, network_cost, exit_cost, total_cost
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+**Polyclinics OD Matrix**
+
+```{r}
+ODMatrix_Polyclinics <- read_csv("data/aspatial/Polyclinics OD Matrix/Polyclinics OD Matrix.csv", skip = 0)
+```
+
+    Rows: 90750 Columns: 6── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────────────
+    Delimiter: ","
+    dbl (6): origin_id, destination_id, entry_cost, network_cost, exit_cost, total_cost
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+**Nursing_Homes OD Matrix**
+
+```{r}
+ODMatrix_Nursing_Homes <- read_csv("data/aspatial/Nursing Homes OD Matrix/Nursing Homes OD Matrix.csv", skip = 0)
+```
+
+    Rows: 313500 Columns: 6── Column specification ──────────────────────────────────────────────────────────────────────────────────────────────
+    Delimiter: ","
+    dbl (6): origin_id, destination_id, entry_cost, network_cost, exit_cost, total_cost
+    ℹ Use `spec()` to retrieve the full column specification for this data.
+    ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.
+
+### 16.5.2 Tidying distance matrix
+
+The imported OD Matrix organised the distance matrix column wise.
+
+**Eldercare OD Matrix**
+
+![](images/paste-023D1A97.png)\
+
+**PCN Network Clinics OD Matrix** ![](images/paste-88D7C3BC.png)
+
+On the other hands, most of the modelling packages in R is expecting a matrix look similar to the figure below.
+
+**Eldercare**
+
+The rows represent **origins** (i.e. also know as **from** field) and the columns represent **destination** (i.e. also known as **to** field.)
+
+The code chunk below uses *spread()* of **tidyr** package is used to transform the O-D matrix from a thin format into a fat format.
+
+```{r}
+distmat_eldercare <- ODMatrix_eldercare %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+![](images/paste-9AA41A85.png)
+
+**PCN Clinics**
+
+The rows represent **origins** (i.e. also know as **from** field) and the columns represent **destination** (i.e. also known as **to** field.)
+
+The code chunk below uses *spread()* of **tidyr** package is used to transform the O-D matrix from a thin format into a fat format.
+
+```{r}
+distmat_PCN_Clinics <- ODMatrix_PCN_Clinic %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+![](images/paste-18C00754.png)
+
+**CHAS_Clinics**
+
+The rows represent **origins** (i.e. also know as **from** field) and the columns represent **destination** (i.e. also known as **to** field.)
+
+The code chunk below uses *spread()* of **tidyr** package is used to transform the O-D matrix from a thin format into a fat format
+
+```{r}
+distmat_CHAS_Clinics <- ODMatrix_CHAS_Clinic %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+![](images/paste-AB5D7018.png)
+
+**Hospitals**
+
+The rows represent **origins** (i.e. also know as **from** field) and the columns represent **destination** (i.e. also known as **to** field.)
+
+The code chunk below uses *spread()* of **tidyr** package is used to transform the O-D matrix from a thin format into a fat format
+
+```{r}
+distmat_Hospitals <- ODMatrix_Hospital %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+![](images/paste-69C9C9E1.png)
+
+**Polyclinics**
+
+The rows represent **origins** (i.e. also know as **from** field) and the columns represent **destination** (i.e. also known as **to** field.)
+
+The code chunk below uses *spread()* of **tidyr** package is used to transform the O-D matrix from a thin format into a fat format
+
+```{r}
+distmat_Polyclinics <- ODMatrix_Polyclinics %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+![](images/paste-5B14832D.png)
+
+**Nursing_Homes**
+
+The rows represent **origins** (i.e. also know as **from** field) and the columns represent **destination** (i.e. also known as **to** field.)
+
+The code chunk below uses *spread()* of **tidyr** package is used to transform the O-D matrix from a thin format into a fat format
+
+```{r}
+distmat_Nursing_Homes <- ODMatrix_Nursing_Homes %>%
+  select(origin_id, destination_id, total_cost) %>%
+  spread(destination_id, total_cost)%>%
+  select(c(-c('origin_id')))
+```
+
+![](images/paste-8965A1A7.png)
+
+Note: Since tidyr version 1.0 a new function called [*pivot_wider()*](https://tidyr.tidyverse.org/reference/pivot_wider.html) is introduce. You should use *pivot_wider()* instead of *spread()*
+
+Currently, the distance is measured in metre because SVY21 projected coordinate system is used. The code chunk below will be used to convert the unit f measurement from metre to kilometre.
+
+**Eldercare** convert to km, such that it is easier to observe values
+
+```{r}
+distmat_eldercare_km <- as.matrix(distmat_eldercare/1000)
+```
+
+**PCN Clinics** convert to km, such that it is easier to observe values
+
+```{r}
+distmat_PCN_Clinics_km <- as.matrix(distmat_PCN_Clinics/1000)
+```
+
+**CHAS_Clinics** convert to km, such that it is easier to observe values
+
+```{r}
+distmat_CHAS_Clinics_km <- as.matrix(distmat_CHAS_Clinics/1000)
+```
+
+**Hospitals** convert to km, such that it is easier to observe values
+
+```{r}
+distmat_Hospitals_km <- as.matrix(distmat_Hospitals/1000)
+```
+
+**Polyclinics** convert to km, such that it is easier to observe values
+
+```{r}
+distmat_Polyclinics_km <- as.matrix(distmat_Polyclinics/1000)
+```
+
+**Nursing_Homes** convert to km, such that it is easier to observe values
+
+```{r}
+distmat_Nursing_Homes_km <- as.matrix(distmat_Nursing_Homes/1000)
+```
+
+## 16.6 Modelling and Visualising Accessibility using Hansen Method
+
+### 16.6.1 Computing Hansen's accessibility
+
+Now, we ready to compute Hansen's accessibility by using *ac()* of [**SpatialAcc**](https://cran.r-project.org/web/packages/SpatialAcc/) package. Before getting started, you are encourage to read the [arguments](https://cran.r-project.org/web/packages/SpatialAcc/SpatialAcc.pdf) of the function at least once in order to ensure that the required inputs are available.
+
+The code chunk below calculates Hansen's accessibility using *ac()* of **SpatialAcc** and *data.frame()* is used to save the output in a data frame called `acc_Handsen`.
+
+**Eldercare**
+
+```{r}
+acc_eldercare_Hansen <- data.frame(ac(hexagons$demand,
+                            eldercare$capacity,
+                            distmat_eldercare_km, 
+                            #d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+
+**PCN Clinics**
+
+```{r}
+acc_PCN_Clinics_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            PCN_Clinics$capacity,
+                            distmat_PCN_Clinics_km, 
+                            #d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+
+**CHAS_Clinics**
+
+```{r}
+acc_CHAS_Clinics_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            CHAS_Clinics$capacity,
+                            distmat_CHAS_Clinics_km, 
+                            #d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+
+**Hospitals**
+
+```{r}
+acc_Hospitals_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            Hospital$capacity,
+                            distmat_Hospitals_km, 
+                            #d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+
+**Polyclinics**
+
+```{r}
+acc_Polyclinics_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            Polyclinics$capacity,
+                            distmat_Polyclinics_km, 
+                            #d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+
+**Nursing_Homes**
+
+```{r}
+acc_Nursing_Homes_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            Nursing_Homes$capacity,
+                            distmat_Nursing_Homes_km, 
+                            #d0 = 50,
+                            power = 2, 
+                            family = "Hansen"))
+```
+
+Notice that for the purpose of this hands-on exercise, a constant value of 100 is used. In practice, actual demand of the hexagon and capacity of the eldercare centre should be used.
+
+**Acc_eldercare_Hansen**
+
+The default field name is very messy, we will rename it to `accHansen` by using the code chunk below.
+
+![](images/paste-D1361ECC.png)
+
+**Acc_PCN_Clinics_Hansen**
+
+The default field name is very messy, we will rename it to `accHansen` by using the code chunk below.
+
+![](images/paste-CCA9103B.png)
+
+**Eldercare**
+
+```{r}
+colnames(acc_eldercare_Hansen) <- "accHansen"
+```
+
+![](images/paste-BD7D94CA.png) Notice that the field name is much more tidier now.
+
+**PCN Clinics**
+
+```{r}
+colnames(acc_PCN_Clinics_Hansen) <- "accHansen"
+```
+
+![](images/paste-2E5A9C5C.png)
+
+**CHAS_Clinics**
+
+```{r}
+colnames(acc_CHAS_Clinics_Hansen) <- "accHansen"
+```
+
+**Hospitals**
+
+```{r}
+colnames(acc_Hospitals_Hansen) <- "accHansen"
+```
+
+**Polyclinics**
+
+```{r}
+colnames(acc_Polyclinics_Hansen) <- "accHansen"
+```
+
+**Nursing_Homes**
+
+```{r}
+colnames(acc_Nursing_Homes_Hansen) <- "accHansen"
+```
+
+Notice that the field name is much more tidier now. Next, we will convert the data table into tibble format by using the code chunk below.
+
+**Eldercare**
+
+```{r}
+acc_eldercare_Hansen <- tbl_df(acc_eldercare_Hansen)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**PCN Clinics**
+
+```{r}
+acc_PCN_Clinics_Hansen <- tbl_df(acc_PCN_Clinics_Hansen)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**CHAS_Clinics**
+
+```{r}
+acc_CHAS_Clinics_Hansen <- tbl_df(acc_CHAS_Clinics_Hansen)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Hospitals**
+
+```{r}
+acc_Hospitals_Hansen <- tbl_df(acc_Hospitals_Hansen)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Polyclinics**
+
+```{r}
+acc_Polyclinics_Hansen <- tbl_df(acc_Polyclinics_Hansen)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Nursing_Homes**
+
+```{r}
+acc_Nursing_Homes_Hansen <- tbl_df(acc_Nursing_Homes_Hansen)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+Lastly, *bind_cols()* of dplyr will be used to join the acc_Hansen tibble data frame with the hexagons simple feature data frame. The output is called `hexagon_Hansen`.
+
+**Eldercare Hexagons**
+
+```{r}
+hexagon_eldercare_Hansen <- bind_cols(hexagons, acc_eldercare_Hansen)
+```
+
+![](images/paste-4B53D473.png)
+
+Notice that hexagon_Hansen is a simple feature data frame and not a typical tibble data frame.
+
+**PCN Clinics Hexagons**
+
+```{r}
+hexagon_PCN_Clinics_Hansen <- bind_cols(hexagons_2019, acc_PCN_Clinics_Hansen)
+```
+
+![](images/paste-C1BD44DB.png)
+
+Notice that hexagon_Hansen is a simple feature data frame and not a typical tibble data frame.
+
+**CHAS_Clinics Hexagons**
+
+```{r}
+hexagon_CHAS_Clinics_Hansen <- bind_cols(hexagons_2019, acc_CHAS_Clinics_Hansen)
+```
+
+**Hospitals Hexagons**
+
+```{r}
+hexagon_Hospitals_Hansen <- bind_cols(hexagons_2019, acc_Hospitals_Hansen)
+```
+
+**Polyclinics Hexagons**
+
+```{r}
+hexagon_Polyclinics_Hansen <- bind_cols(hexagons_2019, acc_Polyclinics_Hansen)
+```
+
+**Nursing_Homes Hexagons**
+
+```{r}
+hexagon_Nursing_Homes_Hansen <- bind_cols(hexagons_2019, acc_Nursing_Homes_Hansen)
+```
+
+Notice that hexagon_Hansen is a simple feature data frame and not a typical tibble data frame.
+
+Actually, the steps above can be perform by using a single code chunk as shown below.
+
+**Eldercare ACC Hansen**
+
+```{r}
+acc_eldercare_Hansen <- data.frame(ac(hexagons$demand,
+                            eldercare$capacity,
+                            distmat_eldercare_km, 
+                            #d0 = 50,
+                            power = 0.5, 
+                            family = "Hansen"))
+
+colnames(acc_eldercare_Hansen) <- "accHansen"
+acc_eldercare_Hansen <- tbl_df(acc_eldercare_Hansen)
+hexagon_eldercare_Hansen <- bind_cols(hexagons, acc_eldercare_Hansen)
+```
+
+**PCN Clinics ACC Hansen**
+
+```{r}
+acc_PCN_Clinics_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            PCN_Clinics$capacity,
+                            distmat_PCN_Clinics_km, 
+                            #d0 = 50,
+                            power = 0.5, 
+                            family = "Hansen"))
+
+colnames(acc_PCN_Clinics_Hansen) <- "accHansen"
+acc_PCN_Clinics_Hansen <- tbl_df(acc_PCN_Clinics_Hansen)
+hexagon_PCN_Clinics_Hansen <- bind_cols(hexagons_2019, acc_PCN_Clinics_Hansen)
+```
+
+**CHAS_Clinics ACC Hansen**
+
+```{r}
+acc_CHAS_Clinics_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            CHAS_Clinics$capacity,
+                            distmat_CHAS_Clinics_km, 
+                            #d0 = 50,
+                            power = 0.5, 
+                            family = "Hansen"))
+
+colnames(acc_CHAS_Clinics_Hansen) <- "accHansen"
+acc_CHAS_Clinics_Hansen <- tbl_df(acc_CHAS_Clinics_Hansen)
+hexagon_CHAS_Clinics_Hansen <- bind_cols(hexagons_2019, acc_CHAS_Clinics_Hansen)
+```
+
+**Hospitals ACC Hansen**
+
+```{r}
+acc_Hospitals_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            Hospital$capacity,
+                            distmat_Hospitals_km, 
+                            #d0 = 50,
+                            power = 0.5, 
+                            family = "Hansen"))
+
+colnames(acc_Hospitals_Hansen) <- "accHansen"
+acc_Hospitals_Hansen <- tbl_df(acc_Hospitals_Hansen)
+hexagon_Hospitals_Hansen <- bind_cols(hexagons_2019, acc_Hospitals_Hansen)
+```
+
+**Polyclinics ACC Hansen**
+
+```{r}
+acc_Polyclinics_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            Polyclinics$capacity,
+                            distmat_Polyclinics_km, 
+                            #d0 = 50,
+                            power = 0.5, 
+                            family = "Hansen"))
+
+colnames(acc_Polyclinics_Hansen) <- "accHansen"
+acc_Polyclinics_Hansen <- tbl_df(acc_Polyclinics_Hansen)
+hexagon_Polyclinics_Hansen <- bind_cols(hexagons_2019, acc_Polyclinics_Hansen)
+```
+
+**Nursing_Homes**
+
+```{r}
+acc_Nursing_Homes_Hansen <- data.frame(ac(hexagons_2019$demand,
+                            Nursing_Homes$capacity,
+                            distmat_Nursing_Homes_km, 
+                            #d0 = 50,
+                            power = 0.5, 
+                            family = "Hansen"))
+
+colnames(acc_Nursing_Homes_Hansen) <- "accHansen"
+acc_Nursing_Homes_Hansen <- tbl_df(acc_Nursing_Homes_Hansen)
+hexagon_Nursing_Homes_Hansen <- bind_cols(hexagons_2019, acc_Nursing_Homes_Hansen)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+### 16.6.2 Visualising Hansen's accessibility
+
+#### 16.6.2.1 Extracting map extend
+
+Firstly, we will extract the extend of `hexagons` simple feature data frame by by using *st_bbox()* of **sf** package.
+
+**Hexagon using Masterplan 2014**
+
+```{r}
+mapex <- st_bbox(hexagons)
+```
+
+**Hexagon using Masterplan 2019**
+
+```{r}
+mapex_2019 <- st_bbox(hexagons_2019)
+```
+
+The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore.
+
+**Eldercare Accessibility Map Plot**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_eldercare_Hansen,
+         bbox = mapex) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(eldercare) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to eldercare: Hansen method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-818B8194.png)**PCN Clinics Accessibility Map Plot**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_PCN_Clinics_Hansen,
+         bbox = mapex_2019) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          palette = "Purples",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(PCN_Clinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to PCN_Clinics: Hansen method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-FC5B31C4.png)**CHAS_Clinics Accessibility Map Plot**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_CHAS_Clinics_Hansen,
+         bbox = mapex_2019) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          palette = "Purples",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(CHAS_Clinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to CHAS_Clinics: Hansen method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-E56F1E4C.png)**Hospitals Accessibility Map Plot**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Hospitals_Hansen,
+         bbox = mapex_2019) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          palette = "Blues",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Hospital) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Hospitals: Hansen method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-499FDB5D.png)**Polyclinics Accessibility Map Plot**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Polyclinics_Hansen,
+         bbox = mapex_2019) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          palette = "Greens",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Polyclinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Polyclinics: Hansen method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-78D2A318.png)
+
+**Nursing_Homes Accessibility Map Plot**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Nursing_Homes_Hansen,
+         bbox = mapex_2019) + 
+  tm_fill(col = "accHansen",
+          n = 10,
+          style = "quantile",
+          palette = "Reds",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Nursing_Homes) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Nursing_Homes: Hansen method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = TRUE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-9EABB693.png)
+
+### 16.6.3 Statistical graphic visualisation
+
+In this section, we are going to compare the distribution of Hansen's accessibility values by URA Planning Region.
+
+Firstly, we need to add the planning region field into *haxegon_Hansen* simple feature data frame by using the code chunk below.
+
+**Eldercare**
+
+```{r}
+hexagon_eldercare_Hansen <- st_join(hexagon_eldercare_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+**PCN Clinics**
+
+```{r}
+hexagon_PCN_Clinics_Hansen <- st_join(hexagon_PCN_Clinics_Hansen, mpsz, 
+                              join = st_intersects)
+```
+
+**CHAS Clinics**
+
+```{r}
+hexagon_CHAS_Clinics_Hansen <- st_join(hexagon_CHAS_Clinics_Hansen, mpsz, 
+                               join = st_intersects)
+```
+
+**Hospitals**
+
+```{r}
+hexagon_Hospitals_Hansen <- st_join(hexagon_Hospitals_Hansen, mpsz, 
+                            join = st_intersects)
+```
+
+**Polyclinics**
+
+```{r}
+hexagon_Polyclinics_Hansen <- st_join(hexagon_Polyclinics_Hansen, mpsz, 
+                              join = st_intersects)
+```
+
+**Nursing_Homes**
+
+```{r}
+hexagon_Nursing_Homes_Hansen <- st_join(hexagon_Nursing_Homes_Hansen, mpsz, 
+                              join = st_intersects)
+```
+
+**Eldercare**
+
+Next, *ggplot()* will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data = hexagon_eldercare_Hansen, 
+       aes(y = log(accHansen), 
+           x = REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat = "summary", 
+             fun.y = "mean", 
+             colour = "red", 
+             size=2)
+```
+
+![](images/paste-73196D19.png)
+
+**PCN Clinics**
+
+Next, *ggplot()* will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data = hexagon_PCN_Clinics_Hansen, 
+       aes(y = log(accHansen), 
+           x = REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat = "summary", 
+             fun.y = "mean", 
+             colour = "red", 
+             size=2)
+```
+
+![](images/paste-2F6D3C38.png)
+
+**CHAS Clinics**
+
+Next, *ggplot()* will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data = hexagon_CHAS_Clinics_Hansen, 
+       aes(y = log(accHansen), 
+           x = REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat = "summary", 
+             fun.y = "mean", 
+             colour = "red", 
+             size=2)
+```
+
+![](images/paste-1FB16BF8.png)
+
+**Hospitals**
+
+Next, *ggplot()* will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data = hexagon_Hospitals_Hansen, 
+       aes(y = log(accHansen), 
+           x = REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat = "summary", 
+             fun.y = "mean", 
+             colour = "red", 
+             size=2)
+```
+
+![](images/paste-CAD09EDA.png)
+
+**Polyclinics**
+
+Next, *ggplot()* will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data=hexagon_Polyclinics_Hansen, 
+       aes(y = log(accHansen), 
+           x= REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat="summary", 
+             fun.y="mean", 
+             colour ="red", 
+             size=2)
+```
+
+![](images/paste-9520CAB1.png)
+
+**Nursing_Homes**
+
+Next, *ggplot()* will be used to plot the distribution by using boxplot graphical method.
+
+```{r}
+ggplot(data=hexagon_Nursing_Homes_Hansen, 
+       aes(y = log(accHansen), 
+           x= REGION_N)) +
+  geom_boxplot() +
+  geom_point(stat="summary", 
+             fun.y="mean", 
+             colour ="red", 
+             size=2)
+```
+
+![](images/paste-5D27F3DF.png)
+
+## 16.7 Modelling and Visualising Accessibility using KD2SFCA Method
+
+### 16.7.1 Computing KD2SFCA's accessibility
+
+In this section, you are going to repeat most of the steps you had learned in previous section to perform the analysis. However, some of the codes will be combined into one code chunk.\
+The code chunk below calculates Hansen's accessibility using *ac()* of **SpatialAcc** and *data.frame()* is used to save the output in a data frame called `acc_KD2SFCA`. Notice that `KD2SFCA` is used for family argument.
+
+**Eldercare**
+
+```{r}
+acc_eldercare_KD2SFCA <- data.frame(ac(hexagons$demand,
+                            eldercare$capacity,
+                            distmat_eldercare_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "KD2SFCA"))
+
+colnames(acc_eldercare_KD2SFCA) <- "accKD2SFCA_eldercare"
+acc_eldercare_KD2SFCA <- tbl_df(acc_eldercare_KD2SFCA)
+hexagon_eldercare_KD2SFCA <- bind_cols(hexagons, acc_eldercare_KD2SFCA)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**PCN_Clinics**
+
+```{r}
+acc_PCN_Clinics_KD2SFCA <- data.frame(ac(hexagons_2019$demand,
+                            PCN_Clinics$capacity,
+                            distmat_PCN_Clinics_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "KD2SFCA"))
+
+colnames(acc_PCN_Clinics_KD2SFCA) <- "accKD2SFCA_PCN_Clinics"
+acc_PCN_Clinics_KD2SFCA <- tbl_df(acc_PCN_Clinics_KD2SFCA)
+hexagon_PCN_Clinics_KD2SFCA <- bind_cols(hexagons_2019, acc_PCN_Clinics_KD2SFCA)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**CHAS_Clinics**
+
+```{r}
+acc_CHAS_Clinics_KD2SFCA <- data.frame(ac(hexagons_2019$demand,
+                            CHAS_Clinics$capacity,
+                            distmat_CHAS_Clinics_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "KD2SFCA"))
+
+colnames(acc_CHAS_Clinics_KD2SFCA) <- "accKD2SFCA_CHAS_Clinics"
+acc_CHAS_Clinics_KD2SFCA <- tbl_df(acc_CHAS_Clinics_KD2SFCA)
+hexagon_CHAS_Clinics_KD2SFCA <- bind_cols(hexagons_2019, acc_CHAS_Clinics_KD2SFCA)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Hospitals**
+
+```{r}
+acc_Hospitals_KD2SFCA <- data.frame(ac(hexagons_2019$demand,
+                            Hospital$capacity,
+                            distmat_Hospitals_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "KD2SFCA"))
+
+colnames(acc_Hospitals_KD2SFCA) <- "accKD2SFCA_Hospitals"
+acc_Hospitals_KD2SFCA <- tbl_df(acc_Hospitals_KD2SFCA)
+hexagon_Hospitals_KD2SFCA <- bind_cols(hexagons_2019, acc_Hospitals_KD2SFCA)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Polyclinics**
+
+```{r}
+acc_Polyclinics_KD2SFCA <- data.frame(ac(hexagons_2019$demand,
+                            Polyclinics$capacity,
+                            distmat_Polyclinics_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "KD2SFCA"))
+
+colnames(acc_Polyclinics_KD2SFCA) <- "accKD2SFCA_Polyclinics"
+acc_Polyclinics_KD2SFCA <- tbl_df(acc_Polyclinics_KD2SFCA)
+hexagon_Polyclinics_KD2SFCA <- bind_cols(hexagons_2019, acc_Polyclinics_KD2SFCA)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Nursing_Homes**
+
+```{r}
+acc_Nursing_Homes_KD2SFCA <- data.frame(ac(hexagons_2019$demand,
+                            Nursing_Homes$capacity,
+                            distmat_Nursing_Homes_km, 
+                            d0 = 50,
+                            power = 2, 
+                            family = "KD2SFCA"))
+
+colnames(acc_Nursing_Homes_KD2SFCA) <- "accKD2SFCA_Nursing_Homes"
+acc_Nursing_Homes_KD2SFCA <- tbl_df(acc_Nursing_Homes_KD2SFCA)
+hexagon_Nursing_Homes_KD2SFCA <- bind_cols(hexagons_2019, 
+                                           acc_Nursing_Homes_KD2SFCA)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+### 16.7.2 Visualising KD2SFCA's accessibility
+
+The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
+
+**eldercare**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_eldercare_KD2SFCA,
+         bbox = mapex) + 
+  tm_fill(col = "accKD2SFCA_eldercare",
+          n = 10,
+          style = "quantile",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(eldercare) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to eldercare: KD2SFCA method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-51B688D6.png)
+
+**PCN_Clinics**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_PCN_Clinics_KD2SFCA,
+         bbox = mapex) + 
+  tm_fill(col = "accKD2SFCA_PCN_Clinics",
+          n = 10,
+          style = "quantile",
+          palette = "Blues",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(PCN_Clinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to PCN_Clinics: KD2SFCA method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-B94F145E.png)**CHAS_Clinics**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_CHAS_Clinics_KD2SFCA,
+         bbox = mapex) + 
+  tm_fill(col = "accKD2SFCA_CHAS_Clinics",
+          n = 10,
+          style = "quantile",
+          palette = "Purples",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(CHAS_Clinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to CHAS_Clinics: KD2SFCA method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-45CD1CFA.png)**Hospitals**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Hospitals_KD2SFCA,
+         bbox = mapex) + 
+  tm_fill(col = "accKD2SFCA_Hospitals",
+          n = 10,
+          style = "quantile",
+          palette = "Greens",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Hospital) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Hospitals: KD2SFCA method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-6A3688C3.png)**Polyclinics**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Polyclinics_KD2SFCA,
+         bbox = mapex) + 
+  tm_fill(col = "accKD2SFCA_Polyclinics",
+          n = 10,
+          style = "quantile",
+          palette = "Blues",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Polyclinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Polyclinics: KD2SFCA method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-BF824AF6.png)**Nursing_Homes**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Nursing_Homes_KD2SFCA,
+         bbox = mapex) + 
+  tm_fill(col = "accKD2SFCA_Nursing_Homes",
+          n = 10,
+          style = "quantile",
+          palette = "Reds",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Nursing_Homes) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Nursing_Homes: KD2SFCA method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 6),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-E7D65DB3.png)
+
+### 16.6.3 Statistical graphic visualisation
+
+In this section, we are going to compare the distribution of Hansen's accessibility values by URA Planning Region.
+
+Firstly, we need to add the planning region field into *haxegon_Hansen* simple feature data frame by using the code chunk below.
+
+**eldercare**
+
+```{r}
+hexagon_eldercare_Hansen <- st_join(hexagon_eldercare_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+**PCN_Clinics**
+
+```{r}
+hexagon_PCN_Clinics_Hansen <- st_join(hexagon_PCN_Clinics_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+**CHAS_Clinics**
+
+```{r}
+hexagon_CHAS_Clinics_Hansen <- st_join(hexagon_CHAS_Clinics_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+**Hospitals**
+
+```{r}
+hexagon_Hospitals_Hansen <- st_join(hexagon_Hospitals_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+**Polyclinics**
+
+```{r}
+hexagon_Polyclinics_Hansen <- st_join(hexagon_Polyclinics_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+**Nursing_Homes**
+
+```{r}
+hexagon_Nursing_Homes_Hansen <- st_join(hexagon_Nursing_Homes_Hansen, mpsz, 
+                          join = st_intersects)
+```
+
+Next, ggplot() will be used to plot the distribution by using boxplot graphical method
+
+**eldercare**
+
+```{r}
+# ggplot(data=hexagon_eldercare_KD2SFCA, 
+#        aes(y = accKD2SFCA, 
+#            x= REGION_N)) +
+#   geom_boxplot(acc) +
+#   geom_point(stat="summary", 
+#              fun.y="mean", 
+#              colour ="red", 
+#              size=2)
+```
+
+**PCN_Clinics**
+
+```{r}
+# ggplot(data=hexagon_PCN_Clinics_KD2SFCA, 
+#        aes(y = accKD2SFCA, 
+#            x= REGION_N)) +
+#   geom_boxplot(acc) +
+#   geom_point(stat="summary", 
+#              fun.y="mean", 
+#              colour ="red", 
+#              size=2)
+```
+
+**CHAS_Clinics**
+
+```{r}
+# ggplot(data=hexagon_CHAS_Clinics_KD2SFCA, 
+#        aes(y = accKD2SFCA, 
+#            x= REGION_N)) +
+#   geom_boxplot(acc) +
+#   geom_point(stat="summary", 
+#              fun.y="mean", 
+#              colour ="red", 
+#              size=2)
+```
+
+**Hospitals**
+
+```{r}
+# ggplot(data=hexagon_Hospitals_KD2SFCA, 
+#        aes(y = accKD2SFCA, 
+#            x= REGION_N)) +
+#   geom_boxplot(acc) +
+#   geom_point(stat="summary", 
+#              fun.y="mean", 
+#              colour ="red", 
+#              size=2)
+```
+
+**Polyclinics**
+
+```{r}
+# ggplot(data=hexagon_Polyclinics_KD2SFCA, 
+#        aes(y = accKD2SFCA, 
+#            x= REGION_N)) +
+#   geom_boxplot(acc) +
+#   geom_point(stat="summary", 
+#              fun.y="mean", 
+#              colour ="red", 
+#              size=2)
+```
+
+**Nursing_Homes**
+
+```{r}
+# ggplot(data=hexagon_Nursing_Homes_KD2SFCA, 
+#        aes(y = accKD2SFCA, 
+#            x= REGION_N)) +
+#   geom_boxplot(acc) +
+#   geom_point(stat="summary", 
+#              fun.y="mean", 
+#              colour ="red", 
+#              size=2)
+```
+
+## 16.8 Modelling and Visualising Accessibility using Spatial Accessibility Measure (SAM) Method
+
+### 16.8.1 Computing SAM accessibility
+
+In this section, you are going to repeat most of the steps you had learned in previous section to perform the analysis. However, some of the codes will be combined into one code chunk.\
+The code chunk below calculates Hansen's accessibility using *ac()* of **SpatialAcc** and *data.frame()* is used to save the output in a data frame called `acc_SAM`. Notice that `SAM` is used for family argument.
+
+**eldercare**
+
+```{r}
+acc_eldercare_SAM <- data.frame(ac(hexagons$demand,
+                         eldercare$capacity,
+                         distmat_eldercare_km, 
+                         d0 = 50,
+                         power = 2, 
+                         family = "SAM"))
+
+colnames(acc_eldercare_SAM) <- "accSAM_eldercare"
+acc_eldercare_SAM <- tbl_df(acc_eldercare_SAM)
+hexagon_eldercare_SAM <- bind_cols(hexagons, acc_eldercare_SAM)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**PCN_Clinics**
+
+```{r}
+acc_PCN_Clinics_SAM <- data.frame(ac(hexagons_2019$demand,
+                         PCN_Clinics$capacity,
+                         distmat_PCN_Clinics_km, 
+                         d0 = 50,
+                         power = 2, 
+                         family = "SAM"))
+
+colnames(acc_PCN_Clinics_SAM) <- "accSAM_PCN_Clinics"
+acc_PCN_Clinics_SAM <- tbl_df(acc_PCN_Clinics_SAM)
+hexagon_PCN_Clinics_SAM <- bind_cols(hexagons_2019, acc_PCN_Clinics_SAM)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**CHAS_Clinics**
+
+```{r}
+acc_CHAS_Clinics_SAM <- data.frame(ac(hexagons_2019$demand,
+                         CHAS_Clinics$capacity,
+                         distmat_CHAS_Clinics_km, 
+                         d0 = 50,
+                         power = 2, 
+                         family = "SAM"))
+
+colnames(acc_CHAS_Clinics_SAM) <- "accSAM_CHAS_Clinics"
+acc_CHAS_Clinics_SAM <- tbl_df(acc_CHAS_Clinics_SAM)
+hexagon_CHAS_Clinics_SAM <- bind_cols(hexagons_2019, acc_CHAS_Clinics_SAM)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Hospitals**
+
+```{r}
+acc_Hospitals_SAM <- data.frame(ac(hexagons_2019$demand,
+                         Hospital$capacity,
+                         distmat_Hospitals_km, 
+                         d0 = 50,
+                         power = 2, 
+                         family = "SAM"))
+
+colnames(acc_Hospitals_SAM) <- "accSAM_Hospitals"
+acc_Hospitals_SAM <- tbl_df(acc_Hospitals_SAM)
+hexagon_Hospitals_SAM <- bind_cols(hexagons_2019, acc_Hospitals_SAM)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Polyclinics**
+
+```{r}
+acc_Polyclinics_SAM <- data.frame(ac(hexagons_2019$demand,
+                         Polyclinics$capacity,
+                         distmat_Polyclinics_km, 
+                         d0 = 50,
+                         power = 2, 
+                         family = "SAM"))
+
+colnames(acc_Polyclinics_SAM) <- "accSAM_Polyclinics"
+acc_Polyclinics_SAM <- tbl_df(acc_Polyclinics_SAM)
+hexagon_Polyclinics_SAM <- bind_cols(hexagons_2019, acc_Polyclinics_SAM)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+**Nursing_Homes**
+
+```{r}
+acc_Nursing_Homes_SAM <- data.frame(ac(hexagons_2019$demand,
+                         Nursing_Homes$capacity,
+                         distmat_Nursing_Homes_km, 
+                         d0 = 50,
+                         power = 2, 
+                         family = "SAM"))
+
+colnames(acc_Nursing_Homes_SAM) <- "accSAM_Nursing_Homes"
+acc_Nursing_Homes_SAM <- tbl_df(acc_Nursing_Homes_SAM)
+hexagon_Nursing_Homes_SAM <- bind_cols(hexagons_2019, acc_Nursing_Homes_SAM)
+```
+
+    Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
+    Please use `tibble::as_tibble()` instead.
+
+### 16.8.2 Visualising SAM's accessibility
+
+The code chunk below uses a collection of mapping fucntions of tmap package to create a high cartographic quality accessibility to eldercare centre in Singapore. Notice that `mapex` is reused for *bbox* argument.
+
+**eldercare**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_eldercare_SAM,
+         bbox = mapex) + 
+  tm_fill(col = "accSAM_eldercare",
+          n = 10,
+          style = "quantile",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(eldercare) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to eldercare: SAM method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 3),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-CA2540DF.png)
+
+**PCN_Clinics**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_PCN_Clinics_SAM,
+         bbox = mapex) + 
+  tm_fill(col = "accSAM_PCN_Clinics",
+          n = 10,
+          style = "quantile",
+          palette = "Blues",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(PCN_Clinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to PCN_Clinics: SAM method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 3),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-B5F655BC.png)
+
+**CHAS_Clinics**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_CHAS_Clinics_SAM,
+         bbox = mapex) + 
+  tm_fill(col = "accSAM_CHAS_Clinics",
+          n = 10,
+          style = "quantile",
+          palette = "Purples",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(CHAS_Clinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to CHAS_Clinics: SAM method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 3),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-71687B99.png)
+
+**Hospitals**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Hospitals_SAM,
+         bbox = mapex) + 
+  tm_fill(col = "accSAM_Hospitals",
+          n = 10,
+          style = "quantile",
+          palette = "Greens",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Hospital) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Hospitals: SAM method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 3),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-58607BAC.png)
+
+**Polyclinics**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Polyclinics_SAM,
+         bbox = mapex) + 
+  tm_fill(col = "accSAM_Polyclinics",
+          n = 10,
+          style = "quantile",
+          palette = "Blues",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Polyclinics) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Polyclinics: SAM method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 3),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-A7F9C996.png)
+
+**Nursing_Homes**
+
+```{r}
+tmap_mode("plot")
+tm_shape(hexagon_Nursing_Homes_SAM,
+         bbox = mapex) + 
+  tm_fill(col = "accSAM_Nursing_Homes",
+          n = 10,
+          style = "quantile",
+          palette = "Reds",
+          border.col = "black",
+          border.lwd = 1) +
+tm_shape(Nursing_Homes) +
+  tm_symbols(size = 0.01) +
+  tm_layout(main.title = "Accessibility to Nursing_Homes: SAM method",
+            main.title.position = "center",
+            main.title.size = 1.5,
+            legend.outside = FALSE,
+            legend.height = 0.45, 
+            legend.width = 3.0,
+            legend.format = list(digits = 3),
+            legend.position = c("right", "top"),
+            frame = TRUE) +
+  tm_compass(type="8star", size = 2) +
+  tm_scale_bar(width = 0.15) +
+  tm_grid(lwd = 0.1, alpha = 0.5)
+```
+
+![](images/paste-2E018361.png)

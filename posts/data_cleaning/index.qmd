@@ -1,5 +1,5 @@
 ---
-title: "Data Cleaning"
+title: "Data Cleaning and Visualisation"
 author: "Group 9"
 date: "2023-04-05"
 date-modified: "`r Sys.Date()`"
@@ -9,7 +9,7 @@ categories: [news]
 # R Packages
 
 ```{r}
-pacman::p_load(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools, raster)
+pacman::p_load(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools, raster, SpatialAcc, ggstatsplot, reshape2, rgdal, spNetwork)
 ```
 
 # Import Data
@@ -18,7 +18,7 @@ pacman::p_load(readr, sf, tmap, spatstat, sfdep, tidyverse, maptools, raster)
 
 ### General Practitioner Clinics
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
@@ -34,7 +34,7 @@ head(gp_data, 5)
 
 ### Hospitals
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
@@ -46,12 +46,11 @@ hospital_data <- read_csv("data/aspatial/hospital_data_geocoded.csv")
 ```{r}
 head(hospital_data, 5)
 ```
-
 :::
 
 ### Polyclinics
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
@@ -63,12 +62,11 @@ poly_data <- read_csv("data/aspatial/polyclinic_data_geocoded.csv")
 ```{r}
 head(poly_data, 5)
 ```
-
 :::
 
 ### Nursing Homes
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
@@ -80,18 +78,33 @@ nursing_data <- read_csv("data/aspatial/nursing_home_data_geocoded.csv")
 ```{r}
 head(nursing_data, 5)
 ```
+:::
 
+### Primary Care Networks
+
+::: panel-tabset
+#### Code
+
+```{r}
+pcn_data <- read_csv("data/aspatial/PCN Clinic Listing (by PCN) With Postal Code.csv")
+```
+
+#### Data
+
+```{r}
+head(pcn_data, 5)
+```
 :::
 
 ### Resident Population by Planning Area/Subzone, Age Group and Sex
 
 Only total population, not separated by genders
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
-pop_data <- read_csv("data/aspatial/Resident Population 2015.csv", skip=11)[1:379,1:19]
+pop_data <- read_csv("data/aspatial/Resident Population 2015.csv", skip=11)[1:379,1:58]
 ```
 
 #### Data
@@ -101,19 +114,25 @@ head(pop_data, 5)
 ```
 :::
 
+### PCN
 
+```{r}
+pcn_data <- readr::read_csv("data/aspatial/PCN Clinic Listing (by PCN) With Postal Code.csv")
+```
 
 ## Geospatial Data
 
 ### Master Plan Subzone 2019
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
 mpsz <- st_read(dsn = "data/geospatial/MPSZ-2019", 
                             layer = "MPSZ-2019") %>% 
   st_transform(crs = 3414)
+
+write_rds(mpsz, "data/models/mpsz_original.rds")
 ```
 
 #### Data
@@ -123,9 +142,28 @@ head(mpsz, 5)
 ```
 :::
 
+### Eldercare
+
+::: panel-tabset
+#### Code
+
+```{r}
+eldercare_sf <- st_read(dsn = "data/geospatial/eldercare", 
+                            layer = "ELDERCARE") %>% 
+  st_transform(crs = 3414)
+eldercare_sf <- eldercare_sf[, c(11:12, 18)]
+```
+
+#### Data
+
+```{r}
+head(eldercare_sf, 5)
+```
+:::
+
 ### Locations of Bus Stops
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
@@ -143,7 +181,7 @@ head(busstop_sf, 5)
 
 ### Locations of Train Stations
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
@@ -159,25 +197,49 @@ head(trainstation_sf, 5)
 ```
 :::
 
+### CHAS
 
+```{r}
+chas_sf <- st_read(dsn = "data/geospatial/CHAS Clinics Shapefile", 
+                            layer = "CHAS Clinics") %>% 
+  st_transform(crs = 3414)
+```
 
+```{r}
+head(chas_sf, 5)
+```
 
-
-
+```{r}
+chas_sf <- chas_sf[rowSums(is.na(chas_sf)) == 0, ] 
+```
 
 # Data Preparation
+
+::: panel-tabset
+#### Code
+
+```{r}
+#pcn_sf <- st_as_sf(pcn_data, coords=c("results.LONGITUDE", "results.LATITUDE"), crs=4326) %>% st_transform(crs = 3414)
+#pcn_data$results.LATITUDE
+#pcn_data[is.na(pcn_data$results.LATITUDE),]
+chas_sf <- chas_sf[rowSums(is.na(chas_sf)) == 0, ]
+pcn_data <- pcn_data[rowSums(is.na(pcn_data)) == 0, ]
+```
+
 ## Retrieve Geospatial Data
 
 ### General Practitioner Clinics
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
 gp_sf <- st_as_sf(gp_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+gp_sf <- gp_sf[, c(1,2)]
 ```
 
 #### Data
+
 ```{r}
 head(gp_sf, 5)
 ```
@@ -185,30 +247,33 @@ head(gp_sf, 5)
 
 ### Hospitals
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
 hospital_sf <- st_as_sf(hospital_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+hospital_sf <- hospital_sf[, c(1:7)]
 ```
 
 #### Data
+
 ```{r}
 head(hospital_sf, 5)
 ```
 :::
 
-
 ### Polyclinics
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
 poly_sf <- st_as_sf(poly_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+poly_sf <- poly_sf[, c(1:4)]
 ```
 
 #### Data
+
 ```{r}
 head(poly_sf, 5)
 ```
@@ -216,46 +281,113 @@ head(poly_sf, 5)
 
 ### Nursing Homes
 
-::: {.panel-tabset}
+::: panel-tabset
 #### Code
 
 ```{r}
 nursing_sf <- st_as_sf(nursing_data, coords=c("Long", "Lat"), crs=4326) %>% st_transform(crs = 3414)
+nursing_sf <- nursing_sf[, c(1:3)]
 ```
 
 #### Data
+
 ```{r}
 head(nursing_sf, 5)
 ```
 :::
 
+### Primary Care Network
+:::
 
+```{r}
+pcn_sf <- st_as_sf(pcn_data, coords=c("results.LONGITUDE", "results.LATITUDE"), crs=4326) %>% st_transform(crs = 3414)
+pcn_sf <- pcn_sf[, c(2:6, 8)]
+```
 
+#### Data
+
+```{r}
+head(pcn_sf, 5)
+```
+
+:::
 
 ## Merge MPSZ with Population Data
 
 ### Convert Data Types
+
 ```{r}
-pop_is_char <- sapply(pop_data[c(2:19)], is.character)
-pop_data[c(2:19)][ , pop_is_char] <- as.data.frame(apply(pop_data[c(2:19)][ , pop_is_char], 2, as.numeric))
+pop_is_char <- sapply(pop_data[c(2:58)], is.character)
+pop_data[c(2:58)][ , pop_is_char] <- as.data.frame(apply(pop_data[c(2:58)][ , pop_is_char], 2, as.numeric))
+pop_data_male <- pop_data[, c(1, 21:39)]
+pop_data_female <- pop_data[, c(1, 40:58)]
+pop_data <- pop_data[, c(1, 2:20)]
 ```
 
-### Total Population
+### Population
+
+::: panel-tabset
+#### Total Population
 
 ```{r}
 pop_data$...1  = toupper(pop_data$...1)
-
+mpsz <- st_make_valid(mpsz)
 total_pop <- merge(x = mpsz, y = pop_data, by.x = "SUBZONE_N", by.y = "...1", all.x = TRUE)
+names(total_pop)[7:25] = c("Total", "0 - 4", "5 - 9", "10 - 14", "15 - 19","20 - 24", "25 - 29", "30 - 34", "35 - 39", "40 - 44", "45 - 49", "50 - 54", "55 - 59", "60 - 64", "65 - 69", "70 - 74", "75 - 79", "80 - 84", "85 & Over")
+
+total_pop["0-14"] <- total_pop$`0 - 4` + total_pop$`5 - 9` + total_pop$`10 - 14`
+total_pop["15-24"] <- total_pop$`15 - 19` + total_pop$`20 - 24`
+total_pop["25-54"] <- total_pop$`25 - 29` + total_pop$`30 - 34` + total_pop$`35 - 39`+ total_pop$`40 - 44` + total_pop$`45 - 49` + total_pop$`50 - 54`
+total_pop["55-64"] <- total_pop$`25 - 29` + total_pop$`60 - 64`
+total_pop["65 & over"] <- total_pop$`65 - 69` + total_pop$`70 - 74` + total_pop$`75 - 79` + total_pop$`80 - 84` + total_pop$`85 & Over`
 ```
 
+#### Male Population
+
+```{r}
+pop_data_male$...1  = toupper(pop_data_male$...1)
+mpsz <- st_make_valid(mpsz)
+male_pop <- merge(x = mpsz, y = pop_data_male, by.x = "SUBZONE_N", by.y = "...1", all.x = TRUE)
+names(male_pop)[7:25] = c("Total", "0 - 4", "5 - 9", "10 - 14", "15 - 19","20 - 24", "25 - 29", "30 - 34", "35 - 39", "40 - 44", "45 - 49", "50 - 54", "55 - 59", "60 - 64", "65 - 69", "70 - 74", "75 - 79", "80 - 84", "85 & Over")
+
+male_pop["0-14"] <- male_pop$`0 - 4` + male_pop$`5 - 9` + male_pop$`10 - 14`
+male_pop["15-24"] <- male_pop$`15 - 19` + male_pop$`20 - 24`
+male_pop["25-54"] <- male_pop$`25 - 29` + male_pop$`30 - 34` + male_pop$`35 - 39`+ male_pop$`40 - 44` + male_pop$`45 - 49` + male_pop$`50 - 54`
+male_pop["55-64"] <- male_pop$`25 - 29` + male_pop$`60 - 64`
+male_pop["65 & over"] <- male_pop$`65 - 69` + male_pop$`70 - 74` + male_pop$`75 - 79` + male_pop$`80 - 84` + male_pop$`85 & Over`
+```
+
+#### Female Population
+
+```{r}
+pop_data_female$...1  = toupper(pop_data_female$...1)
+mpsz <- st_make_valid(mpsz)
+female_pop <- merge(x = mpsz, y = pop_data_female, by.x = "SUBZONE_N", by.y = "...1", all.x = TRUE)
+names(female_pop)[7:25] = c("Total", "0 - 4", "5 - 9", "10 - 14", "15 - 19","20 - 24", "25 - 29", "30 - 34", "35 - 39", "40 - 44", "45 - 49", "50 - 54", "55 - 59", "60 - 64", "65 - 69", "70 - 74", "75 - 79", "80 - 84", "85 & Over")
+
+female_pop["0-14"] <- female_pop$`0 - 4` + female_pop$`5 - 9` + female_pop$`10 - 14`
+female_pop["15-24"] <- female_pop$`15 - 19` + female_pop$`20 - 24`
+female_pop["25-54"] <- female_pop$`25 - 29` + female_pop$`30 - 34` + male_pop$`35 - 39`+ female_pop$`40 - 44` + female_pop$`45 - 49` + female_pop$`50 - 54`
+female_pop["55-64"] <- female_pop$`25 - 29` + female_pop$`60 - 64`
+female_pop["65 & over"] <- female_pop$`65 - 69` + female_pop$`70 - 74` + female_pop$`75 - 79` + female_pop$`80 - 84` + female_pop$`85 & Over`
+```
+
+#### Save RDS
+
+```{r eval=FALSE}
+saveRDS(total_pop, file = "data/models/total_pop.rds")
+saveRDS(male_pop, file = "data/models/male_pop.rds")
+saveRDS(female_pop, file = "data/models/female_pop.rds")
+```
+:::
 
 ## Validity of Geometries of Train Stations
+
 ```{r}
 length(which(st_is_valid(trainstation_sf) == FALSE))
 ```
 
 make valid cannot do
-
 
 ```{r}
 trainstation_sf <- trainstation_sf[st_is_valid(trainstation_sf) == TRUE,]
@@ -264,8 +396,16 @@ length(which(st_is_valid(trainstation_sf) == FALSE))
 
 ```
 
+```{r}
+length(which(st_is_valid(mpsz) == FALSE))
+```
+
+```{r}
+length(which(st_is_valid(mpsz) == FALSE))
+```
 
 ## Excluding Unnecessary Data Points
+
 ```{r}
 gp_sf <- st_intersection(mpsz, gp_sf)
 hospital_sf <- st_intersection(mpsz, hospital_sf)
@@ -273,28 +413,32 @@ poly_sf <- st_intersection(mpsz, poly_sf)
 nursing_sf <- st_intersection(mpsz, nursing_sf)
 busstop_sf <- st_intersection(mpsz, busstop_sf)
 trainstation_sf <- st_intersection(mpsz, trainstation_sf)
+chas_sf <- st_intersection(mpsz, chas_sf)
+pcn_sf <- st_intersection(mpsz, pcn_sf)
+eldercare_sf <- st_intersection(mpsz, eldercare_sf)
 ```
-
-
 
 # Data Visualisation
 
 ## General Practitioner Clinics
 
 ```{r}
-tmap_mode("plot")
+tmap_mode("view")
 tm_shape(total_pop) +
   tm_polygons(
-    "Total...2",
+    "Total",
     style = "cont",
     alpha = 0.4) +
-  tm_fill() + 
+  tm_fill(palette = "Blues") + 
 tm_shape(gp_sf) + 
   tm_symbols(shape=24,
     col  = "blue",
     size = 0.15) +
   tm_layout(main.title="General Practitioner Clinics",
-            main.title.position = "center")
+            main.title.position = "center") +
+tm_view(set.zoom.limits = c(11,14),
+          set.view = 11,
+        set.bounds = TRUE) 
 ```
 
 ## Hospitals
@@ -307,7 +451,7 @@ community_hospital = hospital_sf[hospital_sf$TYPE == "COMMUNITY",]
 
 tm_shape(total_pop) +
   tm_polygons(
-    "Total...2",
+    "Total",
     style = "cont",
     alpha = 0.4) +
 tm_shape(general_hospital) + 
@@ -329,15 +473,13 @@ tm_shape(community_hospital) +
             main.title.position = "center")
 ```
 
-
-
 ## Polyclinics
 
 ```{r}
 tmap_mode("plot")
 tm_shape(total_pop) +
   tm_polygons(
-    "Total...2",
+    "Total",
     style = "cont",
     alpha = 0.4) +
 tm_shape(poly_sf) + 
@@ -348,16 +490,13 @@ tm_shape(poly_sf) +
             main.title.position = "center")
 ```
 
-
-
-
 ## Nursing Homes
 
 ```{r}
 tmap_mode("plot")
 tm_shape(total_pop) +
   tm_polygons(
-    "Total...2",
+    "Total",
     style = "cont",
     alpha = 0.4) +
 tm_shape(nursing_sf) + 
@@ -368,7 +507,22 @@ tm_shape(nursing_sf) +
             main.title.position = "center")
 ```
 
+## Eldercare
 
+```{r}
+tmap_mode("plot")
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total",
+    style = "cont",
+    alpha = 0.4) +
+tm_shape(eldercare_sf) + 
+  tm_symbols(shape=21,
+    col  = "green",
+    size = 0.15) +
+  tm_layout(main.title="Eldercare",
+            main.title.position = "center")
+```
 
 ## Bus Stops
 
@@ -376,7 +530,7 @@ tm_shape(nursing_sf) +
 tmap_mode("plot")
 tm_shape(total_pop) +
   tm_polygons(
-    "Total...2",
+    "Total",
     style = "cont",
     alpha = 0.4) +
 tm_shape(busstop_sf) + 
@@ -387,8 +541,6 @@ tm_shape(busstop_sf) +
             main.title.position = "center")
 ```
 
-
-
 ## MRT Stations
 
 ```{r}
@@ -398,7 +550,7 @@ lrt <- trainstation_sf[trainstation_sf$TYP_CD_DES == "LRT",]
 tmap_mode("plot")
 tm_shape(total_pop) +
   tm_polygons(
-    "Total...2",
+    "Total",
     style = "cont",
     alpha = 0.4) +
 tm_shape(mrt) + 
@@ -413,9 +565,26 @@ tm_shape(lrt) +
             main.title.position = "center")
 ```
 
+## CHAS
 
+```{r}
+tmap_mode("plot")
+tm_shape(total_pop) +
+  tm_polygons(
+    "Total",
+    style = "cont",
+    alpha = 0.4,) +
+  tm_fill(col="oranges") + 
+tm_shape(chas_sf) + 
+  tm_symbols(shape=24,
+    col  = "blue",
+    size = 0.15) +
+  tm_layout(main.title="CHAS Clinics",
+            main.title.position = "center")
+```
 
 # First-order Spatial Point Patterns Analysis
+
 ```{r echo=FALSE}
 pacman::p_load(DiagrammeR)
 grViz(diagram = "digraph flowchart {
@@ -440,7 +609,8 @@ grViz(diagram = "digraph flowchart {
 
 idk why train stations converts into spatial polygon
 
-### Converting *sf* data frames to sp’s *Spatial** class
+### Converting *sf* data frames to sp's Spatial class
+
 ```{r}
 mpsz_spatial <- as_Spatial(mpsz)
 gp_spatial <- as_Spatial(gp_sf)
@@ -449,9 +619,13 @@ poly_spatial <- as_Spatial(poly_sf)
 nursing_spatial <- as_Spatial(nursing_sf)
 busstop_spatial <- as_Spatial(busstop_sf)
 trainstation_spatial <- as_Spatial(trainstation_sf)
+chas_spatial <- as_Spatial(chas_sf)
+pcn_spatial <- as_Spatial(pcn_sf)
+eldercare_spatial <- as_Spatial(eldercare_sf)
 ```
 
-### Converting sp’s *Spatial** Class into Generic *sp* Format
+### Converting sp's \*Spatial\*\* Class into Generic *sp* Format
+
 ```{r}
 mpsz_sp <- as(mpsz_spatial, "SpatialPolygons")
 gp_sp <- as(gp_spatial, "SpatialPoints")
@@ -459,22 +633,28 @@ hospital_sp <- as(hospital_spatial, "SpatialPoints")
 poly_sp <- as(poly_spatial, "SpatialPoints")
 nursing_sp <- as(nursing_spatial, "SpatialPoints")
 busstop_sp <- as(busstop_spatial, "SpatialPoints")
+chas_sp <- as(chas_spatial, "SpatialPoints")
+pcn_sp <- as(pcn_spatial, "SpatialPoints")
+eldercare_sp <- as(eldercare_spatial, "SpatialPoints")
 trainstation_sp <- as(trainstation_spatial, "SpatialPolygons")
 ```
 
-### Converting Generic *sp* Format into spatstat’s *ppp* Format
+### Converting Generic *sp* Format into spatstat's *ppp* Format
+
 ```{r}
 gp_ppp <- as(gp_sp, "ppp")
 hospital_ppp <- as(hospital_sp, "ppp")
 poly_ppp <- as(poly_sp, "ppp")
 nursing_ppp <- as(nursing_sp, "ppp")
 busstop_ppp <- as(busstop_sp, "ppp")
+chas_ppp <- as(chas_sp, "ppp")
+pcn_ppp <- as(pcn_sp, "ppp")
+eldercare_ppp <- as(eldercare_sp, "ppp")
 ```
 
 ### Data Visualisation
 
-::: {.panel-tabset}
-
+::: panel-tabset
 #### Master Plan Subzone 2019
 
 ```{r}
@@ -482,40 +662,56 @@ plot(mpsz_spatial, main="General Practitioner Clinics")
 ```
 
 #### General Practitioner Clinics
+
 ```{r}
 plot(gp_ppp, main="General Practitioner Clinics")
 ```
 
-
 #### Hospitals
+
 ```{r}
 plot(hospital_ppp, main="Hospitals")
 ```
 
-
 #### Polyclinics
+
 ```{r}
 plot(poly_ppp, main="Polyclinics")
 ```
 
 #### Nursing Homes
+
 ```{r}
 plot(nursing_ppp, main="Nursing Homes")
 ```
 
+#### General Practitioner Clinics
+
+```{r}
+plot(eldercare_ppp, main="Eldercares")
+```
+
 #### Bus Stops
+
 ```{r}
 plot(busstop_ppp, main="Bus Stops")
 ```
 
-
 #### Mrt Stations
+
 ```{r}
 plot(trainstation_spatial, main="Mrt Stations")
+```
+
+#### CHAS
+
+```{r}
+plot(chas_ppp, main="CHAS Clinics")
 ```
 :::
 
 ## Check for Duplicate Data Points
+
 ```{r}
 any(duplicated(gp_ppp))
 ```
@@ -523,6 +719,7 @@ any(duplicated(gp_ppp))
 ```{r}
 any(duplicated(hospital_ppp))
 ```
+
 ```{r}
 any(duplicated(poly_ppp))
 ```
@@ -531,26 +728,37 @@ any(duplicated(poly_ppp))
 any(duplicated(nursing_ppp))
 ```
 
-
 ```{r}
 any(duplicated(busstop_ppp))
 ```
 
+```{r}
+any(duplicated(chas_ppp))
+```
+
+```{r}
+any(duplicated(eldercare_ppp))
+```
+
 ### Handle Duplicated Points
+
 If we want to know how many locations have more than one point event, we can use the code chunk below.
+
 ```{r}
 sum(multiplicity(gp_ppp) > 1)
 ```
+
 ```{r}
 sum(multiplicity(nursing_ppp) > 1)
 ```
-
 
 ```{r}
 sum(multiplicity(busstop_ppp) > 1)
 ```
 
-
+```{r}
+sum(multiplicity(pcn_ppp) > 1)
+```
 
 The second solution is use jittering, which will add a small perturbation to the duplicate points so that they do not occupy the exact same space.
 
@@ -568,7 +776,6 @@ nursing_ppp_jit <- rjitter(nursing_ppp,retry = TRUE,
 any(duplicated(nursing_ppp_jit))
 ```
 
-
 ```{r}
 busstop_ppp_jit <- rjitter(busstop_ppp,retry = TRUE,
                              nsim = 1, 
@@ -576,7 +783,22 @@ busstop_ppp_jit <- rjitter(busstop_ppp,retry = TRUE,
 any(duplicated(busstop_ppp_jit))
 ```
 
+```{r}
+chas_ppp_jit <- rjitter(chas_ppp,retry = TRUE,
+                             nsim = 1, 
+                             drop = TRUE)
+any(duplicated(chas_ppp_jit))
+```
+
+```{r}
+pcn_ppp_jit <- rjitter(pcn_ppp,retry = TRUE,
+                             nsim = 1, 
+                             drop = TRUE)
+any(duplicated(pcn_ppp_jit))
+```
+
 ## Creating *owin* Object
+
 ```{r}
 mpsz_owin <- as(mpsz_sp, "owin")
 gp_ppp = gp_ppp_jit[mpsz_owin]
@@ -584,31 +806,43 @@ hospital_ppp = hospital_ppp[mpsz_owin]
 poly_ppp = poly_ppp[mpsz_owin]
 nursing_ppp = nursing_ppp_jit[mpsz_owin]
 busstop_ppp = busstop_ppp_jit[mpsz_owin]
+chas_ppp = chas_ppp_jit[mpsz_owin]
+pcn_ppp = pcn_ppp_jit[mpsz_owin]
+eldercare_ppp = eldercare_ppp[mpsz_owin]
 mpsz_owin
 ```
 
 ## Kernel Density Estimation (KDE)
 
 rescale
+
 ```{r}
 gp_ppp.km <- rescale(gp_ppp, 1000, "km")
 hospital_ppp.km <- rescale(hospital_ppp, 1000, "km")
 poly_ppp.km <- rescale(poly_ppp, 1000, "km")
 nursing_ppp.km <- rescale(nursing_ppp, 1000, "km")
 busstop_ppp.km <- rescale(busstop_ppp, 1000, "km")
+chas_ppp.km <- rescale(chas_ppp, 1000, "km")
+pcn_ppp.km <- rescale(pcn_ppp, 1000, "km")
+eldercare_ppp.km <- rescale(eldercare_ppp, 1000, "km")
+
+saveRDS(chas_ppp.km, file = "data/models/chas_ppp_km.rds")
 ```
 
 ### General Practitioner Clinics
+
 ```{r}
 gp_bw <- density(gp_ppp.km,
              sigma = bw.diggle,
              edge = TRUE,
              kernel = "gaussian")
 
+
 plot(gp_bw, main = "General Practitioner Clinics")
 ```
 
 ### Hospitals
+
 ```{r}
 hospital_bw <- density(hospital_ppp.km,
              sigma = bw.diggle,
@@ -618,8 +852,8 @@ hospital_bw <- density(hospital_ppp.km,
 plot(hospital_bw, main = "Hospitals")
 ```
 
-
 ### Polyclinics
+
 ```{r}
 poly_bw <- density(poly_ppp.km,
              sigma = bw.diggle,
@@ -630,6 +864,7 @@ plot(poly_bw, main = "Polyclinics")
 ```
 
 ### Nursing Homes
+
 ```{r}
 nursing_bw <- density(nursing_ppp.km,
              sigma = bw.diggle,
@@ -639,7 +874,32 @@ nursing_bw <- density(nursing_ppp.km,
 plot(nursing_bw, main = "Nursing Homes")
 ```
 
+### CHAS Clinics
+
+```{r}
+chas_bw <- density(chas_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian")
+
+plot(chas_bw, main = "CHAS Clinics")
+```
+
+### PCN
+
+```{r eval=FALSE}
+pcn_bw <- density(pcn_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian")
+
+plot(pcn_bw, main = "Primary Care Networks (PCN)")
+```
+
+![](/posts/report/data/images/PCN_KDE.png)
+
 ### Bus Stops
+
 ```{r}
 busstop_bw <- density(busstop_ppp.km,
              sigma = bw.diggle,
@@ -649,38 +909,52 @@ busstop_bw <- density(busstop_ppp.km,
 plot(busstop_bw, main = "Bus Stops")
 ```
 
-
 ## Converting KDE Output into Grid Object
+
 ### General Practitioner Clinics
+
 ```{r}
 gridded_gp_bw <- as.SpatialGridDataFrame.im(gp_bw)
-spplot(gridded_gp_bw)
+spplot(gridded_gp_bw, main = "General Practitioners")
 ```
 
-
 ### Hospitals
+
 ```{r}
 gridded_hospital_bw <- as.SpatialGridDataFrame.im(hospital_bw)
 spplot(gridded_hospital_bw)
 ```
 
-
 ### Polyclinics
+
 ```{r}
 gridded_poly_bw <- as.SpatialGridDataFrame.im(poly_bw)
 spplot(gridded_poly_bw)
 ```
 
 ### Nursing Homes
+
 ```{r}
 gridded_nursing_bw <- as.SpatialGridDataFrame.im(nursing_bw)
 spplot(gridded_nursing_bw)
 ```
 
 ### Bus Stops
+
 ```{r}
 gridded_busstop_bw <- as.SpatialGridDataFrame.im(busstop_bw)
 spplot(gridded_busstop_bw)
+```
+
+### CHAS
+
+```{r}
+# gridded_chas_bw <- as.SpatialGridDataFrame.im(chas_bw)
+# spplot(gridded_chas_bw)
+```
+
+```{r}
+
 ```
 
 ## Converting Gridded Output into Raster
@@ -692,7 +966,6 @@ kde_gp_bw_raster <- raster(gridded_gp_bw)
 projection(kde_gp_bw_raster) <- CRS("+init=EPSG:3414")
 kde_gp_bw_raster
 ```
-
 
 ### Hospitals
 
@@ -726,6 +999,14 @@ projection(kde_busstop_bw_raster) <- CRS("+init=EPSG:3414")
 kde_busstop_bw_raster
 ```
 
+### CHAS
+
+```{r}
+kde_busstop_bw_raster <- raster(gridded_busstop_bw)
+projection(kde_busstop_bw_raster) <- CRS("+init=EPSG:3414")
+kde_busstop_bw_raster
+```
+
 ### Visualisation
 
 #### General Practitioner Clinics
@@ -735,7 +1016,6 @@ tm_shape(kde_gp_bw_raster) +
   tm_raster("v") +
   tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
 ```
-
 
 #### Hospitals
 
@@ -769,14 +1049,30 @@ tm_shape(kde_busstop_bw_raster) +
   tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
 ```
 
+#### CHAS Clinics
+
+```{r}
+chas_bw <- density(chas_ppp.km,
+             sigma = bw.diggle,
+             edge = TRUE,
+             kernel = "gaussian")
+
+plot(chas_bw, main = "CHAS Clinics")
+```
+
+```{r}
+tm_shape(kde_busstop_bw_raster) +
+  tm_raster("v") +
+  tm_layout(legend.position = c("right", "bottom"), frame = FALSE)
+```
 
 ## Nearest Neighbour Analysis
 
 ### General Practitioner Clinics
 
-- Ho = The distribution of general practitioner clinics are randomly distributed.
+-   Ho = The distribution of general practitioner clinics are randomly distributed.
 
-- H1 = The distribution of general practitioner clinics are not randomly distributed.
+-   H1 = The distribution of general practitioner clinics are not randomly distributed.
 
 With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that general practitioner clinics are not randomly distributed.
 
@@ -790,9 +1086,9 @@ clarkevans.test(gp_ppp.km,
 
 ### Hospitals
 
-- Ho = The distribution of hospitals are randomly distributed.
+-   Ho = The distribution of hospitals are randomly distributed.
 
-- H1 = The distribution of hospitals are not randomly distributed.
+-   H1 = The distribution of hospitals are not randomly distributed.
 
 With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that hospitals are not randomly distributed.
 
@@ -804,12 +1100,11 @@ clarkevans.test(hospital_ppp.km,
                 nsim = 99)
 ```
 
-
 ### Polyclinics
 
-- Ho = The distribution of polyclinics are randomly distributed.
+-   Ho = The distribution of polyclinics are randomly distributed.
 
-- H1 = The distribution of polyclinics are not randomly distributed.
+-   H1 = The distribution of polyclinics are not randomly distributed.
 
 With the p-value above than the alpha value of 0.05, we accept the null hypothesis and accept that polyclinics are randomly distributed.
 
@@ -823,9 +1118,9 @@ clarkevans.test(poly_ppp.km,
 
 ### Nursing Homes
 
-- Ho = The distribution of nursing homes are randomly distributed.
+-   Ho = The distribution of nursing homes are randomly distributed.
 
-- H1 = The distribution of nursing homes are not randomly distributed.
+-   H1 = The distribution of nursing homes are not randomly distributed.
 
 With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that nursing homes are not randomly distributed.
 
@@ -837,11 +1132,26 @@ clarkevans.test(nursing_ppp.km,
                 nsim = 99)
 ```
 
+### CHAS Clinics
 
+-   Ho = The distribution of CHAS clinics are randomly distributed.
 
+-   H1 = The distribution of CHAS clinics are not randomly distributed.
 
+With the p-value lower than the alpha value of 0.05, we reject the null hypothesis and accept that CHAS clinics are not randomly distributed.
 
+```{r}
+clarkevans.test(chas_ppp.km,
+                correction = "none", 
+                clipregion = "mpsz_owin", 
+                alternative = c("clustered"), 
+                nsim = 99)
+```
 
+# Modelling Geographical Accessibility
 
-
-
+```{r}
+PCN_Clinics <- st_read(dsn = "data/geospatial/PCN Network Clinics Shapefile", 
+                       layer = "PCN Network Clinics") %>%
+  st_transform(crs = 3414)
+```
